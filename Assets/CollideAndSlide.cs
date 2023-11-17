@@ -38,18 +38,29 @@ namespace ECS.Movement.Services
     public RaycastHit lastHit;
   }
   [Serializable]
-  public class CollideAndSlideSystem
+  public class CollideAndSlideComponent : MonoBehaviour
   {
     private int _collisionLayerMask = ~(1 << Layers.Player);
     private RaycastHit[] _hits = new RaycastHit[3];
 
-    private Transform playerTransform;
-    private PlayerMovementData _playerMovementData;
-    private StaminaComponent staminaComponent;
-    public const string ProfilerName = "CollideAndSlideSystem.OnFixedUpdate";
+    private      Transform                 playerTransform;
+    private      PlayerInputStateComponent _playerInput;
+    private      PlayerMovementData        _playerMovementData;
+    private      StaminaComponent          staminaComponent;
+    private PhysicsScene _physicsScene;
+    public const string                    ProfilerName = "CollideAndSlideSystem.OnFixedUpdate";
 
     private void Awake()
     {
+      playerTransform = transform;
+      _physicsScene   = gameObject.scene.GetPhysicsScene();
+      _playerInput    = GetComponent<PlayerInputStateComponent>();
+      staminaComponent = new StaminaComponent()
+      {
+        CurrentStamina = 100,
+        MaxStamina = 100,
+        HasChanged = false
+      };
       
     }
 
@@ -67,18 +78,16 @@ namespace ECS.Movement.Services
 
     private void HandleMovement()
     {
-      var playerInput = entity.GetFirst<PlayerInputStateComponent>(PlayerInputStateComponent.HashId);
-        
       staminaComponent.HasChanged = false;
       
-      var moveDirection = playerInput.Input.moveDirection;
+      var moveDirection = _playerInput.Input.moveDirection;
       
-      if (playerInput.Input.Aim)
+      if (_playerInput.Input.Aim)
       {
         moveDirection *= .5f;
       }
       
-      if (playerInput.Input.Sprint && staminaComponent.CurrentStamina > 0 &&
+      if (_playerInput.Input.Sprint && staminaComponent.CurrentStamina > 0 &&
           moveDirection.y > 0)
       {
         //reduce stamina!
@@ -92,7 +101,7 @@ namespace ECS.Movement.Services
         staminaComponent.HasChanged = true;
       }
 
-      if (playerInput.Input.Jump && _playerMovementData.isGrounded)
+      if (_playerInput.Input.Jump && _playerMovementData.isGrounded)
       {
         Jump(ref _playerMovementData, playerTransform);
         return;
