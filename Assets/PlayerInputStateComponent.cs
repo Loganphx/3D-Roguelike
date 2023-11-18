@@ -5,14 +5,52 @@ using UnityEngine;
 namespace ECS.Movement.Services
 {
     [Serializable]
-    public class PlayerInputStateComponent
+    public class PlayerInputState : IState
     {
-        public static readonly int HashId = typeof(PlayerInputStateComponent).GetHashCode();
-
-      
+        public static readonly int HashId = typeof(PlayerInputState).GetHashCode();
+        
         public float         mouseSensitivity       = 0.5f;
         public float         cameraVerticalRotation = 1;
         public GameplayInput Input;
+    }
+
+    public class PlayerInputComponent : IComponent<PlayerInputState>
+    {
+      public PlayerInputState InputState;
+      public PlayerInputState State => InputState;
+      
+      public void OnUpdate()
+      {
+        ref var inputState = ref InputState;
+        ref var input      = ref inputState.Input;
+        input.lookDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+      }
+      public void OnFixedUpdate()
+      {
+        ref var inputState    = ref InputState;
+        ref var input      = ref inputState.Input;
+        var     moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        moveDirection.Normalize();
+
+        input.moveDirection = moveDirection;
+
+        if (Input.GetKey(KeyCode.Space)) State.Input.Jump = true;
+        else State.Input.Jump = false;
+        
+        if (Input.GetKey(KeyCode.LeftShift)) State.Input.Sprint = true;
+        else State.Input.Sprint = false;
+        
+        if (Input.GetKey(KeyCode.LeftControl)) State.Input.Crouch = true;
+        else State.Input.Crouch = false;
+        
+        if (Input.GetKey(KeyCode.E)) State.Input.Interact = true;
+        else State.Input.Interact = false;
+      }
+
+      public PlayerInputComponent()
+      {
+        InputState = new PlayerInputState();
+      }
     }
       /// <summary>
   /// Example definition of an INetworkStruct.

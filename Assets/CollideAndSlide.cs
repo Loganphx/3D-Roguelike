@@ -44,7 +44,7 @@ namespace ECS.Movement.Services
     private RaycastHit[] _hits = new RaycastHit[3];
 
     private      Transform                 playerTransform;
-    private      PlayerInputStateComponent _playerInput;
+    private      PlayerInputComponent _playerInput;
     private      PlayerMovementData        _playerMovementData;
     private      StaminaComponent          staminaComponent;
     private PhysicsScene _physicsScene;
@@ -54,7 +54,7 @@ namespace ECS.Movement.Services
     {
       playerTransform = transform;
       _physicsScene   = gameObject.scene.GetPhysicsScene();
-      _playerInput    = GetComponent<PlayerInputStateComponent>();
+      _playerInput    = GetComponent<PlayerInputComponent>();
       staminaComponent = new StaminaComponent()
       {
         CurrentStamina = 100,
@@ -80,14 +80,14 @@ namespace ECS.Movement.Services
     {
       staminaComponent.HasChanged = false;
       
-      var moveDirection = _playerInput.Input.moveDirection;
+      var moveDirection = _playerInput.State.Input.moveDirection;
       
-      if (_playerInput.Input.Aim)
+      if (_playerInput.State.Input.Aim)
       {
         moveDirection *= .5f;
       }
       
-      if (_playerInput.Input.Sprint && staminaComponent.CurrentStamina > 0 &&
+      if (_playerInput.State.Input.Sprint && staminaComponent.CurrentStamina > 0 &&
           moveDirection.y > 0)
       {
         //reduce stamina!
@@ -101,7 +101,7 @@ namespace ECS.Movement.Services
         staminaComponent.HasChanged = true;
       }
 
-      if (_playerInput.Input.Jump && _playerMovementData.isGrounded)
+      if (_playerInput.State.Input.Jump && _playerMovementData.isGrounded)
       {
         Jump(ref _playerMovementData, playerTransform);
         return;
