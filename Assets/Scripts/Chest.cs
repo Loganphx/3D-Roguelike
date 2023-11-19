@@ -2,11 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public interface IPlayer
-{
-    public int Gold { get; set; }
-}
 public interface IPowerup
 {
     
@@ -34,14 +29,27 @@ public class PowerupSpawnTable
     };
 }
 
-public class Chest : MonoBehaviour, IInteractable
+public class Chest : MonoBehaviour, IInteractable, IHoverable
 {
     [SerializeField] public PowerupSpawnTable SpawnTable;
-    [SerializeField] public int GoldCost;
-    [SerializeField] public string Color;
+    [SerializeField] public int               GoldCost;
+    [SerializeField] public Color             Color;
+    [SerializeField] private Outline           _outline;
+    
+    public void Awake()
+    {
+        GetComponent<MeshRenderer>().material.color         = Color;
+        _outline = GetComponent<Outline>();
+
+        _outline.enabled = false;
+    }
     public void Interact(IPlayer player)
     {
-        if(player.Gold < GoldCost) return;
+        if (player.Gold < GoldCost)
+        {
+            Debug.LogError($"Failed to open chest, you need {GoldCost - player.Gold} more gold");
+            return;
+        }
         
         GeneratePowerup(player);
     }
@@ -63,5 +71,15 @@ public class Chest : MonoBehaviour, IInteractable
     private void SpawnPowerup(IPowerup powerup)
     {
         GameObject.Instantiate(powerup as MonoBehaviour, transform.position, Quaternion.identity);
+    }
+
+    public void OnHoverEnter()
+    {
+        _outline.enabled = true;
+    }
+
+    public void OnHoverExit()
+    {
+        _outline.enabled = false;
     }
 }

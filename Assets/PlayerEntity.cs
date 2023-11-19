@@ -2,7 +2,7 @@
 using ECS.Movement.Services;
 using UnityEngine;
 
-[RequireComponent(typeof(CollideAndSlideComponent))]
+// [RequireComponent(typeof(CollideAndSlideComponent))]
 [RequireComponent(typeof(PlayerInputComponent))]
 [RequireComponent(typeof(TransformComponent))]
 public class PlayerEntity : MonoBehaviour, IEntity

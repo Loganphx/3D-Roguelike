@@ -24,27 +24,48 @@ namespace ECS.Movement.Services
         ref var inputState = ref InputState;
         ref var input      = ref inputState.Input;
         input.lookDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+          if (Cursor.visible)
+          {
+            Cursor.visible   = false;
+            Cursor.lockState = CursorLockMode.Locked;
+          }
+          else 
+          {
+            Cursor.visible   = true;
+            Cursor.lockState = CursorLockMode.Confined;
+          }
+        }
       }
       public void OnFixedUpdate()
       {
         ref var inputState    = ref InputState;
-        ref var input      = ref inputState.Input;
-        var     moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        ref var input         = ref inputState.Input;
+        // var     moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 moveDirection = Vector2.zero;
+        if(Input.GetKey(KeyCode.W)) moveDirection.y += 1;
+        if(Input.GetKey(KeyCode.S)) moveDirection.y -= 1;
+        if(Input.GetKey(KeyCode.A)) moveDirection.x -= 1;
+        if(Input.GetKey(KeyCode.D)) moveDirection.x += 1;
         moveDirection.Normalize();
+        // Debug.Log($"TICK: {TickManager.Instance.Tick} - Input {moveDirection}");
 
         input.moveDirection = moveDirection;
 
-        if (Input.GetKey(KeyCode.Space)) State.Input.Jump = true;
-        else State.Input.Jump = false;
+        if (Input.GetKey(KeyCode.Space)) input.Jump = true;
+        else input.Jump                             = false;
         
-        if (Input.GetKey(KeyCode.LeftShift)) State.Input.Sprint = true;
-        else State.Input.Sprint = false;
+        if (Input.GetKey(KeyCode.LeftShift)) input.Sprint = true;
+        else input.Sprint                                       = false;
         
-        if (Input.GetKey(KeyCode.LeftControl)) State.Input.Crouch = true;
-        else State.Input.Crouch = false;
+        if (Input.GetKey(KeyCode.LeftControl)) input.Crouch = true;
+        else input.Crouch = false;
         
-        if (Input.GetKey(KeyCode.E)) State.Input.Interact = true;
-        else State.Input.Interact = false;
+        if (Input.GetKey(KeyCode.E)) input.Interact = true;
+        else input.Interact = false;
+        
       }
 
       public PlayerInputComponent()

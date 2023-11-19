@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using ECS.Movement.Services;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // TODO: add a component that can be used to emit changes to the network.
@@ -12,23 +8,117 @@ using UnityEngine;
 /// </summary>
 ///
 
-
-public class Player : MonoBehaviour
+public interface IPlayer
 {
-    private PhysicsScene _physicsScene;
+    public int Gold { get; set; }
+}
+public class Player : MonoBehaviour, IPlayer
+{
     private Transform    _playerTransform;
 
-    private PlayerMovementData    _playerMovementData;
-    private PlayerInputComponent  _playerInput;
-    private PlayerCameraComponent _playerCameraComponent;
-    private RaycastHit[]          _hits = new RaycastHit[5];
-    private LayerMask             _collisionLayerMask;
-
+    private PlayerInputComponent    playerInput;
+    private PlayerCameraComponent   _playerCameraComponent;
+    private PlayerMovementComponent _playerMovementComponent;
+    private PlayerInteractComponent _playerInteractComponent;
 
     private void Awake()
     {
-        _playerTransform = transform;
-        _playerMovementData = new PlayerMovementData()
+        _playerTransform            = transform;
+        Application.targetFrameRate = 90;
+    }
+
+    private void Start()
+    {
+        playerInput = new PlayerInputComponent();
+        var cameraTransform = transform.GetComponentInChildren<Camera>().transform;
+        _playerCameraComponent   = new PlayerCameraComponent(_playerTransform, cameraTransform);
+        
+        var collider     = GetComponentInChildren<Collider>();
+        var physicsScene = gameObject.scene.GetPhysicsScene();
+        LayerMask collisionLayerMask      = ~(1 << LayerMask.NameToLayer("Player"));
+        _playerMovementComponent = new PlayerMovementComponent(_playerTransform, collider, physicsScene, collisionLayerMask);
+        
+        _playerInteractComponent = new PlayerInteractComponent(this, _playerTransform, cameraTransform, physicsScene);
+    }
+
+    public void Update()
+    {
+        playerInput.OnUpdate();
+        playerInput.OnFixedUpdate();
+
+        _playerCameraComponent.ProcessInput(ref playerInput.InputState);
+    }
+
+    public void FixedUpdate()
+    {
+        ref var inputState = ref playerInput.InputState;
+        ref var input      = ref inputState.Input;
+        _playerMovementComponent.ProcessInput(ref input);
+        _playerInteractComponent.ProcessInput(ref input);
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(_playerCameraComponent.CameraTransform.position, _playerCameraComponent.CameraTransform.position + (_playerCameraComponent.CameraTransform.forward * 5f));
+    }
+
+    public int Gold { get; set; }
+}
+
+internal class PlayerInteractComponent
+{
+    private readonly IPlayer      _player;
+    private          Transform    _playerTransform;
+    private          Transform    _cameraTransform;
+    private          PhysicsScene _physicsScene;
+    public PlayerInteractComponent(IPlayer player, Transform playerTransform, Transform cameraTransform, PhysicsScene physicsScene)
+    {
+        _player          = player;
+        _playerTransform = playerTransform;
+        _cameraTransform = cameraTransform;
+        _physicsScene    = physicsScene;
+    }
+    public void ProcessInput(ref GameplayInput input)
+    {
+        var hitSomething = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, out var hit, 5f, 
+            1 << LayerMask.NameToLayer("Interactable"), QueryTriggerInteraction.Collide);
+
+
+        if (hitSomething)
+        {
+            var hoverable = hit.collider.transform.root.GetComponent<IHoverable>();
+            if(hoverable != null) hoverable.OnHoverEnter();
+
+            if (!input.Interact) return;
+            Debug.Log("Interact");
+            // Debug.Log($"Hit {hit.collider}");
+            var interactable = hit.collider.transform.root.GetComponent<IInteractable>(); 
+            interactable.Interact(_player);
+        }
+      
+}
+
+internal class PlayerMovementComponent : IComponent<PlayerMovementState>
+{
+    private Transform           _playerTransform;
+    private PhysicsScene        _physicsScene;
+
+    public  PlayerMovementState MovementState;
+    public  PlayerMovementState State => MovementState;
+
+    private RaycastHit[]        _hits = new RaycastHit[5];
+    private LayerMask           _collisionLayerMask;
+
+
+    public PlayerMovementComponent(Transform playerTransform, Collider collider, PhysicsScene physicsScene, LayerMask collisionLayerMask)
+    {
+        _playerTransform = playerTransform;
+        _physicsScene = physicsScene;
+        
+        _collisionLayerMask = collisionLayerMask;
+        
+        MovementState = new PlayerMovementState()
         {
             maxBounces              = 5,
             skinWidth               = 0.2f,
@@ -39,57 +129,33 @@ public class Player : MonoBehaviour
             movementSpeedMultiplier = 1f,
             jumpHeight              = 2,
         };
-        var collider = GetComponentsInChildren<Collider>()[0];
-        CalculateBounds(collider, ref _playerMovementData);
-
-        _physicsScene       = gameObject.scene.GetPhysicsScene();
-        _collisionLayerMask = ~(1 << LayerMask.NameToLayer("Player"));
+        CalculateBounds(collider, ref MovementState);
     }
 
-    private void Start()
+    public void ProcessInput(ref GameplayInput input)
     {
-        _playerInput = new PlayerInputComponent();
-        var cameraTransform = transform.GetComponentInChildren<Camera>().transform;
-        _playerCameraComponent = new PlayerCameraComponent(_playerTransform, cameraTransform);
+        Move(ref input);
     }
 
-    private void Update()
+    private void Move(ref GameplayInput playerInput)
     {
-        _playerInput.OnUpdate();
-
-        _playerCameraComponent.ProcessInput(ref _playerInput.InputState);
-    }
-
-    private void FixedUpdate()
-    {
-        _playerInput.OnFixedUpdate();
-
-        ProcessInput();
-    }
-
-    private void ProcessInput()
-    {
-        Move();
-    }
-
-    private void Move()
-    {
-        var moveDirection = _playerInput.State.Input.moveDirection;
-        if (_playerInput.State.Input.Jump && _playerMovementData.isGrounded)
+        var moveDirection = playerInput.moveDirection;
+        // Debug.Log($"TICK: {TickManager.Instance.Tick} - Moving w/ {moveDirection}");
+        if (playerInput.Jump && MovementState.isGrounded)
         {
-            Jump(ref _playerMovementData, transform);
+            Jump(ref MovementState, _playerTransform);
             return;
         }
 
         var velocity = _playerTransform.forward  * moveDirection.y +
                        _playerTransform.rotation * Vector3.right * moveDirection.x;
-        Move(ref _playerMovementData,
+        Move(ref MovementState,
             _playerTransform,
-            velocity * (_playerMovementData.movementSpeed * _playerMovementData.movementSpeedMultiplier *
+            velocity * (MovementState.movementSpeed * MovementState.movementSpeedMultiplier *
                         Time.fixedDeltaTime));
     }
 
-    private void Jump(ref PlayerMovementData playerMovementData, Transform transformComponent)
+    private void Jump(ref PlayerMovementState playerMovementData, Transform transformComponent)
     {
         playerMovementData.currentGravityForce =
             new Vector3(0, playerMovementData.jumpHeight * 175 * Time.fixedDeltaTime, 0);
@@ -99,9 +165,9 @@ public class Player : MonoBehaviour
     }
 
     public void Move(
-        ref PlayerMovementData playerMovementData,
-        Transform              transform,
-        Vector3                moveAmount
+        ref PlayerMovementState playerMovementData,
+        Transform               transform,
+        Vector3                 moveAmount
     )
     {
         var transformPos = transform.position;
@@ -116,7 +182,7 @@ public class Player : MonoBehaviour
         transform.position = transformPos + moveAmount;
     }
 
-    private Vector3 HandleGravity(ref PlayerMovementData playerMovementData,
+    private Vector3 HandleGravity(ref PlayerMovementState playerMovementData,
         Vector3                                          position,
         Vector3                                          moveAmount)
     {
@@ -135,7 +201,7 @@ public class Player : MonoBehaviour
         return moveAmount;
     }
 
-    private void CalculateBounds(Collider collider, ref PlayerMovementData playerMovementData)
+    private void CalculateBounds(Collider collider, ref PlayerMovementState playerMovementData)
     {
         var bounds = collider.bounds;
         bounds.Expand(-2 * playerMovementData.skinWidth);
@@ -153,12 +219,12 @@ public class Player : MonoBehaviour
     /// <param name="initialVelocity"></param>
     /// <returns></returns>
     private Vector3 CollideAndSlide(
-        ref PlayerMovementData playerMovementData,
-        Vector3                vel,
-        Vector3                pos,
-        int                    depth,
-        bool                   gravityPass,
-        Vector3                initialVelocity)
+        ref PlayerMovementState playerMovementData,
+        Vector3                 vel,
+        Vector3                 pos,
+        int                     depth,
+        bool                    gravityPass,
+        Vector3                 initialVelocity)
     {
         if (depth >= playerMovementData.maxBounces) return Vector3.zero;
 

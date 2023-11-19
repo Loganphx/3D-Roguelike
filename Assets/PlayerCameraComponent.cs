@@ -10,7 +10,7 @@ internal struct PlayerCameraState : IState
 internal class PlayerCameraComponent : IComponent<PlayerCameraState>
 {
     private readonly Transform         _playerTransform;
-    private          Transform         _cameraTransform;
+    public          Transform         CameraTransform { get; private set; }
     private          PlayerCameraState _state;
     public           PlayerCameraState State => _state;
 
@@ -22,7 +22,7 @@ internal class PlayerCameraComponent : IComponent<PlayerCameraState>
     public PlayerCameraComponent(Transform playerTransform, Transform cameraTransform)
     {
         _playerTransform = playerTransform;
-        _cameraTransform = cameraTransform;
+        CameraTransform  = cameraTransform;
         _state = new PlayerCameraState()
         {
             mouseSensitivity       = 0.5f,
@@ -44,7 +44,7 @@ internal class PlayerCameraComponent : IComponent<PlayerCameraState>
             var cameraEulerAngles =
                 Vector3.right * State.cameraVerticalRotation;
 
-            _cameraTransform.localRotation = Quaternion.Euler(cameraEulerAngles);
+            CameraTransform.localRotation = Quaternion.Euler(cameraEulerAngles);
             //_cameraTransformComponent.SetLocalRotation(Quaternion.Euler(cameraEulerAngles));
             // var eulerAngles = new Vector3(_playerTransform.Rotation.x,
             //   _playerTransform.Rotation.y + ((lookDelta.x * playerInputStateComponent.mouseSensitivity)),
