@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class Node : MonoBehaviour, IDamagable
 {
@@ -68,6 +70,6 @@ public class Node : MonoBehaviour, IDamagable
   {
     ref var nodeState = ref _nodeState;
     nodeState.CurrentHealth -= (int) damage;
-    Debug.Log($"Hit stone node for {damage} => {nodeState.CurrentHealth} / {_nodeData.health}");
+    Debug.Log($"Hit {_nodeType} Node for {damage} => {nodeState.CurrentHealth} / {_nodeData.health}");
   }
 }
