@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Runtime", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests.csproj", "{f4cab31d-10fb-ff10-4560-050ec26d7f47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Tests.Runtime", "FastScriptReload.Tests.Runtime.csproj", "{a1300f3b-1736-132d-37da-2dfdbf4c156b}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Tests.Editor", "FastScriptReload.Tests.Editor.csproj", "{8b5a5646-0f84-7b85-5e63-77d903aa6aca}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Tests.Runtime", "FastScriptReload.Tests.Runtime.csproj", "{a1300f3b-1736-132d-37da-2dfdbf4c156b}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,10 +30,10 @@ Global
 		{11f6e8c0-05fd-abb5-bda7-058af583ee5e}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{f4cab31d-10fb-ff10-4560-050ec26d7f47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{f4cab31d-10fb-ff10-4560-050ec26d7f47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{a1300f3b-1736-132d-37da-2dfdbf4c156b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{a1300f3b-1736-132d-37da-2dfdbf4c156b}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8b5a5646-0f84-7b85-5e63-77d903aa6aca}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8b5a5646-0f84-7b85-5e63-77d903aa6aca}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{a1300f3b-1736-132d-37da-2dfdbf4c156b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{a1300f3b-1736-132d-37da-2dfdbf4c156b}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
