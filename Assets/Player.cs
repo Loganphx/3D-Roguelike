@@ -20,11 +20,13 @@ public class Player : MonoBehaviour, IPlayer
     private PlayerCameraComponent   _playerCameraComponent;
     private PlayerMovementComponent _playerMovementComponent;
     private PlayerInteractComponent _playerInteractComponent;
+    private PlayerAttackComponent _playerAttackComponent;
 
     private void Awake()
     {
         _playerTransform            = transform;
         Application.targetFrameRate = 90;
+        Gold = 100;
     }
 
     private void Start()
@@ -39,6 +41,7 @@ public class Player : MonoBehaviour, IPlayer
         _playerMovementComponent = new PlayerMovementComponent(_playerTransform, collider, physicsScene, collisionLayerMask);
         
         _playerInteractComponent = new PlayerInteractComponent(this, _playerTransform, cameraTransform, physicsScene);
+        _playerAttackComponent = new PlayerAttackComponent(this, cameraTransform, physicsScene);
     }
 
     public void Update()
@@ -55,233 +58,17 @@ public class Player : MonoBehaviour, IPlayer
         ref var input      = ref inputState.Input;
         _playerMovementComponent.ProcessInput(ref input);
         _playerInteractComponent.ProcessInput(ref input);
+        _playerAttackComponent.ProcessInput(ref input);
+
+        input.Interact = false;
     }
 
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(_playerCameraComponent.CameraTransform.position, _playerCameraComponent.CameraTransform.position + (_playerCameraComponent.CameraTransform.forward * 5f));
+        var position = _playerCameraComponent.CameraTransform.position;
+        Gizmos.DrawLine(position, position + (_playerCameraComponent.CameraTransform.forward * 5f));
     }
 
     public int Gold { get; set; }
-}
-
-internal class PlayerInteractComponent
-{
-    private readonly IPlayer      _player;
-    private          Transform    _playerTransform;
-    private          Transform    _cameraTransform;
-    private          PhysicsScene _physicsScene;
-    public PlayerInteractComponent(IPlayer player, Transform playerTransform, Transform cameraTransform, PhysicsScene physicsScene)
-    {
-        _player          = player;
-        _playerTransform = playerTransform;
-        _cameraTransform = cameraTransform;
-        _physicsScene    = physicsScene;
-    }
-    public void ProcessInput(ref GameplayInput input)
-    {
-        var hitSomething = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, out var hit, 5f, 
-            1 << LayerMask.NameToLayer("Interactable"), QueryTriggerInteraction.Collide);
-
-
-        if (hitSomething)
-        {
-            var hoverable = hit.collider.transform.root.GetComponent<IHoverable>();
-            if(hoverable != null) hoverable.OnHoverEnter();
-
-            if (!input.Interact) return;
-            Debug.Log("Interact");
-            // Debug.Log($"Hit {hit.collider}");
-            var interactable = hit.collider.transform.root.GetComponent<IInteractable>(); 
-            interactable.Interact(_player);
-        }
-      
-}
-
-internal class PlayerMovementComponent : IComponent<PlayerMovementState>
-{
-    private Transform           _playerTransform;
-    private PhysicsScene        _physicsScene;
-
-    public  PlayerMovementState MovementState;
-    public  PlayerMovementState State => MovementState;
-
-    private RaycastHit[]        _hits = new RaycastHit[5];
-    private LayerMask           _collisionLayerMask;
-
-
-    public PlayerMovementComponent(Transform playerTransform, Collider collider, PhysicsScene physicsScene, LayerMask collisionLayerMask)
-    {
-        _playerTransform = playerTransform;
-        _physicsScene = physicsScene;
-        
-        _collisionLayerMask = collisionLayerMask;
-        
-        MovementState = new PlayerMovementState()
-        {
-            maxBounces              = 5,
-            skinWidth               = 0.2f,
-            maxSlopeAngle           = 45,
-            gravity                 = new Vector3(0, -15 / 50f, 0),
-            currentGravityForce     = new Vector3(0, 0,         0),
-            movementSpeed           = 3.2f,
-            movementSpeedMultiplier = 1f,
-            jumpHeight              = 2,
-        };
-        CalculateBounds(collider, ref MovementState);
-    }
-
-    public void ProcessInput(ref GameplayInput input)
-    {
-        Move(ref input);
-    }
-
-    private void Move(ref GameplayInput playerInput)
-    {
-        var moveDirection = playerInput.moveDirection;
-        // Debug.Log($"TICK: {TickManager.Instance.Tick} - Moving w/ {moveDirection}");
-        if (playerInput.Jump && MovementState.isGrounded)
-        {
-            Jump(ref MovementState, _playerTransform);
-            return;
-        }
-
-        var velocity = _playerTransform.forward  * moveDirection.y +
-                       _playerTransform.rotation * Vector3.right * moveDirection.x;
-        Move(ref MovementState,
-            _playerTransform,
-            velocity * (MovementState.movementSpeed * MovementState.movementSpeedMultiplier *
-                        Time.fixedDeltaTime));
-    }
-
-    private void Jump(ref PlayerMovementState playerMovementData, Transform transformComponent)
-    {
-        playerMovementData.currentGravityForce =
-            new Vector3(0, playerMovementData.jumpHeight * 175 * Time.fixedDeltaTime, 0);
-        var transformPos = transformComponent.position;
-        var moveAmount   = HandleGravity(ref playerMovementData, transformPos, Vector3.zero);
-        transformComponent.position = transformPos + moveAmount;
-    }
-
-    public void Move(
-        ref PlayerMovementState playerMovementData,
-        Transform               transform,
-        Vector3                 moveAmount
-    )
-    {
-        var transformPos = transform.position;
-        moveAmount = CollideAndSlide(ref playerMovementData, moveAmount, transformPos, 0,
-            false,                                           moveAmount);
-
-        if (!playerMovementData.isGrounded)
-        {
-            moveAmount += HandleGravity(ref playerMovementData, transformPos, moveAmount);
-        }
-
-        transform.position = transformPos + moveAmount;
-    }
-
-    private Vector3 HandleGravity(ref PlayerMovementState playerMovementData,
-        Vector3                                          position,
-        Vector3                                          moveAmount)
-    {
-        moveAmount += CollideAndSlide(ref playerMovementData,
-            playerMovementData.currentGravityForce * Time.fixedDeltaTime,
-            position + moveAmount,
-            0,
-            true,
-            playerMovementData.currentGravityForce);
-
-        if (!playerMovementData.isGrounded)
-        {
-            playerMovementData.currentGravityForce += playerMovementData.gravity;
-        }
-
-        return moveAmount;
-    }
-
-    private void CalculateBounds(Collider collider, ref PlayerMovementState playerMovementData)
-    {
-        var bounds = collider.bounds;
-        bounds.Expand(-2 * playerMovementData.skinWidth);
-        playerMovementData.extents = bounds.extents;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="playerMovementData"></param>
-    /// <param name="vel">Input Velocity</param>
-    /// <param name="pos">Current Position</param>
-    /// <param name="depth">Used for recursion can be ignored by default</param>
-    /// <param name="gravityPass"></param>
-    /// <param name="initialVelocity"></param>
-    /// <returns></returns>
-    private Vector3 CollideAndSlide(
-        ref PlayerMovementState playerMovementData,
-        Vector3                 vel,
-        Vector3                 pos,
-        int                     depth,
-        bool                    gravityPass,
-        Vector3                 initialVelocity)
-    {
-        if (depth >= playerMovementData.maxBounces) return Vector3.zero;
-
-        float dist = vel.magnitude + playerMovementData.skinWidth;
-        Debug.DrawLine(pos, pos    + vel * dist, Color.blue);
-        var count = _physicsScene.SphereCast(pos, playerMovementData.extents.x, vel.normalized, _hits, dist,
-            _collisionLayerMask, QueryTriggerInteraction.Ignore);
-        if (count == 0)
-        {
-            playerMovementData.isGrounded = false;
-            return vel;
-        }
-
-        playerMovementData.isGrounded = true;
-        var hit = _hits.SortRaycastHits(count);
-        playerMovementData.lastHit = hit;
-
-        playerMovementData.snapToSurface = vel.normalized * (hit.distance - playerMovementData.skinWidth);
-        Vector3 leftOver = vel                                            - playerMovementData.snapToSurface;
-        float   angle    = Vector3.Angle(Vector3.up, hit.normal);
-
-        if (playerMovementData.snapToSurface.sqrMagnitude <= playerMovementData.skinWidth)
-            playerMovementData.snapToSurface = Vector3.zero;
-
-        if (angle <= playerMovementData.maxSlopeAngle)
-        {
-            if (gravityPass) return playerMovementData.snapToSurface;
-
-            leftOver = ProjectAndScale(leftOver, hit.normal);
-        }
-        // wall or steep slope.
-        else
-        {
-            float scale = 1 - Vector3.Dot(new Vector3(hit.normal.x, 0, hit.normal.z).normalized,
-                -new Vector3(initialVelocity.x, 0, initialVelocity.z).normalized);
-
-            if (playerMovementData.isGrounded && !gravityPass)
-            {
-                leftOver = ProjectAndScale(new Vector3(leftOver.x, 0, leftOver.z),
-                    new Vector3(hit.normal.x,                      0, hit.normal.z));
-            }
-
-            leftOver = ProjectAndScale(leftOver, hit.normal) * scale;
-        }
-
-        return playerMovementData.snapToSurface +
-               CollideAndSlide(ref playerMovementData, leftOver, pos + playerMovementData.snapToSurface,
-                   depth                                             + 1, gravityPass,
-                   initialVelocity);
-    }
-
-    private static Vector3 ProjectAndScale(Vector3 force, Vector3 normal)
-    {
-        float forceMagnitude = force.magnitude;
-        force =  Vector3.ProjectOnPlane(force, normal).normalized;
-        force *= forceMagnitude;
-
-        return force;
-    }
 }

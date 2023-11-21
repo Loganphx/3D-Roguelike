@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ECS.Movement.Services
 {
@@ -16,15 +17,24 @@ namespace ECS.Movement.Services
 
     public class PlayerInputComponent : IComponent<PlayerInputState>
     {
+      private Keyboard _keyboard;
+      private Mouse _mouse;
+
       public PlayerInputState InputState;
       public PlayerInputState State => InputState;
-      
+
+      public PlayerInputComponent()
+      {
+        InputState = new PlayerInputState();
+        _keyboard = Keyboard.current;
+        _mouse = Mouse.current;
+      }
+
       public void OnUpdate()
       {
         ref var inputState = ref InputState;
         ref var input      = ref inputState.Input;
-        input.lookDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-
+        input.lookDelta = _mouse.delta.ReadValue();
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
           if (Cursor.visible)
@@ -39,6 +49,7 @@ namespace ECS.Movement.Services
           }
         }
       }
+
       public void OnFixedUpdate()
       {
         ref var inputState    = ref InputState;
@@ -54,23 +65,13 @@ namespace ECS.Movement.Services
 
         input.moveDirection = moveDirection;
 
-        if (Input.GetKey(KeyCode.Space)) input.Jump = true;
-        else input.Jump                             = false;
-        
-        if (Input.GetKey(KeyCode.LeftShift)) input.Sprint = true;
-        else input.Sprint                                       = false;
-        
-        if (Input.GetKey(KeyCode.LeftControl)) input.Crouch = true;
-        else input.Crouch = false;
-        
-        if (Input.GetKey(KeyCode.E)) input.Interact = true;
-        else input.Interact = false;
-        
-      }
-
-      public PlayerInputComponent()
-      {
-        InputState = new PlayerInputState();
+        input.Jump = _keyboard.spaceKey.isPressed;
+        input.Sprint = _keyboard.leftShiftKey.isPressed;
+        input.Crouch = _keyboard.leftCtrlKey.isPressed;
+        input.Interact = input.Interact || _keyboard.eKey.wasPressedThisFrame;
+        input.PrimaryAttackClicked = _mouse.leftButton.wasPressedThisFrame;
+        input.PrimaryAttackHeld = _mouse.leftButton.isPressed;
+        if(input.Interact) Debug.Log("Interact!");
       }
     }
       /// <summary>
