@@ -12,6 +12,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
     private readonly Transform         _cameraTransform;
     private readonly PhysicsScene      _physicsScene;
     private readonly RaycastHit[]      _hits = new RaycastHit[5];
+    private readonly Animator      _animator;
     
     private PlayerAttackState _state = new PlayerAttackState()
     {
@@ -20,11 +21,13 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
     };
     
     public PlayerAttackComponent(IPlayer player, Transform cameraTransform,
+        Animator animator, 
         PhysicsScene physicsScene)
     {
-        _player = player;
+        _player          = player;
         _cameraTransform = cameraTransform;
-        _physicsScene = physicsScene;
+        _animator   = animator;
+        _physicsScene    = physicsScene;
     }
     public void ProcessInput(ref GameplayInput input)
     {
@@ -32,20 +35,25 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
         
         if (input.PrimaryAttackClicked && state.RemainingCooldown < 0)
         {
+            _animator.SetTrigger("Attack");
             var hits = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
                 1 << LayerMask.NameToLayer("Damagable"), QueryTriggerInteraction.Collide);
             Debug.Log($"Primary Attack Clicked: {hits}");
-            if(hits == 0) return;
             
-            var hit = _hits[0];
-            var damagable = hit.collider.transform.root.GetComponent<IDamagable>();
-            damagable?.TakeDamage(_player, 10);
+            if (hits != 0)
+            {
+                var hit = _hits[0];
+            
+                var damagable = hit.collider.transform.root.GetComponent<IDamagable>();
+                damagable?.TakeDamage(_player, 10);
+            }
+
             state.RemainingCooldown = state.Cooldown;
         }
         
         if (state.RemainingCooldown >= 0)
         {
-            state.RemainingCooldown -= Time.deltaTime;
+            state.RemainingCooldown -= Time.fixedDeltaTime;
             // Debug.Log($"Cooldown: {state.RemainingCooldown}");
             return;
         }

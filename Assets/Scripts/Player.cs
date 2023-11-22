@@ -36,13 +36,14 @@ public class Player : MonoBehaviour, IPlayer
         var cameraTransform = transform.GetComponentInChildren<Camera>().transform;
         _playerCameraComponent   = new PlayerCameraComponent(_playerTransform, cameraTransform);
         
-        var collider     = GetComponentInChildren<Collider>();
-        var physicsScene = gameObject.scene.GetPhysicsScene();
-        LayerMask collisionLayerMask      = ~(1 << LayerMask.NameToLayer("Player"));
+        var       collider           = GetComponentInChildren<Collider>();
+        var       animator           = GetComponent<Animator>();
+        var       physicsScene       = gameObject.scene.GetPhysicsScene();
+        LayerMask collisionLayerMask = ~(1 << LayerMask.NameToLayer("Player"));
         _playerMovementComponent = new PlayerMovementComponent(_playerTransform, collider, physicsScene, collisionLayerMask);
         
         _playerInteractComponent = new PlayerInteractComponent(this, _playerTransform, cameraTransform, physicsScene);
-        _playerAttackComponent = new PlayerAttackComponent(this, cameraTransform, physicsScene);
+        _playerAttackComponent   = new PlayerAttackComponent(this, cameraTransform, animator, physicsScene);
     }
 
     public void Update()
