@@ -7,6 +7,7 @@ public struct AnimalState : IState
 {
     public int   CurrentHealth;
     public float LastAttackTime;
+    public bool  IsAttacking;
     public float RemainingCooldown;
 }
 
@@ -21,7 +22,9 @@ public class AnimalData
 {
     public int Health;
 
+    public float FollowDistance = 10f;
     public float AttackDistance;
+    public float WindupCooldown;
     public float AttackCooldown;
     public int   Damage;
 }
@@ -45,55 +48,71 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
         // Debug.Log($"Closest player is {closestPlayer.player}, {closestPlayer.distance}");
         // Move Towards Player
 
+        if(closestPlayer.distance > _animalData.FollowDistance) return;
+        
         if (closestPlayer.distance <= _animalData.AttackDistance)
         {
+            if(!state.IsAttacking)
+            {
+                if (!(state.RemainingCooldown > 0))
+                {
+                    // Wind up attack
+                    transform.LookAt(closestPlayer.player.Transform.position, Vector3.up);
+                    BeginAttack(ref state);
+                }
+                else
+                {
+                    Debug.Log("Waiting for cooldown");
+                }
+            }
+            
+            // Attack
             transform.LookAt(closestPlayer.player.Transform.position, Vector3.up);
-            if(state.RemainingCooldown <= 0)
-            {
-                // Attack Player
-                Debug.Log("Attack player");
-                state.LastAttackTime    = (int) Time.time;
-                state.RemainingCooldown = (int) _animalData.AttackCooldown;
-            }
-            else
-            {
-                Debug.Log("Waiting for cooldown");
-            }
+            Attack(ref state);
         }
         else
         {
-            Debug.Log("Move Towards Player");
+            if (state.IsAttacking)
+            {
+                // Attack
+                transform.LookAt(closestPlayer.player.Transform.position, Vector3.up);
+                Attack(ref state);
+            }
+            else Debug.Log("Move Towards Player");
         }
         
-        _animalState.RemainingCooldown -= Time.deltaTime;
+        _animalState.RemainingCooldown -= Time.fixedDeltaTime;
     }
 
-    private static Dictionary<AnimalTypes, AnimalData> _animals = new Dictionary<AnimalTypes, AnimalData>()
+    private void BeginAttack(ref AnimalState state)
     {
-        { AnimalTypes.Sheep, new AnimalData()
-        {
-            Damage = 10,
-            Health = 100,
-            AttackDistance = 2.5f,
-            AttackCooldown = 3f,
-        }},
-        { AnimalTypes.Cow, new AnimalData()
-        {
-            Damage         = 10,
-            Health         = 100,
-            AttackDistance = 2.5f,
-            AttackCooldown = 3f,
-        }},
-        { AnimalTypes.Wolf, new AnimalData()
-        {
-            Damage         = 10,
-            Health         = 100,
-            AttackDistance = 2.5f,
-            AttackCooldown = 3f,
-        }}
-    };
+        Debug.Log("Begin Attack windup");
+        state.LastAttackTime    = (int) Time.time;
+        state.RemainingCooldown = (int) _animalData.WindupCooldown;
+        state.IsAttacking       = true;
+    }
+
+    private void Attack(ref AnimalState state)
+    {
+        if(state.RemainingCooldown > 0) return;
+        
+        Debug.Log("Attack!");
+        
+        // Do Damage to players within range.
+        
+        EndAttack(ref state);
+    }
+    
+    private void EndAttack(ref AnimalState state)
+    {
+        Debug.Log("End Attack");
+        state.RemainingCooldown = _animalData.AttackCooldown;
+        state.IsAttacking       = false;
+    }
+    
 
     public AnimalState State => _animalState;
+
     public void        TakeDamage(IPlayer player, float damage)
     {
         ref var animalState = ref _animalState;
@@ -109,4 +128,32 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
     {
         gameObject.SetActive(false);
     }
+
+    private static Dictionary<AnimalTypes, AnimalData> _animals = new Dictionary<AnimalTypes, AnimalData>()
+    {
+        { AnimalTypes.Sheep, new AnimalData()
+        {
+            Damage         = 10,
+            Health         = 100,
+            AttackDistance = 2.5f,
+            WindupCooldown = 0.3f,
+            AttackCooldown = 3f,
+        }},
+        { AnimalTypes.Cow, new AnimalData()
+        {
+            Damage         = 10,
+            Health         = 100,
+            AttackDistance = 2.5f,
+            WindupCooldown = 0.3f,
+            AttackCooldown = 3f,
+        }},
+        { AnimalTypes.Wolf, new AnimalData()
+        {
+            Damage         = 10,
+            Health         = 100,
+            AttackDistance = 2.5f,
+            WindupCooldown = 0.3f,
+            AttackCooldown = 3f,
+        }}
+    };
 }
