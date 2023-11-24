@@ -7,12 +7,6 @@ using UnityEngine;
 /// If we use components we can loop them and grab the network interface off of them, then use that to emit changes to clients.
 /// </summary>
 ///
-
-public interface IPlayer
-{
-    public int       Gold      { get; set; }
-    public Transform Transform { get; }
-}
 public class Player : MonoBehaviour, IPlayer
 {
     private Transform    _playerTransform;

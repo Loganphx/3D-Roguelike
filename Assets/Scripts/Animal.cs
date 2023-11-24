@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
@@ -34,22 +35,47 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
     [SerializeField] private AnimalData _animalData;
     [SerializeField] private AnimalState _animalState;
 
-    private AIPath _aiPath;
-    void Awake()
+    private RichAI _aiPath;
+    private Seeker _seeker;
+    
+    public void Awake()
     {
+        _aiPath = GetComponent<RichAI>();
+        _seeker = GetComponent<Seeker>();
+    
         _animalData = _animals[_animalType];
         _animalState.CurrentHealth = _animalData.Health;
     }
-    void FixedUpdate()
+
+    public void Start()
+    {
+        _aiPath.endReachedDistance = _animalData.AttackDistance;
+        // _aiPath.sl = _animalData.AttackDistance + 0.5f;
+    }
+
+    public void FixedUpdate()
     {
         ref var state = ref _animalState;
         // Find Closest Player
-        var closestPlayer = PlayerPool.GetClosestPlayer(transform.position);
+        var position1 = transform.position;
+        var closestPlayer = PlayerPool.GetClosestPlayer(position1);
         // Debug.Log($"Closest player is {closestPlayer.player}, {closestPlayer.distance}");
         // Move Towards Player
 
-        if(closestPlayer.distance > _animalData.FollowDistance) return;
-        
+        // if (closestPlayer.distance > _animalData.FollowDistance)
+        // {
+        //     _aiPath.destination = transform.position;
+        //     return;
+        // }
+
+        var playerPos = closestPlayer.player.Transform.position;
+        // // _aiPath.destination = position;
+        // _seeker.StartPath(position1, playerPos, path =>
+        // {
+        //     if (path.error) Debug.Log($"{path.error}");
+        // });
+        _aiPath.destination = playerPos;
+
         if (closestPlayer.distance <= _animalData.AttackDistance)
         {
             if(!state.IsAttacking)
@@ -57,7 +83,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
                 if (!(state.RemainingCooldown > 0))
                 {
                     // Wind up attack
-                    transform.LookAt(closestPlayer.player.Transform.position, Vector3.up);
+                    transform.LookAt(new Vector3(playerPos.x, position1.y, playerPos.z), Vector3.up);
                     BeginAttack(ref state);
                 }
                 else
@@ -67,7 +93,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
             }
             
             // Attack
-            transform.LookAt(closestPlayer.player.Transform.position, Vector3.up);
+            transform.LookAt(new Vector3(playerPos.x, position1.y, playerPos.z), Vector3.up);
             Attack(ref state);
         }
         else
@@ -135,6 +161,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
         {
             Damage         = 10,
             Health         = 100,
+            FollowDistance = 20,
             AttackDistance = 2.5f,
             WindupCooldown = 0.3f,
             AttackCooldown = 3f,
@@ -143,6 +170,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
         {
             Damage         = 10,
             Health         = 100,
+            FollowDistance = 20,
             AttackDistance = 2.5f,
             WindupCooldown = 0.3f,
             AttackCooldown = 3f,
@@ -151,6 +179,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable
         {
             Damage         = 10,
             Health         = 100,
+            FollowDistance = 20,
             AttackDistance = 2.5f,
             WindupCooldown = 0.3f,
             AttackCooldown = 3f,
