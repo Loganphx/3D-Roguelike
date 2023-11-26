@@ -9,7 +9,9 @@ Concepts:
 - 
 Core Mechanics:
 - Trees (choppable, drop wood on death)
+  - Drop Varying type of wood depending on tree type
 - Ore Veins/Nodes (minable, drop ore on death)
+  - Drop Varying type of ore on death
 - 4 Tiers of Chests with random power ups (Common, Rare, Epic, Legendary)
 
 - Powerups(Permanent Buffs)
