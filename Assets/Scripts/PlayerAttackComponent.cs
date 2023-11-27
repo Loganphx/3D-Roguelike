@@ -45,7 +45,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
                 var hit = _hits[0];
             
                 var damagable = hit.collider.transform.root.GetComponent<IDamagable>();
-                damagable?.TakeDamage(_player, 10);
+                damagable?.TakeDamage(_player, _cameraTransform.forward, 10);
             }
 
             state.RemainingCooldown = state.Cooldown;

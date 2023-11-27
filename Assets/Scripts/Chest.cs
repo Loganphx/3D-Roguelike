@@ -8,6 +8,14 @@ public interface IPowerup
     
 }
 
+public class Powerup : MonoBehaviour, IPowerup
+{
+    private void FixedUpdate()
+    {
+        transform.Rotate(0, 1, 0);
+    }
+}
+
 public class SpawnTableEntry
 {
     public IPowerup Powerup;
@@ -92,14 +100,22 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
             return;
         }
 
-        var hinge = transform.Find("Hinge");
+        var hinge = transform.GetChild(0).Find("Hinge");
         // var localEulerAngles = hinge.localEulerAngles;
         // Debug.Log($"Opening chest: {localEulerAngles.x}");
         // Debug.Log($"Opening chest: {hinge.localEulerAngles.x}");
+        
+        var powerup = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        powerup.AddComponent<Powerup>();
+        powerup.GetComponent<MeshRenderer>().material.color = ChestData.Color;
+        powerup.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        var position = transform.position;
+        powerup.transform.position = new Vector3(position.x, position.y + 1f, position.z);
+        
         hinge.localRotation = Quaternion.Euler(Math.Abs(hinge.localEulerAngles.x - 90) < 1f ?
             0 : 90, 0, 0);
 
-
+        
         // GeneratePowerup(player);
     }
 

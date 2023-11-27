@@ -3,14 +3,14 @@ using UnityEngine;
 
 internal class PlayerMovementComponent : IComponent<PlayerMovementState>
 {
-  private Transform _playerTransform;
+  private readonly Transform _playerTransform;
   private PhysicsScene _physicsScene;
 
   public PlayerMovementState MovementState;
   public PlayerMovementState State => MovementState;
 
-  private RaycastHit[] _hits = new RaycastHit[5];
-  private LayerMask _collisionLayerMask;
+  private readonly RaycastHit[] _hits = new RaycastHit[5];
+  private readonly LayerMask _collisionLayerMask;
 
 
   public PlayerMovementComponent(Transform playerTransform, Collider collider, PhysicsScene physicsScene,
@@ -35,18 +35,32 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
     CalculateBounds(collider, ref MovementState);
   }
 
-  public void ProcessInput(ref GameplayInput input)
+  public void ProcessInput(ref GameplayInput input, ref PlayerStaminaState playerStaminaState)
   {
-    Move(ref input);
+    ref var state = ref MovementState;
+    if(input.Sprint && input.moveDirection != Vector2.zero && playerStaminaState.Stamina > 0)
+    {
+      state.movementSpeedMultiplier = 1.5f;
+      playerStaminaState.Stamina -= .25f;
+      playerStaminaState.RegenCooldown = 2f;
+    }
+    else
+    {
+      state.movementSpeedMultiplier = 1;
+    }
+      
+    Move(ref input, ref playerStaminaState);
   }
 
-  private void Move(ref GameplayInput playerInput)
+  private void Move(ref GameplayInput playerInput, ref PlayerStaminaState playerStaminaState)
   {
     var moveDirection = playerInput.moveDirection;
     // Debug.Log($"TICK: {TickManager.Instance.Tick} - Moving w/ {moveDirection}");
     if (playerInput.Jump && MovementState.isGrounded)
     {
       Jump(ref MovementState, _playerTransform);
+      playerStaminaState.Stamina -= 15f;
+      playerStaminaState.RegenCooldown = 2f;
       return;
     }
 
