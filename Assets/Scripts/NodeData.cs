@@ -4,5 +4,5 @@ public class NodeData
 {
     public Color color;
     public int   health;
-    public int   drops;
+    public string DropPrefabPath;
 }

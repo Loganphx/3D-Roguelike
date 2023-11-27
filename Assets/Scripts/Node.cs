@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -18,31 +16,40 @@ public class Node : MonoBehaviour, IDamagable
     _nodeState.CurrentHealth = _nodeData.health;
   }
 
-  public void TakeDamage(IPlayer player, float damage)
+  public void TakeDamage(IDamager player, Vector3 hitDirection, int damage)
   {
     ref var nodeState = ref _nodeState;
     if(nodeState.CurrentHealth <= 0) return;
     
-    nodeState.CurrentHealth -= (int) damage;
+    nodeState.CurrentHealth -= damage;
     Debug.Log($"Hit {_nodeType} Node for {damage} => {nodeState.CurrentHealth} / {_nodeData.health}");
     if (nodeState.CurrentHealth <= 0)
-      Death();
+      Death(hitDirection);
   }
 
-  private void Death()
+  private void Death(Vector3 hitDirection)
   {
     Debug.Log($"{_nodeType} Node died");
+    var dropPrefab = PrefabPool.Prefabs[_nodeData.DropPrefabPath];
+    var position = transform.position;
+    var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
+    var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+    hitDirection.y = 1;
+    drop.GetComponent<Rigidbody>().AddForce(hitDirection * 3f, ForceMode.Impulse);
+    // drop.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
+
+    //drop.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
     gameObject.SetActive(false);
   }
 
-  private static Dictionary<NodeTypes, NodeData> _nodes = new Dictionary<NodeTypes, NodeData>()
+  private static readonly Dictionary<NodeTypes, NodeData> _nodes = new Dictionary<NodeTypes, NodeData>()
   {
     {
       NodeTypes.Stone, new NodeData()
       {
         color  = new Color(0.5f, 0.5f, 0.5f),
         health = 100,
-        drops  = 1,
+        DropPrefabPath = "Prefabs/Items/Item_Stone"
       }
     },
     {
@@ -50,7 +57,7 @@ public class Node : MonoBehaviour, IDamagable
       {
         color  = new Color(0.5f, 0.5f, 0.5f),
         health = 100,
-        drops  = 1,
+        DropPrefabPath = "Prefabs/Items/Item_Coal"
       }
     },
     {
@@ -58,7 +65,7 @@ public class Node : MonoBehaviour, IDamagable
       {
         color  = new Color(0.5f, 0.5f, 0.5f),
         health = 100,
-        drops  = 1,
+        DropPrefabPath = "Prefabs/Items/Item_Iron"
       }
     },
     {
@@ -66,7 +73,7 @@ public class Node : MonoBehaviour, IDamagable
       {
         color  = new Color(0.5f, 0.5f, 0.5f),
         health = 100,
-        drops  = 1,
+        DropPrefabPath = "Prefabs/Items/Item_Gold"
       }
     },
     {
@@ -74,14 +81,14 @@ public class Node : MonoBehaviour, IDamagable
       {
         color  = new Color(0.5f, 0.5f, 0.5f),
         health = 100,
-        drops  = 1,
+        DropPrefabPath = "Prefabs/Items/Item_Mythril"
       }
     }, {
       NodeTypes.Adamantite, new NodeData()
       {
         color  = new Color(0.5f, 0.5f, 0.5f),
         health = 100,
-        drops  = 1,
+        DropPrefabPath = "Prefabs/Items/Item_Adamantite"
       }
     },
     
