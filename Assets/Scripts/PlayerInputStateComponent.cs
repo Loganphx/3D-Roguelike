@@ -48,6 +48,8 @@ namespace ECS.Movement.Services
             Cursor.lockState = CursorLockMode.Confined;
           }
         }
+        
+        input.ToggleInventory = _keyboard.iKey.wasPressedThisFrame;
       }
 
       public void OnFixedUpdate()
@@ -201,6 +203,11 @@ namespace ECS.Movement.Services
     {
       get => Actions.IsSet(GameplayInputAction.Escape);
       set => Actions.Set(GameplayInputAction.Escape, value);
+    }
+    public bool ToggleInventory
+    {
+      get => Actions.IsSet(GameplayInputAction.ToggleInventory);
+      set => Actions.Set(GameplayInputAction.ToggleInventory, value);
     }
 
     // public void Serialize(Message message)

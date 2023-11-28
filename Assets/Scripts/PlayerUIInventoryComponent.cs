@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ECS.Movement.Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,14 +13,17 @@ internal class ItemSlotUI
 
 internal class PlayerUIInventoryComponent
 {
+  private GameObject       _inventoryPanel;
   private List<ItemSlotUI> _itemSlots;
 
-  public PlayerUIInventoryComponent(Transform slotsParent)
+  public PlayerUIInventoryComponent(GameObject inventoryPanel, Transform inventorySlotsParent, Transform hotbarSlotsParent)
   {
-    _itemSlots = new List<ItemSlotUI>();
-    for (int i = 0; i < slotsParent.childCount; i++)
+    _inventoryPanel = inventoryPanel;
+    
+    _itemSlots           = new List<ItemSlotUI>();
+    for (int i = 0; i < inventorySlotsParent.childCount; i++)
     {
-      var child = slotsParent.GetChild(i);
+      var child = inventorySlotsParent.GetChild(i);
       var itemSlot = new ItemSlotUI()
       {
         Image = child.Find("Image").GetComponent<Image>(),
@@ -28,6 +32,25 @@ internal class PlayerUIInventoryComponent
       };
       _itemSlots.Add(itemSlot);
     }
+    
+    for (int i = 0; i < hotbarSlotsParent.childCount; i++)
+    {
+      var child = hotbarSlotsParent.GetChild(i);
+      var itemSlot = new ItemSlotUI()
+      {
+        Image = child.Find("Image").GetComponent<Image>(),
+        AmountText = child.Find("Amount").GetComponent<TMP_Text>(),
+        type = ITEM_TYPE.NULL
+      };
+      _itemSlots.Add(itemSlot);
+    }
+  }
+  
+  public void OnUpdate(ref GameplayInput input)
+  {
+    if(!input.ToggleInventory) return;
+    
+    _inventoryPanel.SetActive(!_inventoryPanel.activeSelf);
   }
   public void OnFixedUpdate(ref PlayerInventoryState inventoryState)
   {

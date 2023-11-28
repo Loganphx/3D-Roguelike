@@ -10,13 +10,13 @@ public enum ITEM_TYPE
     WOOD_FIR,
     WOOD_OAK,
     WOOD_DARKOAK,
-    ORE_STONE,
+    ROCK,
     ORE_COAL,
     ORE_IRON,
     ORE_GOLD,
     ORE_ADAMANTITE,
     ORE_MYTHRIL,
-    COIN
+    COIN,
 }
 public class Item : MonoBehaviour, IInteractable, IHoverable
 {

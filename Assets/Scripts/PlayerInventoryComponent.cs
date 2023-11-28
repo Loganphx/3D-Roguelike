@@ -5,6 +5,8 @@ struct InventoryItem
 {
   public ITEM_TYPE ItemId;
   public int Amount;
+  
+  public int ItemDamage;
 
   public bool HasChanged;
 }
@@ -20,7 +22,7 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
   public PlayerInventoryComponent(IPlayer player)
   {
     ref var state = ref _state;
-    state.Items = new InventoryItem[24];
+    state.Items = new InventoryItem[6*5];
 
     for (int i = 0; i < state.Items.Length; i++)
     {
@@ -36,13 +38,12 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
 
   public PlayerInventoryState State => _state;
 
-  public void AddItem(ITEM_TYPE itemId, int amount)
+  public void AddItem(ITEM_TYPE itemId, int itemDamage, int amount)
   {
     ref var state = ref _state;
 
-    var width = (int)Math.Floor(Mathf.Sqrt(state.Items.Length));
-    var height = (int)Math.Ceiling(state.Items.Length/(float)width);
-
+    // var width = (int)Math.Floor(Mathf.Sqrt(state.Items.Length));
+    // var height = (int)Math.Ceiling(state.Items.Length/(float)width);
     // var str = "";
     // for (int i = 0; i < height; i++)
     // {
@@ -60,9 +61,10 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
       ref var item = ref state.Items[i];
       if (item.ItemId == itemId)
       {
-        item.Amount += amount;
-        item.HasChanged = true;
-          state.HasChanged = true;
+        item.Amount      += amount;
+        item.HasChanged  =  true;
+        
+        state.HasChanged =  true;
         return;
       }
     }
@@ -72,9 +74,10 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
       ref var item = ref state.Items[i];
       if (item.ItemId == 0)
       {
-        item.ItemId = itemId;
-        item.Amount = amount;
-        item.HasChanged = true;
+        item.ItemId      = itemId;
+        item.ItemDamage  = itemDamage;
+        item.Amount      = amount;
+        item.HasChanged  = true;
         state.HasChanged = true;
         return;
       }
