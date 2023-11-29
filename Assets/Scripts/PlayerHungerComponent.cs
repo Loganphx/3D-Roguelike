@@ -10,6 +10,7 @@ internal class PlayerHungerComponent : IComponent<PlayerHungerState>
 {
     public PlayerHungerState _hungerState;
     
+    // ReSharper disable once UnusedParameter.Local
     public PlayerHungerComponent(IPlayer player, float maxHunger)
     {
         ref var state = ref _hungerState;
@@ -17,12 +18,13 @@ internal class PlayerHungerComponent : IComponent<PlayerHungerState>
         state.Hunger = maxHunger;
     }
     
-    public PlayerHungerState State { get; }
-
     public void OnFixedUpdate()
     {
         ref var state = ref _hungerState;
         
         state.Hunger -= Time.fixedDeltaTime/2f;
     }
+    
+    public PlayerHungerState State => _hungerState;
+
 }

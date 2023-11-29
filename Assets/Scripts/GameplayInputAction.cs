@@ -18,6 +18,7 @@ namespace ECS.Movement.Services
         Action3         = 14,
         Action4         = 15,
         Action5         = 16,
+        Action6         = 17,
         ToggleSide      = 18,
         ToggleCursor    = 19,
         Heal            = 20,

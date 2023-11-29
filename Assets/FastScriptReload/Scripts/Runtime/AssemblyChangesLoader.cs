@@ -11,7 +11,9 @@ using ImmersiveVRTools.Runtime.Common;
 using ImmersiveVRTools.Runtime.Common.Extensions;
 using ImmersiveVrToolsCommon.Runtime.Logging;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
+// ReSharper disable Unity.RedundantInitializeOnLoadAttribute
+// ReSharper disable EmptyConstructor
 
 namespace FastScriptReload.Runtime
 {
@@ -21,13 +23,13 @@ namespace FastScriptReload.Runtime
 #endif
     public class AssemblyChangesLoader: IAssemblyChangesLoader
     {
-        const BindingFlags ALL_BINDING_FLAGS = BindingFlags.Public | BindingFlags.NonPublic |
-                                               BindingFlags.Static | BindingFlags.Instance |
-                                               BindingFlags.FlattenHierarchy;
-            
-        const BindingFlags ALL_DECLARED_METHODS_BINDING_FLAGS = BindingFlags.Public | BindingFlags.NonPublic |
-                                                                BindingFlags.Static | BindingFlags.Instance |
-                                                                BindingFlags.DeclaredOnly; //only declared methods can be redirected, otherwise it'll result in hang
+        private const BindingFlags ALL_BINDING_FLAGS = BindingFlags.Public | BindingFlags.NonPublic |
+                                                       BindingFlags.Static | BindingFlags.Instance |
+                                                       BindingFlags.FlattenHierarchy;
+
+        private const BindingFlags ALL_DECLARED_METHODS_BINDING_FLAGS = BindingFlags.Public | BindingFlags.NonPublic |
+                                                                        BindingFlags.Static | BindingFlags.Instance |
+                                                                        BindingFlags.DeclaredOnly; //only declared methods can be redirected, otherwise it'll result in hang
         
         public const string ClassnamePatchedPostfix = "__Patched_";
         public const string ON_HOT_RELOAD_METHOD_NAME = "OnScriptHotReload";
@@ -37,7 +39,7 @@ namespace FastScriptReload.Runtime
         {
             typeof(MonoBehaviour),
             typeof(Behaviour),
-            typeof(UnityEngine.Object),
+            typeof(Object),
             typeof(Component),
             typeof(System.Object)
         }; //TODO: move out and possibly define a way to exclude all non-client created code? as this will crash editor
@@ -45,7 +47,7 @@ namespace FastScriptReload.Runtime
         private static AssemblyChangesLoader _instance;
         public static AssemblyChangesLoader Instance => _instance ?? (_instance = new AssemblyChangesLoader());
 
-        private Dictionary<Type, Type> _existingTypeToRedirectedType = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, Type> _existingTypeToRedirectedType = new Dictionary<Type, Type>();
 
         public void DynamicallyUpdateMethodsForCreatedAssembly(Assembly dynamicallyLoadedAssemblyWithUpdates, AssemblyChangesLoaderEditorOptionsNeededInBuild editorOptions)
         {
@@ -196,14 +198,14 @@ namespace FastScriptReload.Runtime
                         return;
                     }
                     
-                    var dynamicMethodCtor = dynamicMethodType.GetConstructor(new Type[] { typeof(string), typeof(Type), typeof(Type[]) });
-                    var dynamicMethodDynamicallyAdded = (MethodInfo)dynamicMethodCtor.Invoke(new object[] { ON_HOT_RELOAD_METHOD_NAME + "_DynamicallyAdded", typeof(void), new Type[] { } });
+                    var dynamicMethodCtor = dynamicMethodType.GetConstructor(new[] { typeof(string), typeof(Type), typeof(Type[]) });
+                    var dynamicMethodDynamicallyAdded = (MethodInfo)dynamicMethodCtor!.Invoke(new object[] { ON_HOT_RELOAD_METHOD_NAME + "_DynamicallyAdded", typeof(void), new Type[] { } });
                 
                     var getILGeneratorMethod = dynamicMethodType.GetMethod("GetILGenerator", new Type[] { });
-                    var gen = getILGeneratorMethod.Invoke(dynamicMethodDynamicallyAdded, new object[]{ });
+                    var gen = getILGeneratorMethod!.Invoke(dynamicMethodDynamicallyAdded, new object[]{ });
                 
                     var emitMethod = gen.GetType().GetMethod("Emit", new [] { typeof(OpCode) });
-                    emitMethod.Invoke(gen, new object[] { OpCodes.Ret }); //simple return to ensure IL is valid
+                    emitMethod!.Invoke(gen, new object[] { OpCodes.Ret }); //simple return to ensure IL is valid
                     
                     Memory.DetourMethod(dynamicMethodDynamicallyAdded, onScriptHotReloadFnForCreatedType);
 
@@ -222,7 +224,7 @@ namespace FastScriptReload.Runtime
                     return;
                 }
 
-                foreach (var instanceOfType in GameObject.FindObjectsOfType(originalType)) //TODO: perf - could find them in different way?
+                foreach (var instanceOfType in Object.FindObjectsOfType(originalType)) //TODO: perf - could find them in different way?
                 {
                     onScriptHotReloadFn.Invoke(instanceOfType, null);
                 }

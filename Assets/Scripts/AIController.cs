@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine;
 
@@ -8,7 +6,8 @@ public class AIController : MonoBehaviour
     // Start is called before the first frame update
 
     private AIPath _aiPath;
-    void Start()
+
+    private void Awake()
     {
         _aiPath = GetComponent<AIPath>();
     }

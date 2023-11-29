@@ -34,7 +34,7 @@ namespace FastScriptReload.Editor
             }
         }
 
-        private static string DataPath = Application.dataPath;
+        private static readonly string DataPath = Application.dataPath;
         
 
         public const string FileWatcherReplacementTokenForApplicationDataPath = "<Application.dataPath>";
@@ -47,14 +47,14 @@ namespace FastScriptReload.Editor
             [FileWatcherReplacementTokenForApplicationDataPath] = () => DataPath
         };
         
-        private Dictionary<string, DynamicFileHotReloadState> _lastProcessedDynamicFileHotReloadStatesInSession = new Dictionary<string, DynamicFileHotReloadState>();
+        private readonly Dictionary<string, DynamicFileHotReloadState> _lastProcessedDynamicFileHotReloadStatesInSession = new Dictionary<string, DynamicFileHotReloadState>();
         public IReadOnlyDictionary<string, DynamicFileHotReloadState> LastProcessedDynamicFileHotReloadStatesInSession => _lastProcessedDynamicFileHotReloadStatesInSession;
         public event Action<List<DynamicFileHotReloadState>> HotReloadFailed;
         public event Action<List<DynamicFileHotReloadState>> HotReloadSucceeded;
 
         private bool _wasLockReloadAssembliesCalled;
         private PlayModeStateChange _lastPlayModeStateChange;
-        private List<FileSystemWatcher> _fileWatchers = new List<FileSystemWatcher>();
+        private readonly List<FileSystemWatcher> _fileWatchers = new List<FileSystemWatcher>();
         private IEnumerable<string> _currentFileExclusions;
         private int _triggerDomainReloadIfOverNDynamicallyLoadedAssembles = 100;
         public bool EnableExperimentalThisCallLimitationFix { get; private set; }
@@ -63,12 +63,13 @@ namespace FastScriptReload.Editor
 
 #pragma warning restore 0618
 
-        private List<DynamicFileHotReloadState> _dynamicFileHotReloadStateEntries = new List<DynamicFileHotReloadState>();
+        private readonly List<DynamicFileHotReloadState> _dynamicFileHotReloadStateEntries = new List<DynamicFileHotReloadState>();
 
         private DateTime _lastTimeChangeBatchRun = default(DateTime);
         private bool _assemblyChangesLoaderResolverResolutionAlreadyCalled;
         private bool _isEditorModeHotReloadEnabled;
-        private int _hotReloadPerformedCount = 0;
+        private int _hotReloadPerformedCount;
+        // ReSharper disable once NotAccessedField.Local
         private bool _isOnDemandHotReloadEnabled;
 
         private void OnWatchedFileChange(object source, FileSystemEventArgs e)
@@ -719,8 +720,7 @@ Workaround will search in all folders (under project root) and will use first fo
 
         private static bool IsFileWatcherSetupEntryAlreadyPresent(DefaultAsset selectedAsset)
         {
-            FileWatcherSetupEntry fileWatcherSetupEntry;
-            return IsFileWatcherSetupEntryAlreadyPresent(selectedAsset, out fileWatcherSetupEntry);
+            return IsFileWatcherSetupEntryAlreadyPresent(selectedAsset, out _);
         }
         
         private static bool IsFileWatcherSetupEntryAlreadyPresent(DefaultAsset selectedAsset, out FileWatcherSetupEntry fileWatcherSetupEntry)
@@ -734,8 +734,7 @@ Workaround will search in all folders (under project root) and will use first fo
 
         private static bool IsFileWatcherSetupEntryAlreadyPresent(MonoScript selectedMonoScript)
         {
-            FileWatcherSetupEntry fileWatcherSetupEntry;
-            return IsFileWatcherSetupEntryAlreadyPresent(selectedMonoScript, out fileWatcherSetupEntry);
+            return IsFileWatcherSetupEntryAlreadyPresent(selectedMonoScript, out _);
         }
 
         private static bool IsFileWatcherSetupEntryAlreadyPresent(MonoScript selectedMonoScript, out FileWatcherSetupEntry fileWatcherSetupEntry)

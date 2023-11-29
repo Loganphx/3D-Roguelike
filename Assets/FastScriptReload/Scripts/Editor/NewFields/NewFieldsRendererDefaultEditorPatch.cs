@@ -7,13 +7,14 @@ using HarmonyLib;
 using ImmersiveVRTools.Editor.Common.Utilities;
 using UnityEditor;
 using UnityEngine;
+// ReSharper disable UnusedParameter.Local
 
 namespace FastScriptReload.Editor.NewFields
 {
     [InitializeOnLoad]
     public class NewFieldsRendererDefaultEditorPatch
     {
-        private static List<string> _cachedKeys = new List<string>();
+        private static readonly List<string> _cachedKeys = new List<string>();
         
         static NewFieldsRendererDefaultEditorPatch()
         {

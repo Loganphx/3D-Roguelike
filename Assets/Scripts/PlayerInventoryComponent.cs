@@ -1,24 +1,26 @@
-using System;
 using UnityEngine;
 
-struct InventoryItem
+internal struct InventoryItem
 {
   public ITEM_TYPE ItemId;
   public int Amount;
   
   public int ItemDamage;
+  public bool IsDeployable;
 
   public bool HasChanged;
 }
 internal struct PlayerInventoryState : IState
 {
   public InventoryItem[] Items;
+  public int GoldCount;
   public bool HasChanged;
 }
 internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
 {
   public PlayerInventoryState _state;
 
+  // ReSharper disable once UnusedParameter.Local
   public PlayerInventoryComponent(IPlayer player)
   {
     ref var state = ref _state;
@@ -29,16 +31,16 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
       ref var item = ref state.Items[i];
 
       item.ItemId = ITEM_TYPE.NULL;
+      item.IsDeployable  = false;
       item.Amount = 0;
       item.HasChanged = true;
     }
     state.HasChanged = true;
-
   }
 
   public PlayerInventoryState State => _state;
 
-  public void AddItem(ITEM_TYPE itemId, int itemDamage, int amount)
+  public void AddItem(ITEM_TYPE itemId, int itemDamage, bool isDeployable, int amount)
   {
     ref var state = ref _state;
 
@@ -55,6 +57,8 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
     // }
     
     //Debug.Log(str);
+    
+    if(itemId == ITEM_TYPE.COIN) state.GoldCount += amount;
     
     for (int i = 0; i < state.Items.Length; i++)
     {
@@ -76,10 +80,49 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
       {
         item.ItemId      = itemId;
         item.ItemDamage  = itemDamage;
+        item.IsDeployable  = isDeployable;
         item.Amount      = amount;
         item.HasChanged  = true;
         state.HasChanged = true;
         return;
+      }
+    }
+  }
+
+  public void RemoveItem(ITEM_TYPE itemType, int amount)
+  {
+    ref var state = ref _state;
+
+    if (itemType == ITEM_TYPE.COIN)
+    {
+      state.GoldCount = Mathf.Max(0, state.GoldCount - amount);
+    }
+      
+    for (int i = 0; i < state.Items.Length; i++)
+    {
+      ref var item = ref state.Items[i];
+
+      if (item.ItemId == itemType)
+      {
+        item.Amount -= amount;
+        
+        item.HasChanged = true;
+        state.HasChanged = true;
+        
+        if(item.Amount > 0) return;
+        
+        var remainingAmount = -item.Amount;
+
+        item.ItemId = ITEM_TYPE.NULL;
+        item.Amount = 0;
+        item.ItemDamage = 0;
+        
+        item.HasChanged = true;
+        state.HasChanged = true;
+        
+        if(remainingAmount == 0) return;
+        
+        amount = remainingAmount;
       }
     }
   }

@@ -73,7 +73,7 @@ Please click for more details.")),
                             EditorStyles.linkLabel))
                     {
                         FastScriptReloadWelcomeScreen.Init().OpenInspectError(fileHotReloadState);
-                    }; 
+                    }
                 }    
                 else if (fileHotReloadState.IsChangeHotSwapped)
                 {

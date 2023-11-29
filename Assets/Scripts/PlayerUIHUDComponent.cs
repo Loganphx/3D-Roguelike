@@ -22,8 +22,8 @@ internal class PlayerUIHUDComponent
     _healthText.text = $"{healthState.Health} / {healthState.MaxHealth}";
     _healthText.color = Color.Lerp(Color.red, Color.green, healthState.Health / (float)healthState.MaxHealth);
     _healthFill.fillAmount = healthState.Health / (float)healthState.MaxHealth;
-    _staminaFillBar.fillAmount = staminaState.Stamina / (float)staminaState.MaxStamina;
-    _hungerFill.fillAmount = hungerState.Hunger / (float)hungerState.MaxHunger;
+    _staminaFillBar.fillAmount = staminaState.Stamina / staminaState.MaxStamina;
+    _hungerFill.fillAmount = hungerState.Hunger / hungerState.MaxHunger;
         
   }
 }

@@ -12,6 +12,7 @@ internal class PlayerStaminaComponent : IComponent<PlayerStaminaState>
 {
     public PlayerStaminaState _staminaState;
     
+    // ReSharper disable once UnusedParameter.Local
     public PlayerStaminaComponent(IPlayer player, float maxStamina)
     {
         ref var state = ref _staminaState;
@@ -38,6 +39,6 @@ internal class PlayerStaminaComponent : IComponent<PlayerStaminaState>
         _staminaState.Stamina = Mathf.Min(_staminaState.Stamina + .25f, _staminaState.MaxStamina);
         hungerState.Hunger -= Time.fixedDeltaTime/2f;
     }
-    
-    public PlayerStaminaState State { get; }
+
+    public PlayerStaminaState State => _staminaState;
 }

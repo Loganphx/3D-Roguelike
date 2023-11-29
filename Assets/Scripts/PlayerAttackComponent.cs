@@ -10,7 +10,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
 {
     private readonly IPlayer           _player;
     private readonly Transform         _cameraTransform;
-    private readonly PhysicsScene      _physicsScene;
+    private PhysicsScene      _physicsScene;
     private readonly RaycastHit[]      _hits = new RaycastHit[5];
     private readonly Animator      _animator;
     
@@ -19,7 +19,9 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
         Cooldown = 0.5f,
         RemainingCooldown = 0,
     };
-    
+
+    private static readonly int Attack = Animator.StringToHash("Attack");
+
     public PlayerAttackComponent(IPlayer player, Transform cameraTransform,
         Animator animator, 
         PhysicsScene physicsScene)
@@ -35,7 +37,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
         
         if (input.PrimaryAttackClicked && state.RemainingCooldown < 0)
         {
-            _animator.SetTrigger("Attack");
+            _animator.SetTrigger(Attack);
             var hits = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
                 1 << LayerMask.NameToLayer("Damagable"), QueryTriggerInteraction.Collide);
             Debug.Log($"Primary Attack Clicked: {hits}");
@@ -57,6 +59,10 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
             // Debug.Log($"Cooldown: {state.RemainingCooldown}");
             return;
         }
+        
+        // Debug.Log($"Cooldown: {state.RemainingCooldown}");
+        // ReSharper disable once RedundantJumpStatement
+        return;
 
     }
 

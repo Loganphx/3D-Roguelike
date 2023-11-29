@@ -39,9 +39,9 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
     private AnimalState _animalState;
 
     private RichAI _aiPath;
-    private Seeker _seeker;
+    // private Seeker _seeker;
 
-    private RaycastHit[] _hits = new RaycastHit[5];
+    private readonly RaycastHit[] _hits = new RaycastHit[5];
     private PhysicsScene _physicsScene;
     
     public void Awake()
@@ -49,7 +49,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
         _transform = GetComponent<Transform>();
         _head = transform.GetChild(0).Find("Head");
         _aiPath = GetComponent<RichAI>();
-        _seeker = GetComponent<Seeker>();
+        // _seeker = GetComponent<Seeker>();
     
         _physicsScene = gameObject.scene.GetPhysicsScene();
         
@@ -177,7 +177,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
         var dropPrefab = PrefabPool.Prefabs[_animalData.DropPrefabPath];
         var position = transform.position;
         var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
-        var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+        var drop = Instantiate(dropPrefab, dropPosition, Quaternion.identity);
         
         drop.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
     }

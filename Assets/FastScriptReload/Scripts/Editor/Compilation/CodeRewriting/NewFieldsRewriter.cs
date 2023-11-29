@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace FastScriptReload.Editor.Compilation.CodeRewriting
 {
-	class NewFieldsRewriter : FastScriptReloadCodeRewriterBase
+	internal class NewFieldsRewriter : FastScriptReloadCodeRewriterBase
 	{
 		private readonly Dictionary<string, List<string>> _typeToNewFieldDeclarations;
 
@@ -88,7 +88,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
 											SyntaxFactory.InvocationExpression(
 													SyntaxFactory.MemberAccessExpression(
 														SyntaxKind.SimpleMemberAccessExpression,
-														SyntaxFactory.IdentifierName(typeof(TemporaryNewFieldValues).FullName),
+														SyntaxFactory.IdentifierName(typeof(TemporaryNewFieldValues).FullName!),
 														SyntaxFactory.GenericName(
 																SyntaxFactory.Identifier(nameof(TemporaryNewFieldValues.ResolvePatchedObject)))
 															.WithTypeArgumentList(
@@ -97,7 +97,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
 																		SyntaxFactory.IdentifierName(fullClassName + AssemblyChangesLoader.ClassnamePatchedPostfix))))))
 												.WithArgumentList(
 													SyntaxFactory.ArgumentList(
-														SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
+														SyntaxFactory.SingletonSeparatedList(
 															SyntaxFactory.Argument(
 																SyntaxFactory.ThisExpression())))),
 											SyntaxFactory.IdentifierName(fieldName))

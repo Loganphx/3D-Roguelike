@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace FastScriptReload.Editor.Compilation.CodeRewriting
 {
-	class CreateNewFieldInitMethodRewriter: FastScriptReloadCodeRewriterBase {
+	internal class CreateNewFieldInitMethodRewriter: FastScriptReloadCodeRewriterBase {
 		private readonly Dictionary<string, List<string>> _typeToNewFieldDeclarations;
 		private static readonly string NewFieldsToCreateValueFnDictionaryFieldName = "__Patched_NewFieldNameToInitialValueFn";
 		private static readonly string NewFieldsToGetTypeFnDictionaryFieldName = "__Patched_NewFieldsToGetTypeFnDictionaryFieldName";
@@ -17,12 +17,12 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
 
 		public static Dictionary<string, Func<object>> ResolveNewFieldsToCreateValueFn(Type forType)
 		{
-			return (Dictionary<string, Func<object>>) forType.GetField(NewFieldsToCreateValueFnDictionaryFieldName, BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+			return (Dictionary<string, Func<object>>) forType.GetField(NewFieldsToCreateValueFnDictionaryFieldName, BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null)!;
 		}
 		
 		public static Dictionary<string, Func<object>> ResolveNewFieldsToTypeFn(Type forType)
 		{
-			return (Dictionary<string, Func<object>>) forType.GetField(NewFieldsToGetTypeFnDictionaryFieldName, BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+			return (Dictionary<string, Func<object>>) forType.GetField(NewFieldsToGetTypeFnDictionaryFieldName, BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null);
 		}
 
 		public CreateNewFieldInitMethodRewriter(Dictionary<string, List<string>> typeToNewFieldDeclarations, bool writeRewriteReasonAsComment)
@@ -66,7 +66,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
 						SyntaxFactory.ImplicitElementAccess()
 							.WithArgumentList(
 								SyntaxFactory.BracketedArgumentList(
-									SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
+									SyntaxFactory.SingletonSeparatedList(
 										SyntaxFactory.Argument(
 											SyntaxFactory.LiteralExpression(
 												SyntaxKind.StringLiteralExpression,
@@ -107,7 +107,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
 																		SyntaxFactory.Token(SyntaxKind.ObjectKeyword)))))
 												}))))
 							.WithVariables(
-								SyntaxFactory.SingletonSeparatedList<VariableDeclaratorSyntax>(
+								SyntaxFactory.SingletonSeparatedList(
 									SyntaxFactory.VariableDeclarator(
 											SyntaxFactory.Identifier(dictionaryFieldName))
 										.WithInitializer(

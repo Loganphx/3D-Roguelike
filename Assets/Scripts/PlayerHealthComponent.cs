@@ -8,6 +8,7 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
 {
     public PlayerHealthState _healthState;
 
+    // ReSharper disable once UnusedParameter.Local
     public PlayerHealthComponent(IPlayer player, int maxHealth)
     {
         ref var state = ref _healthState;
@@ -25,5 +26,5 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
         }
     }
 
-    public PlayerHealthState State { get; }
+    public PlayerHealthState State => _healthState;
 }

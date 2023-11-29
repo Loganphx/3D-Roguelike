@@ -2,8 +2,11 @@ using UnityEngine;
 
 public interface IPlayer : IDamager
 {
-  public int       Gold      { get; set; }
   public Transform Transform { get; }
-  
-  public void AddItem(Item item);
+
+  public int GetGoldInInventory();
+  public ITEM_TYPE GetCurrentWeapon();
+  public void AddItem(ITEM_TYPE itemId, int amount);
+  public void RemoveItem(ITEM_TYPE itemId, int amount);
+  public void AddPowerup(POWERUP_TYPE powerupId, int amount);
 }

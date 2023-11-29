@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,8 +16,8 @@ namespace ECS.Movement.Services
 
     public class PlayerInputComponent : IComponent<PlayerInputState>
     {
-      private Keyboard _keyboard;
-      private Mouse _mouse;
+      private readonly Keyboard _keyboard;
+      private readonly Mouse _mouse;
 
       public PlayerInputState InputState;
       public PlayerInputState State => InputState;
@@ -49,7 +48,18 @@ namespace ECS.Movement.Services
           }
         }
         
-        input.ToggleInventory = _keyboard.iKey.wasPressedThisFrame;
+        input.ToggleInventory = input.ToggleInventory || _keyboard.iKey.wasPressedThisFrame;
+        
+        input.Interact = input.Interact || _keyboard.eKey.wasPressedThisFrame;
+        
+        input.Action1 = input.Action1 || _keyboard.digit1Key.wasPressedThisFrame;
+        input.Action2 = input.Action2 || _keyboard.digit2Key.wasPressedThisFrame;
+        input.Action3 = input.Action3 || _keyboard.digit3Key.wasPressedThisFrame;
+        input.Action4 = input.Action4 || _keyboard.digit4Key.wasPressedThisFrame;
+        input.Action5 = input.Action5 || _keyboard.digit5Key.wasPressedThisFrame;
+        input.Action6 = input.Action6 || _keyboard.digit6Key.wasPressedThisFrame;
+
+        input.PrimaryAttackClicked = input.PrimaryAttackClicked || _mouse.leftButton.wasPressedThisFrame;
       }
 
       public void OnFixedUpdate()
@@ -70,8 +80,7 @@ namespace ECS.Movement.Services
         input.Jump = _keyboard.spaceKey.isPressed;
         input.Sprint = _keyboard.leftShiftKey.isPressed;
         input.Crouch = _keyboard.leftCtrlKey.isPressed;
-        input.Interact = input.Interact || _keyboard.eKey.wasPressedThisFrame;
-        input.PrimaryAttackClicked = _mouse.leftButton.wasPressedThisFrame;
+        
         input.PrimaryAttackHeld = _mouse.leftButton.isPressed;
         if(input.Interact) Debug.Log("Interact!");
       }
@@ -191,6 +200,11 @@ namespace ECS.Movement.Services
     {
       get => Actions.IsSet(GameplayInputAction.Action5);
       set => Actions.Set(GameplayInputAction.Action5, value);
+    }
+     public bool Action6
+    {
+      get => Actions.IsSet(GameplayInputAction.Action6);
+      set => Actions.Set(GameplayInputAction.Action6, value);
     }
     
     public bool ToggleCursor

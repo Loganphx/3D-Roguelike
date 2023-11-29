@@ -2,6 +2,7 @@ using ECS.Movement.Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+// ReSharper disable LocalVariableHidesMember
 
 // TODO: add a component that can be used to emit changes to the network.
 
@@ -23,15 +24,17 @@ public class Player : MonoBehaviour, IPlayer, IDamagable
     private PlayerStaminaComponent   _playerStaminaComponent;
     private PlayerHungerComponent    _playerHungerComponent;
     private PlayerInventoryComponent _playerInventoryComponent;
+    private PlayerPowerupComponent _playerPowerupComponent;
+    private PlayerWeaponComponent _playerWeaponComponent;
 
     private PlayerUIHUDComponent       _playerUIHUDComponent;
     private PlayerUIInventoryComponent _playerUIInventoryComponent;
+    private PlayerUIPowerupComponent _playerUIPowerupComponent;
 
     private void Awake()
     {
         _playerTransform            = transform;
         Application.targetFrameRate = 90;
-        Gold                        = 100;
     }
 
     private void Start()
@@ -47,13 +50,15 @@ public class Player : MonoBehaviour, IPlayer, IDamagable
         _playerMovementComponent =
             new PlayerMovementComponent(_playerTransform, collider, physicsScene, collisionLayerMask);
 
-        _playerInteractComponent = new PlayerInteractComponent(this, _playerTransform, cameraTransform, physicsScene);
+        _playerInteractComponent = new PlayerInteractComponent(this, cameraTransform, physicsScene);
         _playerAttackComponent   = new PlayerAttackComponent(this, cameraTransform, animator, physicsScene);
 
         _playerHealthComponent    = new PlayerHealthComponent(this, 100);
         _playerStaminaComponent   = new PlayerStaminaComponent(this, 100);
         _playerHungerComponent    = new PlayerHungerComponent(this, 100);
         _playerInventoryComponent = new PlayerInventoryComponent(this);
+        _playerPowerupComponent = new PlayerPowerupComponent(this);
+        _playerWeaponComponent = new PlayerWeaponComponent(this, transform.Find("Eyes").Find("Arm").Find("Anchor"));
 
         var canvas = transform.Find("Canvas");
         var panel  = canvas.GetChild(0).GetChild(0);
@@ -65,7 +70,14 @@ public class Player : MonoBehaviour, IPlayer, IDamagable
         );
 
         _playerUIInventoryComponent = new PlayerUIInventoryComponent(canvas.Find("Inventory").gameObject,
-            canvas.Find("Inventory").Find("Slots"), canvas.Find("Hotbar"));
+            canvas.Find("Inventory").Find("Slots"), canvas.Find("Hotbar"), canvas.Find("Gold").GetChild(0).Find("Text").GetComponent<TMP_Text>());
+        
+        _playerUIPowerupComponent = new PlayerUIPowerupComponent(canvas.Find("Powerups"));
+        
+        AddItem(ITEM_TYPE.COIN, 1000);
+        AddItem(ITEM_TYPE.SEED_WHEAT, 3);
+        AddItem(ITEM_TYPE.SEED_FLAX, 1);
+        AddItem(ITEM_TYPE.BUILDING_FOUNDATION, 10);
     }
 
     public void Update()
@@ -90,13 +102,25 @@ public class Player : MonoBehaviour, IPlayer, IDamagable
         ref var hungerState  = ref _playerHungerComponent._hungerState;
         _playerMovementComponent.ProcessInput(ref input, ref staminaState);
         _playerStaminaComponent.ProcessInput(ref input, ref hungerState);
-        _playerInteractComponent.ProcessInput(ref input);
+        _playerInteractComponent.ProcessInput(ref input, ref _playerWeaponComponent._state);
         _playerAttackComponent.ProcessInput(ref input);
+        _playerWeaponComponent.OnFixedUpdate(ref input, ref _playerInventoryComponent._state);
 
         _playerHungerComponent.OnFixedUpdate();
 
         _playerUIInventoryComponent.OnFixedUpdate(ref _playerInventoryComponent._state);
+        _playerUIPowerupComponent.OnFixedUpdate(ref _playerPowerupComponent._state);
+        
         input.Interact = false;
+        input.Action1 = false;
+        input.Action2 = false;
+        input.Action3 = false;
+        input.Action4 = false;
+        input.Action5 = false;
+        input.Action6 = false;
+        input.PrimaryAttackClicked = false;
+        
+        input.ToggleInventory = false;
     }
 
     public void OnDrawGizmos()
@@ -106,14 +130,38 @@ public class Player : MonoBehaviour, IPlayer, IDamagable
         Gizmos.DrawLine(position, position + (_playerCameraComponent.CameraTransform.forward * 5f));
     }
 
-    public int       Gold      { get; set; }
     public Transform Transform => _playerTransform;
 
-    public void AddItem(Item item)
+    public int GetGoldInInventory()
     {
-        Debug.Log($"Player picked up {item}");
+        ref var state = ref _playerInventoryComponent._state;
+        return state.GoldCount;
+    }
+
+    public ITEM_TYPE GetCurrentWeapon()
+    {
+        ref var state = ref _playerWeaponComponent._state;
+
+        return state.EquippedWeapon;
+    }
+
+    public void AddItem(ITEM_TYPE itemId, int amount)
+    {
+        Debug.Log($"Player picked up {itemId}");
         // Gold += item.GoldValue;
-        _playerInventoryComponent.AddItem(item.itemType, ItemPool.ItemDamages[item.itemType], 1);
+        _playerInventoryComponent.AddItem(itemId, ItemPool.ItemDamages[itemId], ItemPool.ItemDeployables.Contains(itemId), amount);
+    }
+
+    public void RemoveItem(ITEM_TYPE itemId, int amount)
+    {
+        Debug.Log($"Removing {itemId} x {amount} from Player.");
+        _playerInventoryComponent.RemoveItem(itemId, amount);
+    }
+
+    public void AddPowerup(POWERUP_TYPE powerupId, int amount)
+    {
+        Debug.Log($"Player picked up {powerupId}");
+        _playerPowerupComponent.AddPowerup(powerupId, amount);
     }
 
     public void TakeDamage(IDamager damager, Vector3 hitDirection, int damage)

@@ -84,7 +84,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
             return OverrideDeclarationWithMatchingUserDefinedIfExists(
                 node, 
                 (d) => d.Identifier.ValueText, 
-                (d) => true, 
+                (_) => true, 
                 (d) => base.VisitPropertyDeclaration(d)
             );
         }

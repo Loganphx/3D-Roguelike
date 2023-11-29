@@ -16,7 +16,7 @@ namespace FastScriptReload.Scripts.Runtime
         private static readonly Dictionary<Type, Dictionary<string, GetNewFieldType>> _existingObjectTypeToFieldNameToType = new Dictionary<Type, Dictionary<string, GetNewFieldType>>();
         
         //Unity by default will auto init some classes, like gradient, but those are not value types so need to be initialized manually
-        private static Dictionary<Type, Func<object>> ReferenceTypeToCreateDefaultValueFn = new Dictionary<Type, Func<object>>()
+        private static readonly Dictionary<Type, Func<object>> ReferenceTypeToCreateDefaultValueFn = new Dictionary<Type, Func<object>>()
         {
             [typeof(Gradient)] = () => new Gradient(),
             [typeof(AnimationCurve)] = () => new AnimationCurve(),

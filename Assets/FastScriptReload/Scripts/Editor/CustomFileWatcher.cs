@@ -5,19 +5,20 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using FastScriptReload.Editor;
-using System;
 using System.Threading;
+// ReSharper disable InconsistentlySynchronizedField
+// ReSharper disable UnusedVariable
 
 [InitializeOnLoad]
 public class CustomFileWatcher : EditorWindow
 {
     public class HashEntry
     {
-        private Dictionary<string, string> _hashes = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _hashes;
         // Some metadata for the update function to use
         // WARN: Note this data isn't exactly synced up or anything. It just reads it in when the filewatcher is initialized.
-        private string _searchPattern;
-        private bool _includeSubdirectories;
+        private readonly string _searchPattern;
+        private readonly bool _includeSubdirectories;
         
         public Dictionary<string, string> Hashes => _hashes;
         public string SearchPattern => _searchPattern;
@@ -31,10 +32,10 @@ public class CustomFileWatcher : EditorWindow
         }
     }
 
-    private static Dictionary<string, HashEntry> FileHashes;
-    private static object StateLock = new object();
+    private static readonly Dictionary<string, HashEntry> FileHashes;
+    private static readonly object StateLock = new object();
 
-    private static object ListLock; // Shared lock object
+    private static readonly object ListLock; // Shared lock object
     private static Thread LivewatcherThread;
 
     public static bool InitSignaled = false;
@@ -73,7 +74,7 @@ public class CustomFileWatcher : EditorWindow
         // Run on a separate thread every 1 second
         LivewatcherThread = new Thread(() =>
         {
-            var timer = new Timer((state) =>
+            var timer = new Timer((_) =>
             {
                 // Go at it if we've initialized
                 if (FileHashes.Count > 0)
@@ -145,6 +146,7 @@ public class CustomFileWatcher : EditorWindow
 #if ImmersiveVrTools_DebugEnabled
                     Debug.Log("New file: " + file);
 #endif
+                    // ReSharper disable once RedundantJumpStatement
                     continue;
                 }
 

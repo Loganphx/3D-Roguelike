@@ -17,6 +17,6 @@ public interface IDamagable
 
 public interface IHoverable
 {
-  public void OnHoverEnter();
-  public void OnHoverExit();
+  public void OnHoverEnter(IPlayer player);
+  public void OnHoverExit(IPlayer player);
 }

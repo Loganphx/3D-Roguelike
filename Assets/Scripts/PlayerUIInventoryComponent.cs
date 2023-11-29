@@ -13,26 +13,18 @@ internal class ItemSlotUI
 
 internal class PlayerUIInventoryComponent
 {
-  private GameObject       _inventoryPanel;
-  private List<ItemSlotUI> _itemSlots;
+  private readonly GameObject _inventoryPanel;
+  private readonly List<ItemSlotUI> _itemSlots;
 
-  public PlayerUIInventoryComponent(GameObject inventoryPanel, Transform inventorySlotsParent, Transform hotbarSlotsParent)
+  private readonly TMP_Text _goldText;
+
+  public PlayerUIInventoryComponent(GameObject inventoryPanel, Transform inventorySlotsParent,
+    Transform hotbarSlotsParent, TMP_Text goldText)
   {
     _inventoryPanel = inventoryPanel;
-    
-    _itemSlots           = new List<ItemSlotUI>();
-    for (int i = 0; i < inventorySlotsParent.childCount; i++)
-    {
-      var child = inventorySlotsParent.GetChild(i);
-      var itemSlot = new ItemSlotUI()
-      {
-        Image = child.Find("Image").GetComponent<Image>(),
-        AmountText = child.Find("Amount").GetComponent<TMP_Text>(),
-        type = ITEM_TYPE.NULL
-      };
-      _itemSlots.Add(itemSlot);
-    }
-    
+    _goldText = goldText;
+
+    _itemSlots = new List<ItemSlotUI>();
     for (int i = 0; i < hotbarSlotsParent.childCount; i++)
     {
       var child = hotbarSlotsParent.GetChild(i);
@@ -44,18 +36,32 @@ internal class PlayerUIInventoryComponent
       };
       _itemSlots.Add(itemSlot);
     }
+    for (int i = 0; i < inventorySlotsParent.childCount; i++)
+    {
+      var child = inventorySlotsParent.GetChild(i);
+      var itemSlot = new ItemSlotUI()
+      {
+        Image = child.Find("Image").GetComponent<Image>(),
+        AmountText = child.Find("Amount").GetComponent<TMP_Text>(),
+        type = ITEM_TYPE.NULL
+      };
+      _itemSlots.Add(itemSlot);
+    }
   }
-  
+
   public void OnUpdate(ref GameplayInput input)
   {
-    if(!input.ToggleInventory) return;
-    
+    if (!input.ToggleInventory) return;
+
     _inventoryPanel.SetActive(!_inventoryPanel.activeSelf);
   }
+
   public void OnFixedUpdate(ref PlayerInventoryState inventoryState)
   {
     if (!inventoryState.HasChanged) return;
 
+    _goldText.text = inventoryState.GoldCount.ToString();
+    
     for (int i = 0; i < inventoryState.Items.Length; i++)
     {
       ref var item = ref inventoryState.Items[i];
@@ -63,7 +69,7 @@ internal class PlayerUIInventoryComponent
       if (!item.HasChanged) continue;
 
       var itemSlot = _itemSlots[i];
-      
+
       if (item.Amount == 0)
       {
         itemSlot.Image.sprite = null;
@@ -73,12 +79,12 @@ internal class PlayerUIInventoryComponent
         item.HasChanged = false;
         continue;
       }
-      
-      if(itemSlot.type == ITEM_TYPE.NULL)
+
+      if (itemSlot.type == ITEM_TYPE.NULL)
         itemSlot.Image.enabled = true;
-      
-      itemSlot.Image.sprite = ItemPool.ItemSprites[item.ItemId];
-      itemSlot.AmountText.text = "x" +item.Amount;
+
+      itemSlot.Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[item.ItemId]];
+      itemSlot.AmountText.text = "x" + item.Amount;
       itemSlot.type = item.ItemId;
       item.HasChanged = false;
     }

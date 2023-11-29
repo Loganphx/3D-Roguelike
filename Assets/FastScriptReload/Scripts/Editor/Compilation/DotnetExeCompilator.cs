@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using FastScriptReload.Editor.AssemblyPostProcess;
-using HarmonyLib;
 using ImmersiveVRTools.Editor.Common.Cache;
 using ImmersiveVRTools.Editor.Common.Utilities;
 using ImmersiveVRTools.Runtime.Common;
@@ -21,11 +20,11 @@ namespace FastScriptReload.Editor.Compilation
     [InitializeOnLoad]
     public class DotnetExeDynamicCompilation: DynamicCompilationBase
     {
-        private static string _dotnetExePath;
-        private static string _cscDll;
-        private static string _tempFolder;
+        private static readonly string _dotnetExePath;
+        private static readonly string _cscDll;
+        private static readonly string _tempFolder;
 
-        private static string ApplicationContentsPath = EditorApplication.applicationContentsPath;
+        private static readonly string ApplicationContentsPath = EditorApplication.applicationContentsPath;
         private static readonly List<string> _createdFilesToCleanUp = new List<string>();
         private static readonly Dictionary<string, Assembly> _typeNameAssemblyCache = new Dictionary<string, Assembly>(16);
 
@@ -111,11 +110,11 @@ namespace FastScriptReload.Editor.Compilation
                 return new CompileResult(outLibraryPath, outputMessages, exitCode, compiledAssembly, createSourceCodeCombinedResult.SourceCode, 
                     sourceCodeCombinedFilePath, createInternalVisibleToAsmElapsedMilliseconds);
             }
-            catch (SourceCodeHasErrorsException e)
+            catch (SourceCodeHasErrorsException)
             {
                 // FastScriptReloadManager has a special case for reporting SourceCodeHasErrorsException.
                 // Just pass it through.
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -275,14 +274,14 @@ You can also:
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
-            process.ErrorDataReceived += (sender, args) =>
+            process.ErrorDataReceived += (_, args) =>
             {
                 if (args.Data != null)
                     outMessages.Add(args.Data);
                 else
                     stderr_completed.Set();
             };
-            process.OutputDataReceived += (sender, args) =>
+            process.OutputDataReceived += (_, args) =>
             {
                 if (args.Data != null)
                 {
@@ -309,7 +308,7 @@ You can also:
                 throw;
             }
 
-            int exitCode = -1;
+            int exitCode;
             try
             {
                 process.BeginOutputReadLine();

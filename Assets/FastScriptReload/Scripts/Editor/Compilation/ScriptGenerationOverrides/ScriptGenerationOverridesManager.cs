@@ -15,7 +15,7 @@ namespace FastScriptReload.Editor.Compilation.ScriptGenerationOverrides
     [InitializeOnLoad]
     public static class ScriptGenerationOverridesManager
     {
-        private static float LoadOverridesFolderFilesEveryNSeconds = 5;
+        private static readonly float LoadOverridesFolderFilesEveryNSeconds = 5;
         
         private static readonly string TemplateInterfaceDeclaration = @"
 

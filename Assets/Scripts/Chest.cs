@@ -2,73 +2,116 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
-public interface IPowerup
-{
-    
-}
-
-public class Powerup : MonoBehaviour, IPowerup
-{
-    private void FixedUpdate()
-    {
-        transform.Rotate(0, 1, 0);
-    }
-}
+// ReSharper disable LocalVariableHidesMember
 
 public class SpawnTableEntry
 {
-    public IPowerup Powerup;
+    public POWERUP_TYPE PowerupId;
     public int Chance;
 }
 public class PowerupSpawnTable
 {
-    public SpawnTableEntry[] Entries = new SpawnTableEntry[]
-    {
-     new SpawnTableEntry()
-     {
-         Chance = 10,
-         Powerup = default
-     },
-     new SpawnTableEntry()
-     {
-         Chance = 20,
-         Powerup = default
-     }   
-    };
+    public SpawnTableEntry[] Entries;
 }
 
 public class ChestData
 {
     public int GoldCost;
     public Color Color;
+    public PowerupSpawnTable SpawnTable;
 }
 public enum RarityTypes
 {
-    Common,
-    Uncommon,
-    Rare,
-    Epic,
-    Legendary
+    NULL,
+    COMMON,
+    UNCOMMON,
+    RARE,
+    EPIC,
+    LEGENDARY
 }
 public class Chest : MonoBehaviour, IInteractable, IHoverable
 {
-    public static Dictionary<RarityTypes, PowerupSpawnTable> RarityToSpawnTable = new Dictionary<RarityTypes, PowerupSpawnTable>()
-    {
-        {RarityTypes.Common, new PowerupSpawnTable()},
-        {RarityTypes.Uncommon, new PowerupSpawnTable()},
-        {RarityTypes.Rare, new PowerupSpawnTable()},
-        {RarityTypes.Epic, new PowerupSpawnTable()},
-        {RarityTypes.Legendary, new PowerupSpawnTable()},
-    }; 
-    
     public static Dictionary<RarityTypes, ChestData> RarityToChestData = new Dictionary<RarityTypes, ChestData>()
     {
-        {RarityTypes.Common, new ChestData() { GoldCost = 10, Color = new Color(103/255f, 34/255f, 1/255f)}},
-        {RarityTypes.Uncommon, new ChestData() { GoldCost = 25, Color = new Color(29/255f, 195/255f, 0/255f)}},
-        {RarityTypes.Rare, new ChestData() { GoldCost = 100, Color = new Color(3/255f, 67/255f, 195/255f)}},
-        {RarityTypes.Epic, new ChestData() { GoldCost = 250, Color = new Color(149/255f, 0/255f, 131/255f)}},
-        {RarityTypes.Legendary, new ChestData() { GoldCost = 500, Color = new Color(233/255f, 71/255f, 0/255f)}},
+        {RarityTypes.COMMON, new ChestData()
+        {
+            GoldCost = 10,
+            Color = new Color(103/255f, 34/255f, 1/255f),
+            SpawnTable = new PowerupSpawnTable()
+            {
+                Entries = new []
+                {
+                    new SpawnTableEntry()
+                    {
+                        PowerupId = POWERUP_TYPE.COMMON,
+                        Chance = 100,
+                    }
+                }
+            }
+        }},
+        {RarityTypes.UNCOMMON, new ChestData()
+        {
+            GoldCost = 25, 
+            Color = new Color(29/255f, 195/255f, 0/255f),
+            SpawnTable = new PowerupSpawnTable()
+            {
+                Entries = new []
+                {
+                    new SpawnTableEntry()
+                    {
+                        PowerupId = POWERUP_TYPE.UNCOMMON,
+                        Chance = 100,
+                    }
+                }
+            }
+        }},
+        {RarityTypes.RARE, new ChestData()
+        {
+            GoldCost = 100,
+            Color = new Color(3/255f, 67/255f, 195/255f),
+            SpawnTable = new PowerupSpawnTable()
+            {
+                Entries = new []
+                {
+                    new SpawnTableEntry()
+                    {
+                        PowerupId = POWERUP_TYPE.RARE,
+                        Chance = 100,
+                    }
+                }
+            },
+        }},
+        {RarityTypes.EPIC, new ChestData() { 
+            GoldCost = 250, 
+            Color = new Color(149/255f, 0/255f, 131/255f),
+            SpawnTable = new PowerupSpawnTable()
+            {
+                Entries = new []
+                {
+                    new SpawnTableEntry()
+                    {
+                        PowerupId = POWERUP_TYPE.EPIC,
+                        Chance = 100,
+                    }
+                }
+            },
+        }},
+        {RarityTypes.LEGENDARY, new ChestData()
+        {
+            GoldCost = 500, 
+            Color = new Color(233/255f, 71/255f, 0/255f),
+            SpawnTable = new PowerupSpawnTable()
+            {
+                Entries = new []
+                {
+                    new SpawnTableEntry()
+                    {
+                        PowerupId = POWERUP_TYPE.LEGENDARY,
+                        Chance = 100,
+                    }
+                }
+            },
+        }},
     };
     
     [SerializeField] public RarityTypes       Rarity;
@@ -76,13 +119,10 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
     [SerializeField] private Outline           _outline;
     
     public ChestData ChestData;
-    public PowerupSpawnTable SpawnTable;
-    
 
     public void Awake()
     {
         ChestData = RarityToChestData[Rarity];
-        SpawnTable = RarityToSpawnTable[Rarity];
         
         var meshRenders = GetComponentsInChildren<MeshRenderer>();
         foreach (var meshRender in meshRenders)
@@ -94,56 +134,66 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
     }
     public void Interact(IPlayer player)
     {
-        if (player.Gold < ChestData.GoldCost)
+        if (player.GetGoldInInventory() < ChestData.GoldCost)
         {
-            Debug.LogError($"Failed to open chest, you need {ChestData.GoldCost - player.Gold} more gold");
+            Debug.LogError($"Failed to open chest, you need {ChestData.GoldCost - player.GetGoldInInventory()} more gold");
             return;
         }
+        
+        player.RemoveItem(ITEM_TYPE.COIN, ChestData.GoldCost);
 
         var hinge = transform.GetChild(0).Find("Hinge");
         // var localEulerAngles = hinge.localEulerAngles;
         // Debug.Log($"Opening chest: {localEulerAngles.x}");
         // Debug.Log($"Opening chest: {hinge.localEulerAngles.x}");
-        
-        var powerup = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        powerup.AddComponent<Powerup>();
-        powerup.GetComponent<MeshRenderer>().material.color = ChestData.Color;
-        powerup.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        var position = transform.position;
-        powerup.transform.position = new Vector3(position.x, position.y + 1f, position.z);
-        
+
+
         hinge.localRotation = Quaternion.Euler(Math.Abs(hinge.localEulerAngles.x - 90) < 1f ?
             0 : 90, 0, 0);
 
-        
+        var powerupPrefab = PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[((POWERUP_TYPE)(int)Rarity)]];
+        var position = transform.position;
+        var powerUpPos = new Vector3(position.x, position.y + 1f, position.z);
+        var powerup = Instantiate(powerupPrefab, powerUpPos, Quaternion.identity);
+        powerup.GetComponentInChildren<MeshRenderer>().material.color = ChestData.Color;
+
+        enabled = false;
+        var transforms = GetComponentsInChildren<Collider>();
+        foreach (Collider transform in transforms)
+        {
+            Debug.Log(transform.gameObject.layer);
+            Debug.Log(LayerMask.NameToLayer("Interactable"));
+            if(transform.gameObject.layer == LayerMask.NameToLayer("Interactable"))
+                transform.gameObject.layer = LayerMask.NameToLayer("Default");
+        }
         // GeneratePowerup(player);
     }
 
-    private void GeneratePowerup(IPlayer player)
+    // ReSharper disable once UnusedMember.Local
+    private void GeneratePowerup()
     {
         int random = Random.Range(0, 100);
-        foreach (var entry in SpawnTable.Entries)
+        foreach (var entry in ChestData.SpawnTable.Entries)
         {
             if (random < entry.Chance)
             {
-                player.Gold -= ChestData.GoldCost;
-                SpawnPowerup(entry.Powerup);
+                SpawnPowerup(entry.PowerupId);
                 return;
             }
         }
     }
 
-    private void SpawnPowerup(IPowerup powerup)
+    private void SpawnPowerup(POWERUP_TYPE powerupId)
     {
-        GameObject.Instantiate(powerup as MonoBehaviour, transform.position, Quaternion.identity);
+        Instantiate(PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[powerupId]], transform.position, Quaternion.identity);
     }
 
-    public void OnHoverEnter()
+    public void OnHoverEnter(IPlayer player)
     {
         _outline.enabled = true;
     }
 
-    public void OnHoverExit()
+    public void OnHoverExit(IPlayer player)
     {
         _outline.enabled = false;
     }

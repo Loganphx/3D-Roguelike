@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace FastScriptReload.Editor.Compilation.CodeRewriting
 {
-    class BuilderPatternFunctionsRewriter : FastScriptReloadCodeRewriterBase
+    internal class BuilderPatternFunctionsRewriter : FastScriptReloadCodeRewriterBase
     {
         public BuilderPatternFunctionsRewriter(bool writeRewriteReasonAsComment, bool visitIntoStructuredTrivia = false) 
             : base(writeRewriteReasonAsComment, visitIntoStructuredTrivia)
@@ -22,7 +22,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
             }
             else
             {
-                var ancestorNameWithoutPatchedPostfix = ancestorName.Replace(FastScriptReload.Runtime.AssemblyChangesLoader.ClassnamePatchedPostfix, "");
+                var ancestorNameWithoutPatchedPostfix = ancestorName.Replace(Runtime.AssemblyChangesLoader.ClassnamePatchedPostfix, "");
 
                 if (node.ReturnType is IdentifierNameSyntax name && name.Identifier.ValueText == ancestorNameWithoutPatchedPostfix)
                 {

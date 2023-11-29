@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public static class PrefabPool
@@ -10,66 +9,71 @@ public static class PrefabPool
   {
     Prefabs = new Dictionary<string, GameObject>()
     {
-      {"Prefabs/Items/Item_Adamantite", Resources.Load<GameObject>("Prefabs/Items/Item_Adamantite")},
-      {"Prefabs/Items/Item_Coin", Resources.Load<GameObject>("Prefabs/Items/Item_Coin")},
-      {"Prefabs/Items/Item_Coal", Resources.Load<GameObject>("Prefabs/Items/Item_Coal")},
-      {"Prefabs/Items/Item_Gold", Resources.Load<GameObject>("Prefabs/Items/Item_Gold")},
-      {"Prefabs/Items/Item_Iron", Resources.Load<GameObject>("Prefabs/Items/Item_Iron")},
-      {"Prefabs/Items/Item_Mythril", Resources.Load<GameObject>("Prefabs/Items/Item_Mythril")},
-      {"Prefabs/Items/Item_Rock", Resources.Load<GameObject>("Prefabs/Items/Item_Stone")},
-      {"Prefabs/Items/Item_Wood_Tree", Resources.Load<GameObject>("Prefabs/Items/Item_Wood_Tree")},
-      {"Prefabs/Items/Item_Wood_Birch", Resources.Load<GameObject>("Prefabs/Items/Item_Wood_Birch")},
-      {"Prefabs/Items/Item_Wood_Fir", Resources.Load<GameObject>("Prefabs/Items/Item_Wood_Fir")},
-      {"Prefabs/Items/Item_Wood_Oak", Resources.Load<GameObject>("Prefabs/Items/Item_Wood_Oak")},
-      {"Prefabs/Items/Item_Wood_DarkOak", Resources.Load<GameObject>("Prefabs/Items/Item_Wood_DarkOak")},
+      { "Prefabs/Items/item_template", Resources.Load<GameObject>("Prefabs/Items/item_template") },
+
+      { "Prefabs/Models/model_ore_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_ore_adamantite") },
+      { "Prefabs/Models/model_coin", Resources.Load<GameObject>("Prefabs/Models/model_coin") },
+      { "Prefabs/Models/model_ore_coal", Resources.Load<GameObject>("Prefabs/Models/model_ore_coal") },
+      { "Prefabs/Models/model_ore_gold", Resources.Load<GameObject>("Prefabs/Models/model_ore_coal") },
+      { "Prefabs/Models/model_ore_iron", Resources.Load<GameObject>("Prefabs/Models/model_ore_iron") },
+      { "Prefabs/Models/model_ore_mythril", Resources.Load<GameObject>("Prefabs/Models/model_ore_mythril") },
+      { "Prefabs/Models/model_rock", Resources.Load<GameObject>("Prefabs/Models/model_rock") },
+      { "Prefabs/Models/model_wood_tree", Resources.Load<GameObject>("Prefabs/Models/model_wood_tree") },
+      { "Prefabs/Models/model_wood_birch", Resources.Load<GameObject>("Prefabs/Models/model_wood_birch") },
+      { "Prefabs/Models/model_wood_fir", Resources.Load<GameObject>("Prefabs/Models/model_wood_fir") },
+      { "Prefabs/Models/model_wood_oak", Resources.Load<GameObject>("Prefabs/Models/model_wood_oak") },
+      { "Prefabs/Models/model_wood_darkoak", Resources.Load<GameObject>("Prefabs/Models/model_wood_darkoak") },
+
+      { "Prefabs/Models/model_seed_wheat", Resources.Load<GameObject>("Prefabs/Models/model_seed_wheat") },
+      { "Prefabs/Models/model_seed_flax", Resources.Load<GameObject>("Prefabs/Models/model_seed_flax") },
+      
+      { "Prefabs/Models/model_building_foundation", Resources.Load<GameObject>("Prefabs/Models/model_building_foundation") },
+      { "Prefabs/Models/model_building_wall", Resources.Load<GameObject>("Prefabs/Models/model_building_wall") },
+      
+      { "Prefabs/Buildings/blueprint_building_foundation", Resources.Load<GameObject>("Prefabs/Buildings/blueprint_building_foundation") },
+      { "Prefabs/Buildings/building_foundation", Resources.Load<GameObject>("Prefabs/Buildings/building_foundation") },
+      { "Prefabs/Buildings/building_wall", Resources.Load<GameObject>("Prefabs/Buildings/building_wall") },
+    
+      { "Prefabs/Powerups/powerup_common", Resources.Load<GameObject>("Prefabs/Powerups/powerup_common") },
+      { "Prefabs/Powerups/powerup_uncommon", Resources.Load<GameObject>("Prefabs/Powerups/powerup_uncommon") },
+      { "Prefabs/Powerups/powerup_rare", Resources.Load<GameObject>("Prefabs/Powerups/powerup_rare") },
+      { "Prefabs/Powerups/powerup_epic", Resources.Load<GameObject>("Prefabs/Powerups/powerup_epic") },
+      { "Prefabs/Powerups/powerup_legendary", Resources.Load<GameObject>("Prefabs/Powerups/powerup_legendary") },
+    };
+    SpawnedPrefabs = new Dictionary<string, GameObject>()
+    {
+      {
+        "Prefabs/Models/model_seed_wheat",
+        GameObject.Instantiate(Prefabs["Prefabs/Models/model_seed_wheat"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Models/model_seed_flax",
+        GameObject.Instantiate(Prefabs["Prefabs/Models/model_seed_flax"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Buildings/building_foundation",
+        GameObject.Instantiate(Prefabs["Prefabs/Buildings/blueprint_building_foundation"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Buildings/building_wall",
+        GameObject.Instantiate(Prefabs["Prefabs/Buildings/building_wall"], Vector3.zero, Quaternion.identity)
+      }
     };
   }
+
+  public static Dictionary<string, GameObject> SpawnedPrefabs = new Dictionary<string, GameObject>();
 }
 
-public static class ItemPool
+public static class MaterialPool
 {
-  public static Dictionary<ITEM_TYPE, Sprite> ItemSprites;
-  public static Dictionary<ITEM_TYPE, int> ItemDamages;
-  
-  public static void LoadItems()
-  {
-    ItemSprites = new Dictionary<ITEM_TYPE, Sprite>()
-    {
-      { ITEM_TYPE.NULL, null},
-      { ITEM_TYPE.ROCK, Resources.Load<Sprite>("Sprites/Items/rock")},
-      { ITEM_TYPE.ORE_COAL, Resources.Load<Sprite>("Sprites/Untitled")},
-      { ITEM_TYPE.ORE_IRON, Resources.Load<Sprite>("Sprites/Untitled")},
-      { ITEM_TYPE.ORE_GOLD, Resources.Load<Sprite>("Sprites/Untitled")},
-      { ITEM_TYPE.ORE_MYTHRIL, Resources.Load<Sprite>("Sprites/Untitled")},
-      { ITEM_TYPE.ORE_ADAMANTITE, Resources.Load<Sprite>("Sprites/Untitled")},
-      { ITEM_TYPE.WOOD, Resources.Load<Sprite>("Sprites/Items/wood_tree")},
-      { ITEM_TYPE.WOOD_BIRCH, Resources.Load<Sprite>("Sprites/Items/wood_birch")},
-      { ITEM_TYPE.WOOD_FIR, Resources.Load<Sprite>("Sprites/Items/wood_fir")},
-      { ITEM_TYPE.WOOD_OAK, Resources.Load<Sprite>("Sprites/Items/wood_oak")},
-      { ITEM_TYPE.WOOD_DARKOAK, Resources.Load<Sprite>("Sprites/Items/wood_darkoak")},
-    };
+  public static Dictionary<string, Material> Materials;
 
-    ItemDamages = new Dictionary<ITEM_TYPE, int>()
-    {
-      { ITEM_TYPE.NULL, 0 },
-      { ITEM_TYPE.ROCK, 5 },
-      { ITEM_TYPE.ORE_COAL, 0 },
-      { ITEM_TYPE.ORE_IRON, 0 },
-      { ITEM_TYPE.ORE_GOLD, 0 },
-      { ITEM_TYPE.ORE_MYTHRIL, 0 },
-      { ITEM_TYPE.ORE_ADAMANTITE, 0 },
-      { ITEM_TYPE.WOOD, 0 },
-      { ITEM_TYPE.WOOD_BIRCH, 0 },
-      { ITEM_TYPE.WOOD_FIR, 0 },
-      { ITEM_TYPE.WOOD_OAK, 0 },
-      { ITEM_TYPE.WOOD_DARKOAK, 0 },
-    };
-  }
-
-  private static Sprite LoadSprite(string path)
+  public static void LoadMaterials()
   {
-    var sprite = Resources.Load<Sprite>(path);
-    if(sprite == null) throw new FileNotFoundException($"Failed to load sprite @ {path}");
-    return sprite;
+    Materials = new Dictionary<string, Material>()
+    {
+      { "Materials/InvalidBuildHover", Resources.Load<Material>("Materials/InvalidBuildHover") },
+      { "Materials/BuildHover", Resources.Load<Material>("Materials/BuildHover") }
+    };
   }
 }

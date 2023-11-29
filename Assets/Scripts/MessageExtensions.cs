@@ -1,7 +1,4 @@
-﻿using UnityEditor.VersionControl;
-using UnityEngine;
-
-namespace ECS.Core.Components
+﻿namespace ECS.Core.Components
 {
     public static class MessageExtensions
     {

@@ -9,14 +9,12 @@ using FastScriptReload.Editor.Compilation.ScriptGenerationOverrides;
 using FastScriptReload.Runtime;
 using FastScriptReload.Scripts.Runtime;
 using ImmersiveVRTools.Editor.Common.Cache;
-using ImmersiveVRTools.Runtime.Common.Utilities;
 using ImmersiveVrToolsCommon.Runtime.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace FastScriptReload.Editor.Compilation
 {
@@ -64,7 +62,7 @@ namespace FastScriptReload.Editor.Compilation
             AssemblyCsharpFullPath = SessionStateCache.GetOrCreateString(
 	            $"FSR:AssemblyCsharpFullPath", 
 	            () => AssetDatabase.FindAssets("Microsoft.CSharp")
-					            .Select(g => new System.IO.FileInfo(UnityEngine.Application.dataPath + "/../" + AssetDatabase.GUIDToAssetPath(g)))
+					            .Select(g => new FileInfo(Application.dataPath + "/../" + AssetDatabase.GUIDToAssetPath(g)))
 					            .First(fi => fi.Name.ToLower() == "Microsoft.CSharp.dll".ToLower()).FullName
 	        );
 
@@ -98,7 +96,7 @@ namespace FastScriptReload.Editor.Compilation
             // In this scenario, it's particularly important to let the user know that something went wrong.
             // Otherwise, they may expect valid output, and get nearly valid output from a broken tree.
             // Trust me, these bugs are quite confusing when first encountered!
-            var errorDiagnostics = trees.SelectMany(tree => tree.GetDiagnostics()).Where(d => d.Severity == DiagnosticSeverity.Error);
+            var errorDiagnostics = trees.SelectMany(tree => tree.GetDiagnostics()).Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
             if (errorDiagnostics.Any()) throw new SourceCodeHasErrorsException(errorDiagnostics);
             
             var sourceCodeWithAdjustments = trees.Select(tree =>
@@ -134,7 +132,7 @@ namespace FastScriptReload.Editor.Compilation
                                 existingType, 
                                 newFields.ToDictionary(
                                     fD => fD.FieldName,
-                                    fD => new TemporaryNewFieldValues.GetNewFieldInitialValue((Type forNewlyGeneratedType) =>
+                                    fD => new TemporaryNewFieldValues.GetNewFieldInitialValue(forNewlyGeneratedType =>
                                     {
                                         //TODO: PERF: could cache those - they run to init every new value (for every instance when accessed)
                                         return CreateNewFieldInitMethodRewriter.ResolveNewFieldsToCreateValueFn(forNewlyGeneratedType)[fD.FieldName]();
@@ -142,7 +140,7 @@ namespace FastScriptReload.Editor.Compilation
                                 ),
                                 newFields.ToDictionary(
                                     fD => fD.FieldName,
-                                    fD => new TemporaryNewFieldValues.GetNewFieldType((Type forNewlyGeneratedType) =>
+                                    fD => new TemporaryNewFieldValues.GetNewFieldType(forNewlyGeneratedType =>
                                     {
                                         //TODO: PERF: could cache those - they run to init every new value (for every instance when accessed)
                                         return (Type)CreateNewFieldInitMethodRewriter.ResolveNewFieldsToTypeFn(forNewlyGeneratedType)[fD.FieldName]();
@@ -246,7 +244,7 @@ namespace FastScriptReload.Editor.Compilation
                         rootNamespace =
                             root.DescendantNodes().OfType<NamespaceDeclarationSyntax>()
                                 .FirstOrDefault(); //need to search again to make sure it didn't change
-                        var newRootNamespace = rootNamespace.AddMembers(newMember);
+                        var newRootNamespace = rootNamespace!.AddMembers(newMember);
                         root = root.ReplaceNode(rootNamespace, newRootNamespace);
                     }
                     else
@@ -307,7 +305,7 @@ namespace FastScriptReload.Editor.Compilation
             foreach (var assembly in AppDomain.CurrentDomain
                          .GetAssemblies() //TODO: PERF: just need to load once and cache? or get assembly based on changed file only?
                          .Where(a => excludeAssyNames.All(assyName => !a.FullName.StartsWith(assyName))
-												&& CustomAttributeExtensions.GetCustomAttribute<DynamicallyCreatedAssemblyAttribute>((Assembly)a) == null))
+												&& a.GetCustomAttribute<DynamicallyCreatedAssemblyAttribute>() == null))
             {
                 try
                 {

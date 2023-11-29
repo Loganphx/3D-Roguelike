@@ -9,7 +9,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
     
     //Removes redundant type name qualifiers, eg: RootClass.NestedEnum.Value -> NestedEnum.Value, root class component is rewritten to have
     //__Patched_ postfix and if original remains it'll cause type mismatch
-    class RedundantTypeNameQualifierRewriter : FastScriptReloadCodeRewriterBase
+    internal class RedundantTypeNameQualifierRewriter : FastScriptReloadCodeRewriterBase
     {
         public RedundantTypeNameQualifierRewriter(bool writeRewriteReasonAsComment, bool visitIntoStructuredTrivia = false) 
             : base(writeRewriteReasonAsComment, visitIntoStructuredTrivia)
@@ -22,7 +22,7 @@ namespace FastScriptReload.Editor.Compilation.CodeRewriting
                 return base.VisitMemberAccessExpression(node); //only target outermost member access for full rewrite
             
             var firstNode = node.DescendantNodes().OfType<IdentifierNameSyntax>().FirstOrDefault();
-            if(firstNode is IdentifierNameSyntax idNode && node.DescendantNodes().Count() > 1)
+            if(firstNode is { } idNode && node.DescendantNodes().Count() > 1)
             {
                 //enclosing type name same as first id node
                 if((idNode.Ancestors().First(n => n is TypeDeclarationSyntax) as TypeDeclarationSyntax)?.Identifier.ToString() == idNode.Identifier.ToString())

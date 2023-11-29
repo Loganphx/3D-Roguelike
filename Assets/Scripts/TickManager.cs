@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TickManager : MonoBehaviour
 {
     public static TickManager Instance;
-    public        int         Tick  = 0;
-    public        int         Frame = 0;
+    public        int         Tick;
+    public        int         Frame;
 
     public void Awake()
     {
