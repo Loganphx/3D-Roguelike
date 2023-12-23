@@ -1,5 +1,13 @@
+using System;
 using UnityEngine;
 
+[Flags]
+public enum TOOL_TYPE
+{
+  NULL = 0,
+  AXE,
+  PICKAXE,
+}
 public enum ITEM_TYPE
 {
   NULL = 0,
@@ -14,10 +22,19 @@ public enum ITEM_TYPE
   ORE_GOLD,
   ORE_ADAMANTITE,
   ORE_MYTHRIL,
+  
   COIN,
+  
+  MEAT_RAW,
+  
+  HIDE_WOLF,
   
   SEED_WHEAT,
   SEED_FLAX,
+  
+  MUSHROOM_HEALSHROOM,
+  MUSHROOM_MUNCHSHROOM,
+  MUSHROOM_ZOOMSHROOM,
   
   DEPLOYABLE_FARM_PLANTER,
   
@@ -26,6 +43,16 @@ public enum ITEM_TYPE
   BUILDING_WALL,
   BUILDING_FLOOR,
   BUILDING_RAMP,
+  
+  TOOL_PICKAXE_WOODEN,
+  TOOL_PICKAXE_IRON,
+  TOOL_PICKAXE_MYTHRIL,
+  TOOL_PICKAXE_ADAMANTITE,
+  
+  TOOL_AXE_WOODEN,
+  TOOL_AXE_IRON,
+  TOOL_AXE_MYTHRIL,
+  TOOL_AXE_ADAMANTITE,
 }
 
 public class Item : MonoBehaviour, IInteractable, IHoverable
@@ -39,8 +66,11 @@ public class Item : MonoBehaviour, IInteractable, IHoverable
   {
     if(itemType == ITEM_TYPE.NULL) return;
     
+    Debug.Log($"Item {itemType} awake");
     _outline = transform.GetChild(0).GetComponent<Outline>();
     _outline.enabled = false;
+    
+    // HitboxSystem.ColliderHashToDamagable.Add(transform.Find("Interaction").GetComponent<Collider>().GetInstanceID(), this);
   }
 
   public void Start()
@@ -56,7 +86,9 @@ public class Item : MonoBehaviour, IInteractable, IHoverable
   public void Interact(IPlayer player)
   {
     Debug.Log("Interacting with item");
-    player.AddItem(itemType, 1);
+    var remainingAmount = player.AddItem(itemType, 1);
+    if(remainingAmount > 0) return;
+    
     gameObject.SetActive(false);
   }
 

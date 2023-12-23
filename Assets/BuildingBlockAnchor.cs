@@ -15,9 +15,10 @@ public class BuildingBlockAnchor : MonoBehaviour, IDeployable, IHoverable
     // Collision Check before placing.
     var box = _mockSeedTransform.transform.GetChild(0);
 
-    var startPos = box.position - new Vector3(0, box.localScale.y / 2f, 0);
-    Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
-    var invalid = Physics.BoxCast(startPos, box.localScale / 2, box.up, out var hit, box.rotation, 1);
+    var localScale = box.localScale;
+    var startPos = box.position - new Vector3(0, localScale.y / 2f, 0);
+    //Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
+    var invalid = Physics.BoxCast(startPos, localScale / 2, box.up, out var hit, box.rotation, 1);
     if (invalid) return;
     
     player.RemoveItem(itemType, 1);
@@ -51,10 +52,11 @@ public class BuildingBlockAnchor : MonoBehaviour, IDeployable, IHoverable
 
     var box = _mockSeedTransform.transform.GetChild(0);
     var meshRenderer =box.GetComponent<MeshRenderer>();
-    
-    var startPos = box.position - new Vector3(0, box.localScale.y / 2f, 0);
-    Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
-    var invalid = Physics.BoxCast(startPos, box.localScale / 2, box.up, out var hit, box.rotation, 1);
+
+    var localScale = box.localScale;
+    var startPos = box.position - new Vector3(0, localScale.y / 2f, 0);
+    //Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
+    var invalid = Physics.BoxCast(startPos, localScale / 2, box.up, out var hit, box.rotation, 1);
     if (invalid)
     {
       Debug.Log($"Invalid placement: {hit.collider.gameObject}");

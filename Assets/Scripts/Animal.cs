@@ -27,7 +27,7 @@ public class AnimalData
     public float AttackCooldown;
     public int   Damage;
     
-    public string DropPrefabPath;
+    public ITEM_TYPE DropItem;
 }
 public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamager
 {
@@ -46,6 +46,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
     
     public void Awake()
     {
+        Debug.Log("Animal.Awake");
         _transform = GetComponent<Transform>();
         _head = transform.GetChild(0).Find("Head");
         _aiPath = GetComponent<RichAI>();
@@ -55,10 +56,17 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
         
         _animalData = _animals[_animalType];
         _animalState.CurrentHealth = _animalData.Health;
+        
+        var colliders = _transform.GetComponentsInChildren<Collider>();
+        foreach (var collider in colliders)
+        {
+            HitboxSystem.ColliderHashToDamagable.Add(collider.GetInstanceID(), this);
+        }
     }
 
     public void Start()
     {
+        Debug.Log("Animal.Start");
         _aiPath.endReachedDistance = _animalData.AttackDistance;
         // _aiPath.sl = _animalData.AttackDistance + 0.5f;
     }
@@ -147,7 +155,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
         if (hit != 0)
         {
             Debug.Log(_hits[0].transform.root);
-            _hits[0].transform.root.GetComponent<IDamagable>().TakeDamage(this, _head.forward, 10);
+            HitboxSystem.ColliderHashToDamagable[_hits[0].collider.GetHashCode()].TakeDamage(this, _head.forward, TOOL_TYPE.NULL, 10);
         }
         EndAttack(ref state);
     }
@@ -160,7 +168,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
     }
 
 
-    public void        TakeDamage(IDamager player, Vector3 hitDirection, int damage)
+    public void TakeDamage(IDamager player, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
     {
         ref var animalState = ref _animalState;
         if(animalState.CurrentHealth <= 0) return;
@@ -173,13 +181,29 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
 
     public void Death(Vector3 hitDirection)
     {
-        gameObject.SetActive(false);
-        var dropPrefab = PrefabPool.Prefabs[_animalData.DropPrefabPath];
+        // var dropPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[_animalData.DropItem]];
+        // var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
+        // var drop = Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+        //
+        
         var position = transform.position;
         var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
-        var drop = Instantiate(dropPrefab, dropPosition, Quaternion.identity);
-        
-        drop.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
+        var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
+        var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+        var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[_animalData.DropItem]];
+
+        var item = Instantiate(itemPrefab, Vector3.zero,
+            Quaternion.identity, itemTemplate.transform);
+
+        item.transform.localPosition = Vector3.zero;
+    
+        itemTemplate.GetComponent<Item>().SetItemType(_animalData.DropItem);
+
+        // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+        hitDirection.y = 1;
+        itemTemplate.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
+    
+        gameObject.SetActive(false);
     }
 
     // private void OnDrawGizmos()
@@ -205,7 +229,8 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
             WindupCooldown = 0.3f,
             AttackCooldown = 3f,
             
-            DropPrefabPath = "Prefabs/Items/Item_Coin"
+            
+            DropItem = ITEM_TYPE.COIN,
         }},
         { AnimalTypes.Cow, new AnimalData()
         {
@@ -215,8 +240,8 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
             AttackDistance = 2.5f,
             WindupCooldown = 0.3f,
             AttackCooldown = 3f,
-
-            DropPrefabPath = "Prefabs/Items/Item_Meat"
+                
+            DropItem = ITEM_TYPE.MEAT_RAW,
         }},
         { AnimalTypes.Wolf, new AnimalData()
         {
@@ -227,7 +252,7 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
             WindupCooldown = 0.3f,
             AttackCooldown = 3f,
 
-            DropPrefabPath = "Prefabs/Items/Item_Wolf_Hide"
+            DropItem = ITEM_TYPE.HIDE_WOLF,
         }}
     };
 }

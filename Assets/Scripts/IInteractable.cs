@@ -12,7 +12,7 @@ public interface IDamager
 }
 public interface IDamagable
 {
-  public void TakeDamage(IDamager player, Vector3 hitDirection, int damage);
+  public void TakeDamage(IDamager player, Vector3 hitDirection, TOOL_TYPE toolType, int damage);
 }
 
 public interface IHoverable

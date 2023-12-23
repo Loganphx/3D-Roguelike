@@ -31,25 +31,35 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
       movementSpeed = 3.2f,
       movementSpeedMultiplier = 1f,
       jumpHeight = 2,
+      HasChanged = true
     };
     CalculateBounds(collider, ref MovementState);
   }
 
-  public void ProcessInput(ref GameplayInput input, ref PlayerStaminaState playerStaminaState)
+  public bool ProcessInput(ref GameplayInput input, ref PlayerStaminaState playerStaminaState)
   {
     ref var state = ref MovementState;
+    state.HasChanged = false;
+    
     if(input.Sprint && input.moveDirection != Vector2.zero && playerStaminaState.Stamina > 0)
     {
       state.movementSpeedMultiplier = 1.5f;
+      state.HasChanged = true;
+    
       playerStaminaState.Stamina -= .25f;
       playerStaminaState.RegenCooldown = 2f;
+      playerStaminaState.HasChanged = true;
     }
     else
     {
       state.movementSpeedMultiplier = 1;
+      state.HasChanged = true;
+      state.HasChanged = true;
     }
       
     Move(ref input, ref playerStaminaState);
+
+    return state.HasChanged;
   }
 
   private void Move(ref GameplayInput playerInput, ref PlayerStaminaState playerStaminaState)
@@ -61,6 +71,7 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
       Jump(ref MovementState, _playerTransform);
       playerStaminaState.Stamina -= 15f;
       playerStaminaState.RegenCooldown = 2f;
+      playerStaminaState.HasChanged = true;
       return;
     }
 

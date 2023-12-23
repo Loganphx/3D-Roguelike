@@ -5,6 +5,8 @@ internal struct PlayerCameraState : IState
 {
     public float mouseSensitivity;
     public float cameraVerticalRotation;
+
+    public bool HasChanged;
 }
 
 internal class PlayerCameraComponent : IComponent<PlayerCameraState>

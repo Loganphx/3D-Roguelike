@@ -16,9 +16,6 @@ public class PlayerPool : MonoBehaviour
         {
             AddPlayer(player);
         }
-        PrefabPool.LoadPrefabs();
-        SpritePool.LoadSprites();
-        MaterialPool.LoadMaterials();
     }
     public static void AddPlayer(IPlayer player)
     {

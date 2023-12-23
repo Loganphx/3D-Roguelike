@@ -34,6 +34,8 @@ namespace ECS.Movement.Services
     public Vector3 snapToSurface;
 
     public RaycastHit lastHit;
+    
+    public bool HasChanged;
   }
   
   // [Serializable]

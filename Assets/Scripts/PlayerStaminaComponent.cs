@@ -6,6 +6,8 @@ internal struct PlayerStaminaState : IState
     public float Stamina;
     public float RegenCooldown;
     public float MaxStamina;
+
+    public bool HasChanged;
 }
 
 internal class PlayerStaminaComponent : IComponent<PlayerStaminaState>
@@ -20,25 +22,42 @@ internal class PlayerStaminaComponent : IComponent<PlayerStaminaState>
         state.Stamina = maxStamina;
     }
 
-    public void ProcessInput(ref GameplayInput input, ref PlayerHungerState hungerState)
+    public bool ProcessInput(ref GameplayInput input, ref PlayerHungerState hungerState)
     {
         ref var state = ref _staminaState;
+        state.HasChanged = false;
 
-        state.RegenCooldown -= Time.fixedDeltaTime;
         if (state.RegenCooldown > 0)
         {
-            return;
+            state.RegenCooldown -= Time.fixedDeltaTime;
+            state.HasChanged = true;
+        }
+        
+        if (state.RegenCooldown > 0)
+        {
+            return state.HasChanged;
         }
         
         if(hungerState.Hunger <= 0)
         {
             state.Stamina -= Time.fixedDeltaTime;
-            return;
+            state.HasChanged = true;
+            return state.HasChanged;
         }
         
-        _staminaState.Stamina = Mathf.Min(_staminaState.Stamina + .25f, _staminaState.MaxStamina);
+        state.Stamina = Mathf.Min(state.Stamina + .25f, state.MaxStamina);
+        state.HasChanged = true;
+        
         hungerState.Hunger -= Time.fixedDeltaTime/2f;
+        hungerState.HasChanged = true;
+        
+        return state.HasChanged;
     }
 
+    public void AddStamina(int amount)
+    {
+        ref var state = ref _staminaState;
+        state.Stamina = Mathf.Min(state.Stamina + amount, state.MaxStamina);
+    }
     public PlayerStaminaState State => _staminaState;
 }

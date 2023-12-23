@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingBlock : MonoBehaviour
+public class BuildingBlock : MonoBehaviour, IDamagable
 {
     private BuildingBlockAnchor[] _anchors;
     private RaycastHit[] _hits;
@@ -59,5 +57,11 @@ public class BuildingBlock : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    public void TakeDamage(IDamager player, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
+    {
+        throw new NotImplementedException();
     }
 }

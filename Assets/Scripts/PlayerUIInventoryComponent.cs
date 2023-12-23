@@ -62,6 +62,8 @@ internal class PlayerUIInventoryComponent
 
     _goldText.text = inventoryState.GoldCount.ToString();
     
+    bool hasChanged = false;
+    
     for (int i = 0; i < inventoryState.Items.Length; i++)
     {
       ref var item = ref inventoryState.Items[i];

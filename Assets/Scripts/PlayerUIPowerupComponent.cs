@@ -32,10 +32,12 @@ internal class PlayerUIPowerupComponent
     }
   }
 
-  public void OnFixedUpdate(ref PlayerPowerupState powerupState)
+  public bool OnFixedUpdate(ref PlayerPowerupState powerupState)
   {
-    if (!powerupState.HasChanged) return;
+    if (!powerupState.HasChanged) return false;
 
+    bool hasChanged = false;
+    
     for (int i = 0; i < powerupState.Powerups.Length; i++)
     {
       ref var item = ref powerupState.Powerups[i];
@@ -61,6 +63,9 @@ internal class PlayerUIPowerupComponent
       itemSlot.AmountText.text = "x" + item.Amount;
       itemSlot.type = item.PowerupId;
       item.HasChanged = false;
+      hasChanged = true;
     }
+
+    return hasChanged;
   }
 }

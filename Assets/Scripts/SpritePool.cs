@@ -25,7 +25,11 @@ public static class SpritePool
       { "Sprites/Items/wood_fir", Resources.Load<Sprite>("Sprites/Items/wood_fir") },
       { "Sprites/Items/wood_oak", Resources.Load<Sprite>("Sprites/Items/wood_oak") },
       { "Sprites/Items/wood_darkoak", Resources.Load<Sprite>("Sprites/Items/wood_darkoak") },
-
+      
+      { "Sprites/Items/mushroom_healshroom", Resources.Load<Sprite>("Sprites/Items/mushroom_healshroom") },
+      { "Sprites/Items/mushroom_zoomshroom", Resources.Load<Sprite>("Sprites/Items/mushroom_zoomshroom") },
+      { "Sprites/Items/mushroom_munchshroom", Resources.Load<Sprite>("Sprites/Items/mushroom_munchshroom") },
+            
       { "Sprites/Powerups/powerup_common", Resources.Load<Sprite>("Sprites/Powerups/powerup_common") },
       { "Sprites/Powerups/powerup_uncommon", Resources.Load<Sprite>("Sprites/Powerups/powerup_uncommon") },
       { "Sprites/Powerups/powerup_rare", Resources.Load<Sprite>("Sprites/Powerups/powerup_rare") },
@@ -34,6 +38,17 @@ public static class SpritePool
       
       { "Sprites/Items/seed_wheat", Resources.Load<Sprite>("Sprites/Items/seed_wheat") },
       { "Sprites/Items/seed_flax", Resources.Load<Sprite>("Sprites/Items/seed_flax") },
+            
+      { "Sprites/Items/pickaxe_wooden", Resources.Load<Sprite>("Sprites/Items/pickaxe_wooden") },
+      { "Sprites/Items/pickaxe_iron", Resources.Load<Sprite>("Sprites/Items/pickaxe_iron") },
+      { "Sprites/Items/pickaxe_gold", Resources.Load<Sprite>("Sprites/Items/pickaxe_gold") },
+      { "Sprites/Items/pickaxe_mythril", Resources.Load<Sprite>("Sprites/Items/pickaxe_mythril") },
+      { "Sprites/Items/pickaxe_adamantite", Resources.Load<Sprite>("Sprites/Items/pickaxe_adamantite") },
+      
+      { "Sprites/Items/axe_wooden", Resources.Load<Sprite>("Sprites/Items/axe_wooden") },
+      { "Sprites/Items/axe_iron", Resources.Load<Sprite>("Sprites/Items/axe_iron") },
+      { "Sprites/Items/axe_mythril", Resources.Load<Sprite>("Sprites/Items/axe_mythril") },
+      { "Sprites/Items/axe_adamantite", Resources.Load<Sprite>("Sprites/Items/axe_adamantite") },
       
       { "Sprites/Items/building_foundation", Resources.Load<Sprite>("Sprites/Items/building_foundation") },
       { "Sprites/Items/building_wall", Resources.Load<Sprite>("Sprites/Items/building_wall") },

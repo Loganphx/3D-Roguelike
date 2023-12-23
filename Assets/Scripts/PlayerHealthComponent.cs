@@ -2,6 +2,8 @@ internal struct PlayerHealthState : IState
 {
     public int Health;
     public int MaxHealth;
+
+    public bool HasChanged;
 }
 
 internal class PlayerHealthComponent : IComponent<PlayerHealthState>
@@ -24,6 +26,11 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
         {
             state.Health = 0;
         }
+    }
+
+    public void AddHealth(int amount)
+    {
+        
     }
 
     public PlayerHealthState State => _healthState;

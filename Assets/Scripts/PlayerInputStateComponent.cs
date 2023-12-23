@@ -12,6 +12,8 @@ namespace ECS.Movement.Services
         public float         mouseSensitivity       = 0.5f;
         public float         cameraVerticalRotation = 1;
         public GameplayInput Input;
+
+        public bool HasChanged;
     }
 
     public class PlayerInputComponent : IComponent<PlayerInputState>
@@ -49,9 +51,10 @@ namespace ECS.Movement.Services
         }
         
         input.ToggleInventory = input.ToggleInventory || _keyboard.iKey.wasPressedThisFrame;
-        
+
+        input.Drop = input.Drop || _keyboard.qKey.wasPressedThisFrame;
         input.Interact = input.Interact || _keyboard.eKey.wasPressedThisFrame;
-        
+
         input.Action1 = input.Action1 || _keyboard.digit1Key.wasPressedThisFrame;
         input.Action2 = input.Action2 || _keyboard.digit2Key.wasPressedThisFrame;
         input.Action3 = input.Action3 || _keyboard.digit3Key.wasPressedThisFrame;
@@ -60,6 +63,7 @@ namespace ECS.Movement.Services
         input.Action6 = input.Action6 || _keyboard.digit6Key.wasPressedThisFrame;
 
         input.PrimaryAttackClicked = input.PrimaryAttackClicked || _mouse.leftButton.wasPressedThisFrame;
+        input.SecondaryAttackClicked = input.SecondaryAttackClicked || _mouse.rightButton.wasPressedThisFrame;
       }
 
       public void OnFixedUpdate()
@@ -82,6 +86,7 @@ namespace ECS.Movement.Services
         input.Crouch = _keyboard.leftCtrlKey.isPressed;
         
         input.PrimaryAttackHeld = _mouse.leftButton.isPressed;
+        input.SecondaryAttackHeld = _mouse.rightButton.isPressed;
         if(input.Interact) Debug.Log("Interact!");
       }
     }
@@ -124,6 +129,11 @@ namespace ECS.Movement.Services
       get => Actions.IsSet(GameplayInputAction.Interact);
       set => Actions.Set(GameplayInputAction.Interact, value);
     }
+    public bool Drop
+    {
+      get => Actions.IsSet(GameplayInputAction.Drop);
+      set => Actions.Set(GameplayInputAction.Drop, value);
+    }
     public bool Reload
     {
       get => Actions.IsSet(GameplayInputAction.Reload);
@@ -132,14 +142,25 @@ namespace ECS.Movement.Services
 
     public bool PrimaryAttackClicked
     {
-      get => Actions.IsSet(GameplayInputAction.Attack_Primary);
-      set => Actions.Set(GameplayInputAction.Attack_Primary, value);
+      get => Actions.IsSet(GameplayInputAction.Attack_Primary_Click);
+      set => Actions.Set(GameplayInputAction.Attack_Primary_Click, value);
     }
     
     public bool PrimaryAttackHeld
     {
-      get => Actions.IsSet(GameplayInputAction.Attack_Primary);
-      set => Actions.Set(GameplayInputAction.Attack_Primary, value);
+      get => Actions.IsSet(GameplayInputAction.Attack_Primary_Held);
+      set => Actions.Set(GameplayInputAction.Attack_Primary_Held, value);
+    }
+    public bool SecondaryAttackClicked
+    {
+      get => Actions.IsSet(GameplayInputAction.Attack_Secondary_Click);
+      set => Actions.Set(GameplayInputAction.Attack_Secondary_Click, value);
+    }
+    
+    public bool SecondaryAttackHeld
+    {
+      get => Actions.IsSet(GameplayInputAction.Attack_Secondary_Held);
+      set => Actions.Set(GameplayInputAction.Attack_Secondary_Held, value);
     }
 
     public bool Aim
