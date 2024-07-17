@@ -3,6 +3,7 @@ using UnityEngine;
 
 public interface IInteractable
 {
+  public INTERACTABLE_TYPE GetInteractableType(); 
   public void Interact(IPlayer player);
 }
 

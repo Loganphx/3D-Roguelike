@@ -1,8 +1,31 @@
 using ECS.Movement.Services;
-using Unity.VisualScripting;
 using UnityEngine;
 
-internal class PlayerInteractComponent
+public enum INTERACTABLE_TYPE : byte
+{
+  NULL = 0,
+  CRAFTING_STATION,
+  FURNACE,
+  CAULDRON,
+  CHEST,
+  FLETCHING_TABLE,
+  
+  HERB,
+  NODE,
+  CROP,
+  ITEM,
+  POWERUP,
+  TOTEM,
+  
+}
+public struct PlayerInteractState : IState
+{
+  public bool HasChanged;
+  public int ColliderId;
+  public INTERACTABLE_TYPE InteractableType;
+}
+
+internal class PlayerInteractComponent : IComponent<PlayerInteractState>
 {
   private readonly IPlayer _player;
   private readonly Transform _cameraTransform;
@@ -11,7 +34,16 @@ internal class PlayerInteractComponent
   private IHoverable lastHover;
 
   private RaycastHit[] _hits = new RaycastHit[5];
+  private Collider[] _overlapHits = new Collider[5];
 
+  private readonly int _groundLayer = 1 << LayerMask.NameToLayer("Ground");
+    
+  public PlayerInteractState _state = new PlayerInteractState()
+  {
+    HasChanged = true,
+    ColliderId = -1,
+    InteractableType = INTERACTABLE_TYPE.NULL
+  };
   public PlayerInteractComponent(IPlayer player, Transform cameraTransform,
     PhysicsScene physicsScene)
   {
@@ -25,6 +57,9 @@ internal class PlayerInteractComponent
     var hitCount = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
       1 << LayerMask.NameToLayer("Interactable"), QueryTriggerInteraction.Collide);
 
+    ref var state = ref _state;
+    state.HasChanged = false;
+    
     if (hitCount > 0)
     {
       for (int i = 0; i < hitCount; i++)
@@ -37,8 +72,15 @@ internal class PlayerInteractComponent
         {
           if (lastHover != hoverable)
           {
-            if (lastHover != null) lastHover.OnHoverExit(_player);
+            if (lastHover != null)
+            {
+              lastHover.OnHoverExit(_player);
+              lastHover = null;
+            }
             hoverable.OnHoverEnter(_player);
+            state.ColliderId = -1;
+            state.InteractableType = INTERACTABLE_TYPE.NULL;
+            state.HasChanged = true;
           }
 
           lastHover = hoverable;
@@ -60,23 +102,90 @@ internal class PlayerInteractComponent
         if (interactable != null)
         {
           interactable.Interact(_player);
+          state.ColliderId = hit.collider.GetInstanceID();
+          state.InteractableType = interactable.GetInteractableType();
+          state.HasChanged = true;
           return false;
         }
       }
     }
     else
     {
-      if (lastHover != null) lastHover.OnHoverExit(_player);
+      if (ItemPool.ItemDeployables.Contains(weaponState.EquippedWeapon) 
+          && IDeployable.ItemToDeployable[typeof(BuildingBlock)].ContainsKey(weaponState.EquippedWeapon))
+      {
+        hitCount = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
+          _groundLayer, QueryTriggerInteraction.Ignore);
+
+        if (hitCount > 0)
+        {
+          if (weaponState.EquippedWeapon == ITEM_TYPE.BUILDING_FOUNDATION)
+          {
+            var hoverPrefab = PrefabPool.SpawnedPrefabs[IDeployable.ItemToDeployable[typeof(BuildingBlock)][weaponState.EquippedWeapon]].transform;
+            var box = hoverPrefab.GetChild(0);
+
+            var meshRenderer =box.GetComponent<MeshRenderer>();
+
+            var localScale = box.localScale;
+            var startPos = _hits[0].point;
+            
+            hoverPrefab.position = startPos;
+            hoverPrefab.forward = _player.Transform.forward;
+            //Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
+            var hits = Physics.OverlapBoxNonAlloc(startPos, localScale / 2, _overlapHits, box.rotation, ~_groundLayer);
+            if (hits > 0)
+            {
+              Debug.Log($"Invalid placement: {_overlapHits[0].transform.root}");
+              meshRenderer.material = MaterialPool.Materials["Materials/InvalidBuildHover"];
+            }
+            else
+            {
+              meshRenderer.material = MaterialPool.Materials["Materials/BuildHover"];
+              if (input.PrimaryAttackClicked)
+              {
+                _player.RemoveItem(weaponState.EquippedWeapon, 1);
+      
+                var buildingBlock = GameObject.Instantiate(PrefabPool.Prefabs[IDeployable.ItemToDeployable[typeof(BuildingBlock)][weaponState.EquippedWeapon]]).transform;
+                buildingBlock.position = hoverPrefab.position;
+                buildingBlock.forward = hoverPrefab.forward;
+
+                hoverPrefab.position = new Vector3(0, -100, 0);
+              }
+            }
+           
+           
+          }
+        }
+        else
+        {
+          var hoverPrefab = PrefabPool.SpawnedPrefabs[IDeployable.ItemToDeployable[typeof(BuildingBlock)][weaponState.EquippedWeapon]].transform;
+          hoverPrefab.position = Vector3.down;
+        }
+      }
+      
+      if (lastHover != null)
+      {
+        lastHover.OnHoverExit(_player);
+        lastHover = null;
+      }
+      if (state.InteractableType != INTERACTABLE_TYPE.NULL)
+      {
+        state.ColliderId = -1;
+        state.InteractableType = INTERACTABLE_TYPE.NULL;
+        state.HasChanged = true;
+      }
     }
 
     return false;
   }
+
+  public PlayerInteractState State => _state;
 }
 
 internal class PlayerDropComponent
 {
-  private IPlayer _player;
-  private Transform _cameraTransform;
+  private readonly IPlayer _player;
+  private readonly Transform _cameraTransform;
   
   internal PlayerDropComponent(IPlayer player, Transform cameraTransform)
   {

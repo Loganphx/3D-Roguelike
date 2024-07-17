@@ -1,39 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingBlockAnchor : MonoBehaviour, IDeployable, IHoverable
 {
 
-  private GameObject _mockSeedTransform;
+  private Transform _mockSeedTransform;
+  private static Collider[] _hits = new Collider[5];
   public void Deploy(IPlayer player, ITEM_TYPE itemType)
   {
-    if(!_cropData.ContainsKey(itemType)) return;
+    if(!IDeployable.ItemToDeployable[typeof(BuildingBlock)].ContainsKey(itemType)) return;
     
     Debug.Log($"Placing building block: {itemType}");
       
     // Collision Check before placing.
-    var box = _mockSeedTransform.transform.GetChild(0);
+    var box = _mockSeedTransform.GetChild(0);
 
     var localScale = box.localScale;
-    var startPos = box.position - new Vector3(0, localScale.y / 2f, 0);
     //Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
-    var invalid = Physics.BoxCast(startPos, localScale / 2, box.up, out var hit, box.rotation, 1);
-    if (invalid) return;
+    var hits = Physics.OverlapBoxNonAlloc(_mockSeedTransform.position, localScale / 2, _hits, box.rotation, ~(1 << LayerMask.NameToLayer("Ground")), QueryTriggerInteraction.Ignore);
+    if (hits > 0) return;
     
     player.RemoveItem(itemType, 1);
       
-    var buildingBlock = GameObject.Instantiate(PrefabPool.Prefabs[_cropData[itemType]]);
+    var buildingBlock = GameObject.Instantiate(PrefabPool.Prefabs[IDeployable.ItemToDeployable[typeof(BuildingBlock)][itemType]]).transform;
     
-    var transform1 = transform;
-    buildingBlock.transform.position = transform1.position;
-    buildingBlock.transform.forward = -transform1.right;
+    buildingBlock.position = _mockSeedTransform.position;
+    buildingBlock.forward = _mockSeedTransform.forward;
     
     // Find Nearest Building Blocks
     // Turn off Anchors if they connect the pieces
     var buildingBlockComponent = buildingBlock.GetComponent<BuildingBlock>();
-    buildingBlockComponent.Awake();
-    buildingBlockComponent.Start();
+    // buildingBlockComponent.Awake();
+    // buildingBlockComponent.Start();
     gameObject.SetActive(false);
     
   }
@@ -42,24 +39,25 @@ public class BuildingBlockAnchor : MonoBehaviour, IDeployable, IHoverable
   {
     var currentItem = player.GetCurrentWeapon();
     if(currentItem == ITEM_TYPE.NULL) return;
-    if(!_cropData.ContainsKey(currentItem)) return;
+    if(!IDeployable.ItemToDeployable[typeof(BuildingBlock)].ContainsKey(currentItem)) return;
     
     Debug.Log($"Hovering over seed: {currentItem}");
-    _mockSeedTransform = PrefabPool.SpawnedPrefabs[_cropData[currentItem]];
-    _mockSeedTransform.transform.SetParent(transform);
-    _mockSeedTransform.transform.localPosition = Vector3.zero;
-    _mockSeedTransform.transform.forward = -transform.right;
+    _mockSeedTransform = PrefabPool.SpawnedPrefabs[IDeployable.ItemToDeployable[typeof(BuildingBlock)] [currentItem]].transform;
+    _mockSeedTransform.SetParent(transform);
+    var box = _mockSeedTransform.GetChild(0);
+    var localScale = box.localScale;
+    _mockSeedTransform.forward = transform.forward;
+    var offset = _mockSeedTransform.forward * localScale.x/2;
+    _mockSeedTransform.position = transform.position + offset;
 
-    var box = _mockSeedTransform.transform.GetChild(0);
     var meshRenderer =box.GetComponent<MeshRenderer>();
 
-    var localScale = box.localScale;
-    var startPos = box.position - new Vector3(0, localScale.y / 2f, 0);
+    var startPos = _mockSeedTransform.position;
     //Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
-    var invalid = Physics.BoxCast(startPos, localScale / 2, box.up, out var hit, box.rotation, 1);
-    if (invalid)
+    var hits = Physics.OverlapBoxNonAlloc(startPos, localScale / 2.0f, _hits, box.rotation, ~(1 << LayerMask.NameToLayer("Ground")), QueryTriggerInteraction.Ignore);
+    if (hits > 0)
     {
-      Debug.Log($"Invalid placement: {hit.collider.gameObject}");
+      Debug.Log($"Invalid placement ({hits}): {_hits[0].transform.root}");
       meshRenderer.material = MaterialPool.Materials["Materials/InvalidBuildHover"];
     }
     else meshRenderer.material = MaterialPool.Materials["Materials/BuildHover"];
@@ -69,16 +67,10 @@ public class BuildingBlockAnchor : MonoBehaviour, IDeployable, IHoverable
   {
     if(_mockSeedTransform == null) return;
     
-    _mockSeedTransform.transform.SetParent(null);
-    _mockSeedTransform.transform.position = new Vector3(0,-10000,0);
+    _mockSeedTransform.SetParent(null);
+    _mockSeedTransform.position = new Vector3(0,-10000,0);
     _mockSeedTransform = null;
   }
-    
-  private static readonly Dictionary<ITEM_TYPE, string> _cropData = new Dictionary<ITEM_TYPE, string>()
-  {
-    {ITEM_TYPE.BUILDING_FOUNDATION, "Prefabs/Buildings/building_foundation"},
-    {ITEM_TYPE.BUILDING_WALL, "Prefabs/Buildings/building_wall"},
-  };
   
   // private static readonly Dictionary<ITEM_TYPE, string> _blueprintData = new Dictionary<ITEM_TYPE, string>()
   // {

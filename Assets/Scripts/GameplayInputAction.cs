@@ -23,6 +23,7 @@ namespace ECS.Movement.Services
     Action4,
     Action5,
     Action6,
+    Action7,
     ToggleSide,
     ToggleCursor,
     Heal,

@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 internal struct InventoryItem
 {
+  [SerializeField]
   public ITEM_TYPE ItemId;
   public int Amount;
   public int MaxStack;
@@ -12,12 +15,15 @@ internal struct InventoryItem
 
   public bool HasChanged;
 }
+[Serializable]
 internal struct PlayerInventoryState : IState
 {
+  [SerializeField]
   public InventoryItem[] Items;
   public int GoldCount;
   public bool HasChanged;
 }
+[Serializable]
 internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
 {
   public PlayerInventoryState _state;
@@ -26,7 +32,7 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
   public PlayerInventoryComponent(IPlayer player)
   {
     ref var state = ref _state;
-    state.Items = new InventoryItem[6*5];
+    state.Items = new InventoryItem[7*4];
 
     for (int i = 0; i < state.Items.Length; i++)
     {
@@ -85,7 +91,7 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
     for (int i = 0; i < state.Items.Length; i++)
     {
       ref var item = ref state.Items[i];
-      if (item.ItemId == 0)
+      if (item.ItemId == ITEM_TYPE.NULL)
       {
         item.ItemId      = itemId;
         item.ItemDamage  = itemDamage;
@@ -102,8 +108,18 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
         
         item.HasChanged  = true;
         state.HasChanged = true;
-          
-        if(amount == 0) return 0;
+
+        Debug.Log("Adding " + itemId + " x " + item.Amount + $" to Slot {i}. ({amount} remaining)");
+
+        if (amount == 0)
+        {
+          for (int j = 0; j < state.Items.Length; j++)
+          {
+            ref var item2 = ref state.Items[j];
+            // Debug.Log($"{j}: {item2.ItemId} x {item2.Amount}");
+          }
+          return 0;
+        }
       }
     }
 
@@ -153,7 +169,7 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
       }
     }
   }
-
+    
   public void RemoveItem(int slotIndex, int amount)
   {
     ref var state = ref _state;
@@ -181,5 +197,41 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
 
     item.HasChanged = true;
     state.HasChanged = true;
+  }
+
+  public bool ContainsItem(ITEM_TYPE itemType, int amount)
+  {
+    ref var state = ref _state;
+      
+    int total = 0;
+    for (int i = 0; i < state.Items.Length; i++)
+    {
+      ref var item = ref state.Items[i];
+
+      if (item.ItemId == itemType)
+      {
+        total += item.Amount;
+      }
+    }
+
+    return total >= amount;
+  }
+  public void OnFixedUpdate()
+  {
+    ref var state = ref _state;
+    
+    if (state.HasChanged)
+    {
+      state.HasChanged = false;
+
+      for (int i = 0; i < state.Items.Length; i++)
+      {
+        ref var item = ref state.Items[i];
+        
+        item.HasChanged = false;
+      }
+    }
+    
+    
   }
 }

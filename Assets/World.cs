@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ECS.Movement.Services;
+using FastScriptReload.Examples;
 using UnityEngine;
 
 public class HitboxSystem
@@ -26,12 +27,14 @@ public struct GameState
   public bool HasChanged;
 }
 
+[Serializable]
 public class World : MonoBehaviour
 {
   public List<IComponent> Components = new List<IComponent>();
 
   public GameState[] StateBuffer = new GameState[50];
     
+  [SerializeField]
   public List<Player> Players = new List<Player>();
 
   private int Tick;
@@ -41,6 +44,31 @@ public class World : MonoBehaviour
     PrefabPool.LoadPrefabs();
     SpritePool.LoadSprites();
     MaterialPool.LoadMaterials();
+    AnimationPool.LoadAnimations();
+    
+    IDeployable.ItemToDeployable.Clear();
+    IDeployable.ItemToDeployable.Add(typeof(BuildingBlock), new Dictionary<ITEM_TYPE, string>()
+    {
+      // Buildings
+      { ITEM_TYPE.BUILDING_FOUNDATION, "Prefabs/Buildings/building_foundation" },
+      { ITEM_TYPE.BUILDING_WALL, "Prefabs/Buildings/building_wall" }, 
+    });
+    IDeployable.ItemToDeployable.Add(typeof(Crop), new Dictionary<ITEM_TYPE, string>()
+    {
+      // Seeds
+      { ITEM_TYPE.SEED_WHEAT, "Prefabs/Crops/crop_wheat" },
+      { ITEM_TYPE.SEED_FLAX, "Prefabs/Crops/crop_flax" },
+    });
+    
+    Application.targetFrameRate = 90;
+
+    Resources.UnloadUnusedAssets();
+    
+    GC.Collect();
+    GC.Collect(1);
+    GC.Collect(2);
+    GC.Collect(3);
+    GC.Collect(4);
   }
 
   private void Start()

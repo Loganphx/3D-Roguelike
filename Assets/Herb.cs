@@ -20,6 +20,11 @@ public class Herb : MonoBehaviour, IInteractable, IHoverable
     _outline.enabled = false;
   }
 
+  public INTERACTABLE_TYPE GetInteractableType()
+  {
+    return INTERACTABLE_TYPE.HERB;
+  }
+
   public void Interact(IPlayer player)
   {
     Debug.Log("Interacting with herb");

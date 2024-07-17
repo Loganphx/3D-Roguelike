@@ -5,6 +5,9 @@ using UnityEngine;
 public interface IDeployable
 {
   public void Deploy(IPlayer player, ITEM_TYPE itemType);
+
+  public static readonly Dictionary<Type, Dictionary<ITEM_TYPE, string>> ItemToDeployable =
+    new Dictionary<Type, Dictionary<ITEM_TYPE, string>>();
 }
 
 public class FarmPlot : MonoBehaviour, IHoverable, IDeployable
@@ -14,9 +17,11 @@ public class FarmPlot : MonoBehaviour, IHoverable, IDeployable
 
   public void OnHoverEnter(IPlayer player)
   {
+    if (_crop != null) return;
+
     var currentItem = player.GetCurrentWeapon();
     if (currentItem == ITEM_TYPE.NULL) return;
-    if (!ItemToCrops.ContainsKey(currentItem)) return;
+    if (!IDeployable.ItemToDeployable[typeof(Crop)].ContainsKey(currentItem)) return;
 
     Debug.Log($"Hovering over seed: {currentItem}");
     _mockSeedTransform = PrefabPool.SpawnedPrefabs[ItemPool.ItemPrefabs[currentItem]];
@@ -40,12 +45,12 @@ public class FarmPlot : MonoBehaviour, IHoverable, IDeployable
   {
     if (_crop != null) return;
 
-    if (!ItemToCrops.ContainsKey(seedType)) return;
+    if (!IDeployable.ItemToDeployable[typeof(Crop)].ContainsKey(seedType)) return;
 
     Debug.Log($"Planting seed: {seedType}");
     player.RemoveItem(seedType, 1);
 
-    var itemToCrop = ItemToCrops[seedType];
+    var itemToCrop = IDeployable.ItemToDeployable[typeof(Crop)][seedType];
     var prefab = PrefabPool.Prefabs[itemToCrop];
     Debug.Log($"Planting seed: {seedType} with prefab: {prefab}");
     _crop = GameObject
@@ -55,12 +60,6 @@ public class FarmPlot : MonoBehaviour, IHoverable, IDeployable
     _crop.Plant(seedType);
     // transform.Find("Interaction").gameObject.layer = LayerMask.NameToLayer("Default");
   }
-
-  private static readonly Dictionary<ITEM_TYPE, string> ItemToCrops = new Dictionary<ITEM_TYPE, string>()
-  {
-    { ITEM_TYPE.SEED_WHEAT, "Prefabs/Crops/crop_wheat" },
-    { ITEM_TYPE.SEED_FLAX, "Prefabs/Crops/crop_flax" },
-  };
 }
 
 internal class CropData
@@ -68,6 +67,9 @@ internal class CropData
 
   public int GrowTime;
   public List<CropPhase> Phases;
+  
+  public ITEM_TYPE Product;
+  public byte ProductQuantity;
 }
 
 public struct FarmPlotState

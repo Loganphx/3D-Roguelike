@@ -201,7 +201,9 @@ public class Animal : MonoBehaviour, IComponent<AnimalState>, IDamagable, IDamag
 
         // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
         hitDirection.y = 1;
-        itemTemplate.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
+        var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+        rigidBody.linearDamping = 0.5f;
+        rigidBody.AddForce(hitDirection * 10f, ForceMode.Impulse);
     
         gameObject.SetActive(false);
     }

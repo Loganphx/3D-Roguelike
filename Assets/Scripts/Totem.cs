@@ -4,10 +4,27 @@ using Random = System.Random;
 public class Totem : MonoBehaviour, IInteractable, IHoverable
 {
   private Outline _outline;
+  private Animation _animation;
 
   private bool started;
 
   private Animal[] _spawnedEnemies = new Animal[3];
+
+  private int remainingEnemies;
+  public static string[] Animations = new string[]
+  {
+    "Animations/Totem/Totem-0-Progress",
+    "Animations/Totem/Totem-1-Progress",
+    "Animations/Totem/Totem-2-Progress",
+    "Animations/Totem/Totem-3-Progress",
+  };
+
+  private void Awake()
+  {
+    _outline = GetComponent<Outline>();
+    _outline.enabled = false;
+    _animation = GetComponent<Animation>();
+  }
 
   private void FixedUpdate()
   {
@@ -23,16 +40,46 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
       }
     }
 
-    if (entityCount == 0)
+    if (remainingEnemies != entityCount)
     {
-      Death();
+      // Update Visual 
+      if (entityCount == 2)
+      {
+        if (_animation.clip.name != "Totem-1-Progress")
+        {
+          _animation.clip = AnimationPool.Animations[Animations[1]];
+          _animation.Play();
+        }
+      }
+      else if (entityCount == 1)
+      {
+        if (_animation.clip.name != "Totem-2-Progress")
+        {
+          _animation.clip = AnimationPool.Animations[Animations[2]];
+          _animation.Play();
+        }
+      }
+      else if (entityCount == 0)
+      {
+        if (_animation.clip.name != "Totem-3-Progress")
+        {
+          _animation.clip = AnimationPool.Animations[Animations[3]];
+          _animation.Play();
+        }
+      }
+      
+      if (entityCount == 0)
+      {
+        Death();
+      }
     }
+
+    remainingEnemies = entityCount;
   }
 
-  private void Awake()
+  public INTERACTABLE_TYPE GetInteractableType()
   {
-    _outline = GetComponent<Outline>();
-    _outline.enabled = false;
+    return INTERACTABLE_TYPE.TOTEM;
   }
 
   public void Interact(IPlayer player)
@@ -46,6 +93,9 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
     var interaction = transform.Find("Interaction");
     interaction.gameObject.SetActive(false);
 
+    _animation.clip = AnimationPool.Animations[Animations[0]];
+    _animation.Play();
+    
     started = true;
   }
 
@@ -76,7 +126,6 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
       if(animal == null) Debug.LogError("Animal is null");
       _spawnedEnemies[i] = animal
         .GetComponent<Animal>();
-      
     }
   }
 

@@ -37,6 +37,10 @@ public enum ITEM_TYPE
   MUSHROOM_ZOOMSHROOM,
   
   DEPLOYABLE_FARM_PLANTER,
+  DEPLOYABLE_CRAFTING_STATION,
+  DEPLOYABLE_FURNACE,
+  DEPLOYABLE_CAULDRON,
+  DEPLOYABLE_CHEST,
   
   BUILDING_FOUNDATION,
   BUILDING_FOUNDATION_TRIANGLE,
@@ -53,6 +57,21 @@ public enum ITEM_TYPE
   TOOL_AXE_IRON,
   TOOL_AXE_MYTHRIL,
   TOOL_AXE_ADAMANTITE,
+  
+  BARK,
+  BOWL,
+  
+  ARROW_STONE,
+  ARROW_IRON,
+  ARROW_MYTHRIL,
+  ARROW_ADAMANTITE,
+  
+  INGOT_IRON,
+  INGOT_MYTHRIL,
+  INGOT_ADAMANTITE,
+  
+  WHEAT,
+  FLAX
 }
 
 public class Item : MonoBehaviour, IInteractable, IHoverable
@@ -81,6 +100,11 @@ public class Item : MonoBehaviour, IInteractable, IHoverable
     interaction.gameObject.layer = LayerMask.NameToLayer("Interactable");
 
     GetComponent<Rigidbody>().isKinematic = false;
+  }
+
+  public INTERACTABLE_TYPE GetInteractableType()
+  {
+    return INTERACTABLE_TYPE.ITEM;
   }
 
   public void Interact(IPlayer player)

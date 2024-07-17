@@ -38,7 +38,7 @@ internal class PlayerHungerComponent : IComponent<PlayerHungerState>
     public bool AddHunger(int amount)
     {
         ref var state = ref _hungerState;
-        if(state.Hunger == state.MaxHunger) return false;
+        if(Math.Abs(state.Hunger - state.MaxHunger) < 0.05f) return false;
         
         state.Hunger = Mathf.Min(state.MaxHunger, state.Hunger + amount);
         state.HasChanged = true;

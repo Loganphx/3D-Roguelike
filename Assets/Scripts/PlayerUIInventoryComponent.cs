@@ -14,20 +14,23 @@ internal class ItemSlotUI
 internal class PlayerUIInventoryComponent
 {
   private readonly GameObject _inventoryPanel;
+  private readonly GameObject _hotbarPanel;
   private readonly List<ItemSlotUI> _itemSlots;
 
   private readonly TMP_Text _goldText;
 
-  public PlayerUIInventoryComponent(GameObject inventoryPanel, Transform inventorySlotsParent,
-    Transform hotbarSlotsParent, TMP_Text goldText)
+  public PlayerUIInventoryComponent(GameObject inventoryPanel, GameObject hotbarPanel,
+    Transform inventorySlotsParent,
+    TMP_Text goldText)
   {
     _inventoryPanel = inventoryPanel;
     _goldText = goldText;
 
     _itemSlots = new List<ItemSlotUI>();
-    for (int i = 0; i < hotbarSlotsParent.childCount; i++)
+    Debug.Log(inventorySlotsParent.childCount);
+    for (int i = 21; i < inventorySlotsParent.childCount; i++)
     {
-      var child = hotbarSlotsParent.GetChild(i);
+      var child = inventorySlotsParent.GetChild(i);
       var itemSlot = new ItemSlotUI()
       {
         Image = child.Find("Image").GetComponent<Image>(),
@@ -36,7 +39,8 @@ internal class PlayerUIInventoryComponent
       };
       _itemSlots.Add(itemSlot);
     }
-    for (int i = 0; i < inventorySlotsParent.childCount; i++)
+
+    for (int i = 0; i < inventorySlotsParent.childCount - 7; i++)
     {
       var child = inventorySlotsParent.GetChild(i);
       var itemSlot = new ItemSlotUI()
@@ -61,9 +65,9 @@ internal class PlayerUIInventoryComponent
     if (!inventoryState.HasChanged) return;
 
     _goldText.text = inventoryState.GoldCount.ToString();
-    
+
     bool hasChanged = false;
-    
+
     for (int i = 0; i < inventoryState.Items.Length; i++)
     {
       ref var item = ref inventoryState.Items[i];
@@ -72,13 +76,13 @@ internal class PlayerUIInventoryComponent
 
       var itemSlot = _itemSlots[i];
 
-      if (item.Amount == 0)
+      if (item.ItemId == ITEM_TYPE.NULL)
       {
         itemSlot.Image.sprite = null;
         itemSlot.Image.enabled = false;
         itemSlot.AmountText.text = "";
         itemSlot.type = ITEM_TYPE.NULL;
-        item.HasChanged = false;
+        // item.HasChanged = false;
         continue;
       }
 
@@ -88,7 +92,7 @@ internal class PlayerUIInventoryComponent
       itemSlot.Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[item.ItemId]];
       itemSlot.AmountText.text = "x" + item.Amount;
       itemSlot.type = item.ItemId;
-      item.HasChanged = false;
+      // item.HasChanged = false;
     }
   }
 }

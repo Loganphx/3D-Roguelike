@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 // ReSharper disable LocalVariableHidesMember
@@ -19,6 +20,7 @@ public class ChestData
     public int GoldCost;
     public Color Color;
     public PowerupSpawnTable SpawnTable;
+    public string ChestName;
 }
 public enum RarityTypes
 {
@@ -47,7 +49,8 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                         Chance = 100,
                     }
                 }
-            }
+            },
+            ChestName = "Common\nChest"
         }},
         {RarityTypes.UNCOMMON, new ChestData()
         {
@@ -63,7 +66,8 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                         Chance = 100,
                     }
                 }
-            }
+            },
+            ChestName = "Uncommon\nChest"
         }},
         {RarityTypes.RARE, new ChestData()
         {
@@ -80,6 +84,7 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                     }
                 }
             },
+            ChestName = "Rare\nChest"
         }},
         {RarityTypes.EPIC, new ChestData() { 
             GoldCost = 250, 
@@ -95,6 +100,7 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                     }
                 }
             },
+            ChestName = "Epic\nChest"
         }},
         {RarityTypes.LEGENDARY, new ChestData()
         {
@@ -111,6 +117,7 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                     }
                 }
             },
+            ChestName = "Legendary\nChest"
         }},
     };
     
@@ -131,7 +138,15 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
         }
         _outline = GetComponent<Outline>();
         _outline.enabled = false;
+
+        transform.GetComponentInChildren<TMP_Text>().SetText(ChestData.ChestName);
     }
+
+    public INTERACTABLE_TYPE GetInteractableType()
+    {
+        return INTERACTABLE_TYPE.CHEST;
+    }
+
     public void Interact(IPlayer player)
     {
         if (player.GetGoldInInventory() < ChestData.GoldCost)

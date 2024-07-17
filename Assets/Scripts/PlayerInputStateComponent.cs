@@ -61,6 +61,7 @@ namespace ECS.Movement.Services
         input.Action4 = input.Action4 || _keyboard.digit4Key.wasPressedThisFrame;
         input.Action5 = input.Action5 || _keyboard.digit5Key.wasPressedThisFrame;
         input.Action6 = input.Action6 || _keyboard.digit6Key.wasPressedThisFrame;
+        input.Action7 = input.Action7 || _keyboard.digit7Key.wasPressedThisFrame;
 
         input.PrimaryAttackClicked = input.PrimaryAttackClicked || _mouse.leftButton.wasPressedThisFrame;
         input.SecondaryAttackClicked = input.SecondaryAttackClicked || _mouse.rightButton.wasPressedThisFrame;
@@ -226,6 +227,12 @@ namespace ECS.Movement.Services
     {
       get => Actions.IsSet(GameplayInputAction.Action6);
       set => Actions.Set(GameplayInputAction.Action6, value);
+    }
+    
+     public bool Action7
+    {
+      get => Actions.IsSet(GameplayInputAction.Action7);
+      set => Actions.Set(GameplayInputAction.Action7, value);
     }
     
     public bool ToggleCursor

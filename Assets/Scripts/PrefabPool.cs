@@ -10,6 +10,7 @@ public static class PrefabPool
     Prefabs = new Dictionary<string, GameObject>()
     {
       { "Prefabs/Player", Resources.Load<GameObject>("Prefabs/Player") },
+      { "Prefabs/EventSystem", Resources.Load<GameObject>("Prefabs/EventSystem") },
       { "Prefabs/Entities/Animal", Resources.Load<GameObject>("Prefabs/Entities/Animal") },
       
       { "Prefabs/Items/item_template", Resources.Load<GameObject>("Prefabs/Items/item_template") },
@@ -34,6 +35,8 @@ public static class PrefabPool
       { "Prefabs/Models/model_seed_wheat", Resources.Load<GameObject>("Prefabs/Models/model_seed_wheat") },
       { "Prefabs/Models/model_seed_flax", Resources.Load<GameObject>("Prefabs/Models/model_seed_flax") },
       
+      { "Prefabs/Models/model_wheat", Resources.Load<GameObject>("Prefabs/Models/model_wheat") },
+      
       { "Prefabs/Models/model_building_foundation", Resources.Load<GameObject>("Prefabs/Models/model_building_foundation") },
       { "Prefabs/Models/model_building_wall", Resources.Load<GameObject>("Prefabs/Models/model_building_wall") },
       
@@ -47,8 +50,14 @@ public static class PrefabPool
       { "Prefabs/Models/model_axe_mythril", Resources.Load<GameObject>("Prefabs/Models/model_axe_mythril") },
       { "Prefabs/Models/model_axe_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_axe_adamantite") },
       
+      { "Prefabs/Deployables/deployable_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/deployable_farm_planter") },
+      { "Prefabs/Deployables/deployable_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/deployable_crafting_station") },
+      { "Prefabs/Deployables/deployable_furnace", Resources.Load<GameObject>("Prefabs/Deployables/deployable_furnace") },
+      { "Prefabs/Deployables/deployable_cauldron", Resources.Load<GameObject>("Prefabs/Deployables/deployable_cauldron") },
+      
       { "Prefabs/Buildings/blueprint_building_foundation", Resources.Load<GameObject>("Prefabs/Buildings/blueprint_building_foundation") },
       { "Prefabs/Buildings/building_foundation", Resources.Load<GameObject>("Prefabs/Buildings/building_foundation") },
+      { "Prefabs/Buildings/blueprint_building_wall", Resources.Load<GameObject>("Prefabs/Buildings/blueprint_building_wall") },
       { "Prefabs/Buildings/building_wall", Resources.Load<GameObject>("Prefabs/Buildings/building_wall") },
       
       { "Prefabs/Crops/crop_wheat", Resources.Load<GameObject>("Prefabs/Crops/crop_wheat") },
@@ -76,7 +85,7 @@ public static class PrefabPool
       },
       {
         "Prefabs/Buildings/building_wall",
-        GameObject.Instantiate(Prefabs["Prefabs/Buildings/building_wall"], Vector3.zero, Quaternion.identity)
+        GameObject.Instantiate(Prefabs["Prefabs/Buildings/blueprint_building_wall"], Vector3.zero, Quaternion.identity)
       }
     };
   }
@@ -94,6 +103,22 @@ public static class MaterialPool
     {
       { "Materials/InvalidBuildHover", Resources.Load<Material>("Materials/InvalidBuildHover") },
       { "Materials/BuildHover", Resources.Load<Material>("Materials/BuildHover") }
+    };
+  }
+}
+
+public static class AnimationPool
+{
+  public static Dictionary<string, AnimationClip> Animations;
+
+  public static void LoadAnimations()
+  {
+    Animations = new Dictionary<string, AnimationClip>()
+    {
+      { "Animations/Totem/Totem-0-Progress", Resources.Load<AnimationClip>("Animations/Totem/Totem-0-Progress") },
+      { "Animations/Totem/Totem-1-Progress", Resources.Load<AnimationClip>("Animations/Totem/Totem-1-Progress") },
+      { "Animations/Totem/Totem-2-Progress", Resources.Load<AnimationClip>("Animations/Totem/Totem-2-Progress") },
+      { "Animations/Totem/Totem-3-Progress", Resources.Load<AnimationClip>("Animations/Totem/Totem-3-Progress") },
     };
   }
 }

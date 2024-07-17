@@ -63,6 +63,11 @@ internal class PlayerWeaponComponent : IComponent<PlayerWeaponState>
       EquipWeapon(5, ref inventory);
       return state.HasChanged;
     }
+    if (input.Action7)
+    {
+      EquipWeapon(6, ref inventory);
+      return state.HasChanged;
+    }
 
     if(state.EquippedSlot == -1) return state.HasChanged;
     if (inventory.HasChanged)
@@ -79,6 +84,7 @@ internal class PlayerWeaponComponent : IComponent<PlayerWeaponState>
   private void EquipWeapon(int slot, ref PlayerInventoryState inventory)
   {
     ref var state = ref _state;
+    Debug.Log($"Equip Weapon - {slot}");
     ref var item = ref inventory.Items[slot];
       
     if (state.EquippedSlot != -1 && _equippedWeapon != null)
@@ -90,8 +96,9 @@ internal class PlayerWeaponComponent : IComponent<PlayerWeaponState>
     }
     
     if(item.ItemId == ITEM_TYPE.NULL) return;
+    Debug.Log($"Attemping to equip {item.ItemId} with damage {item.ItemDamage}");
     if (!item.IsDeployable && !item.IsConsumable && item.ItemDamage == 0) return;
-    
+
     Debug.Log($"Equipping {item.ItemId} with damage {item.ItemDamage}");
 
     if(slot == state.EquippedSlot) return;
@@ -99,6 +106,9 @@ internal class PlayerWeaponComponent : IComponent<PlayerWeaponState>
     _equippedWeapon = Object.Instantiate(PrefabPool.Prefabs[ItemPool.ItemPrefabs[item.ItemId]], Vector3.zero, Quaternion.identity, _armTransform.transform);
     _equippedWeapon.transform.localPosition = Vector3.zero;
     _equippedWeapon.transform.localEulerAngles = Vector3.zero;
+
+    _equippedWeapon.transform.Find("Interaction").gameObject.SetActive(false);
+    
     state.EquippedSlot = slot;
     state.EquippedWeapon = item.ItemId;
     state.HasChanged = true;

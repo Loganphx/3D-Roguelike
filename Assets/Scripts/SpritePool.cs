@@ -38,6 +38,9 @@ public static class SpritePool
       
       { "Sprites/Items/seed_wheat", Resources.Load<Sprite>("Sprites/Items/seed_wheat") },
       { "Sprites/Items/seed_flax", Resources.Load<Sprite>("Sprites/Items/seed_flax") },
+      
+      { "Sprites/Items/wheat", Resources.Load<Sprite>("Sprites/Items/wheat") },
+      { "Sprites/Items/flax", Resources.Load<Sprite>("Sprites/Items/flax") },
             
       { "Sprites/Items/pickaxe_wooden", Resources.Load<Sprite>("Sprites/Items/pickaxe_wooden") },
       { "Sprites/Items/pickaxe_iron", Resources.Load<Sprite>("Sprites/Items/pickaxe_iron") },
@@ -50,9 +53,24 @@ public static class SpritePool
       { "Sprites/Items/axe_mythril", Resources.Load<Sprite>("Sprites/Items/axe_mythril") },
       { "Sprites/Items/axe_adamantite", Resources.Load<Sprite>("Sprites/Items/axe_adamantite") },
       
+      { "Sprites/Items/deployable_farm_planter", Resources.Load<Sprite>("Sprites/Items/deployable_farm_planter") },
+      { "Sprites/Items/deployable_crafting_station", Resources.Load<Sprite>("Sprites/Items/deployable_crafting_station") },
+      { "Sprites/Items/deployable_furnace", Resources.Load<Sprite>("Sprites/Items/deployable_furnace") },
+      { "Sprites/Items/deployable_cauldron", Resources.Load<Sprite>("Sprites/Items/deployable_cauldron") },
+      { "Sprites/Items/deployable_chest", Resources.Load<Sprite>("Sprites/Items/deployable_chest") },
+      
       { "Sprites/Items/building_foundation", Resources.Load<Sprite>("Sprites/Items/building_foundation") },
       { "Sprites/Items/building_wall", Resources.Load<Sprite>("Sprites/Items/building_wall") },
-    };
+      { "Sprites/Items/building_ramp", Resources.Load<Sprite>("Sprites/Items/building_ramp") },
+      
+      { "Sprites/Items/bowl", Resources.Load<Sprite>("Sprites/Items/bowl") },
+      { "Sprites/Items/bark", Resources.Load<Sprite>("Sprites/Items/bark") },
+      
+      { "Sprites/Items/arrow_stone", Resources.Load<Sprite>("Sprites/Items/axe_wooden") },
+      { "Sprites/Items/arrow_iron", Resources.Load<Sprite>("Sprites/Items/arrow_iron") },
+      { "Sprites/Items/arrow_mythril", Resources.Load<Sprite>("Sprites/Items/arrow_mythril") },
+      { "Sprites/Items/arrow_adamantite", Resources.Load<Sprite>("Sprites/Items/arrow_adamantite") },
+    }; 
   }
 
   private static Sprite LoadSprite(string path)

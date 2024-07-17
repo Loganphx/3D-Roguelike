@@ -1,7 +1,10 @@
+using System;
 using ECS.Movement.Services;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 // ReSharper disable LocalVariableHidesMember
 
@@ -12,6 +15,7 @@ using UnityEngine.UI;
 /// </summary>
 ///
 ///
+[Serializable]
 public class Player : IPlayer, IDamagable
 {
   private readonly Transform _playerTransform;
@@ -25,13 +29,17 @@ public class Player : IPlayer, IDamagable
   internal PlayerHealthComponent _playerHealthComponent;
   internal PlayerStaminaComponent _playerStaminaComponent;
   internal PlayerHungerComponent _playerHungerComponent;
+  
+  [SerializeField]
   internal PlayerInventoryComponent _playerInventoryComponent;
   internal PlayerPowerupComponent _playerPowerupComponent;
   internal PlayerWeaponComponent _playerWeaponComponent;
 
   private PlayerUIHUDComponent _playerUIHUDComponent;
   private PlayerUIInventoryComponent _playerUIInventoryComponent;
+  private PlayerUIHotbarComponent _playerUIHotbarComponent;
   private PlayerUIPowerupComponent _playerUIPowerupComponent;
+  private PlayerUIInteractComponent _playerUIInteractComponent;
 
   public bool HasChanged;
 
@@ -39,6 +47,7 @@ public class Player : IPlayer, IDamagable
   {
     _playerTransform = Object.Instantiate(PrefabPool.Prefabs["Prefabs/Player"], position, Quaternion.identity)
       .transform;
+      
     Init();
 
     var colliders = _playerTransform.GetComponentsInChildren<Collider>();
@@ -50,6 +59,8 @@ public class Player : IPlayer, IDamagable
 
   private void Init()
   {
+    var eventSystem = Object.Instantiate(PrefabPool.Prefabs["Prefabs/EventSystem"], Vector3.zero,  Quaternion.identity).GetComponent<EventSystem>();
+    
     playerInput = new PlayerInputComponent();
     var cameraTransform = _playerTransform.GetComponentInChildren<Camera>().transform;
     _playerCameraComponent = new PlayerCameraComponent(_playerTransform, cameraTransform);
@@ -70,8 +81,9 @@ public class Player : IPlayer, IDamagable
     _playerHungerComponent = new PlayerHungerComponent(this, 100);
     _playerInventoryComponent = new PlayerInventoryComponent(this);
     _playerPowerupComponent = new PlayerPowerupComponent(this);
-    _playerWeaponComponent = new PlayerWeaponComponent(this, _playerTransform.Find("Eyes").Find("Arm").Find("Arm").Find("Anchor"));
-
+    _playerWeaponComponent =
+      new PlayerWeaponComponent(this, _playerTransform.Find("Eyes").Find("Arm").Find("Arm").Find("Anchor"));
+      
     var canvas = _playerTransform.Find("Canvas");
     var panel = canvas.GetChild(0).GetChild(0);
     _playerUIHUDComponent = new PlayerUIHUDComponent(
@@ -82,17 +94,26 @@ public class Player : IPlayer, IDamagable
     );
 
     _playerUIInventoryComponent = new PlayerUIInventoryComponent(canvas.Find("Inventory").gameObject,
-      canvas.Find("Inventory").Find("Slots"), canvas.Find("Hotbar"),
+      canvas.Find("Hotbar").gameObject,
+      canvas.Find("Inventory").Find("Panel").Find("Slots"),
       canvas.Find("Gold").GetChild(0).Find("Text").GetComponent<TMP_Text>());
+    _playerUIHotbarComponent = new PlayerUIHotbarComponent(canvas.Find("Hotbar").gameObject, canvas.Find("Hotbar"));
 
     _playerUIPowerupComponent = new PlayerUIPowerupComponent(canvas.Find("Powerups"));
+    _playerUIInteractComponent = new PlayerUIInteractComponent(this, eventSystem, canvas.Find("CraftingStation").gameObject,
+      canvas.Find("Furnace").gameObject, canvas.Find("Cauldron").gameObject, canvas.Find("FletchingTable").gameObject);
 
     AddItem(ITEM_TYPE.COIN, 1000);
-    AddItem(ITEM_TYPE.SEED_WHEAT, 3);
+    AddItem(ITEM_TYPE.SEED_WHEAT, 10);
     AddItem(ITEM_TYPE.SEED_FLAX, 1);
     // AddItem(ITEM_TYPE.BUILDING_FOUNDATION, 2);
     AddItem(ITEM_TYPE.TOOL_AXE_WOODEN, 1);
-    AddItem(ITEM_TYPE.TOOL_AXE_WOODEN, 1);
+    AddItem(ITEM_TYPE.TOOL_PICKAXE_WOODEN, 1);
+    
+    AddItem(ITEM_TYPE.WOOD, 10);
+    AddItem(ITEM_TYPE.ROCK, 10);
+    // AddItem(ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, 1);
+    // AddItem(ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, 1);
   }
 
   public void Update()
@@ -107,6 +128,7 @@ public class Player : IPlayer, IDamagable
       ref _playerHungerComponent._hungerState);
 
     _playerUIInventoryComponent.OnUpdate(ref playerInput.InputState.Input);
+    _playerUIInteractComponent.OnUpdate();
   }
 
   public void FixedUpdate()
@@ -117,6 +139,7 @@ public class Player : IPlayer, IDamagable
     ref var staminaState = ref _playerStaminaComponent._staminaState;
     ref var hungerState = ref _playerHungerComponent._hungerState;
     ref var weaponState = ref _playerWeaponComponent._state;
+
 
     var hasChanged = _playerMovementComponent.ProcessInput(ref input, ref staminaState);
     if (hasChanged) HasChanged = true;
@@ -140,7 +163,9 @@ public class Player : IPlayer, IDamagable
     if (hasChanged) HasChanged = true;
 
     _playerUIInventoryComponent.OnFixedUpdate(ref inventoryState);
+    _playerUIHotbarComponent.OnFixedUpdate(ref inventoryState);
     _playerUIPowerupComponent.OnFixedUpdate(ref _playerPowerupComponent._state);
+    _playerUIInteractComponent.OnFixedUpdate(ref _playerInteractComponent._state, ref inventoryState);
 
     input.Interact = false;
     input.Drop = false;
@@ -150,9 +175,15 @@ public class Player : IPlayer, IDamagable
     input.Action4 = false;
     input.Action5 = false;
     input.Action6 = false;
+    input.Action7 = false;
     input.PrimaryAttackClicked = false;
 
     input.ToggleInventory = false;
+
+    // RESETTING HAS CHANGED FLAGS
+    _playerInventoryComponent.OnFixedUpdate();
+
+    _playerUIInteractComponent.OnLateFixedUpdate(ref _playerInteractComponent._state);
   }
 
   public void OnDrawGizmos()
@@ -181,8 +212,8 @@ public class Player : IPlayer, IDamagable
   {
     Debug.Log($"Player picked up {itemId}");
     // Gold += item.GoldValue;
-    return _playerInventoryComponent.AddItem(itemId, 
-      ItemPool.ItemDamages[itemId], 
+    return _playerInventoryComponent.AddItem(itemId,
+      ItemPool.ItemDamages[itemId],
       ItemPool.ItemDeployables.Contains(itemId),
       ItemPool.ItemConsumables.Contains(itemId),
       amount);
@@ -194,23 +225,31 @@ public class Player : IPlayer, IDamagable
     _playerInventoryComponent.RemoveItem(itemId, amount);
   }
 
+  public bool ContainsItem(ITEM_TYPE itemId, int amount)
+  {
+    if(itemId == ITEM_TYPE.NULL) return true;
+    if(amount == 0) return true;
+
+    return _playerInventoryComponent.ContainsItem(itemId, amount);
+  }
+
   public void RemoveItem(int slotIndex, int amount)
   {
     _playerInventoryComponent.RemoveItem(slotIndex, amount);
   }
-  
+
   public void AddPowerup(POWERUP_TYPE powerupId, int amount)
   {
     Debug.Log($"Player picked up {powerupId}");
     _playerPowerupComponent.AddPowerup(powerupId, amount);
   }
-    
+
   public void TakeDamage(IDamager damager, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
   {
     Debug.Log($"Player took {damage} damage from {damager}");
     _playerHealthComponent.TakeDamage(damage);
   }
-  
+
   public void AddHealth(int amount)
   {
     _playerHealthComponent.AddHealth(amount);
@@ -225,5 +264,4 @@ public class Player : IPlayer, IDamagable
   {
     _playerHungerComponent.AddHunger(amount);
   }
-
 }

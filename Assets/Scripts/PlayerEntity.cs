@@ -4,7 +4,7 @@ using UnityEngine;
 
 // [RequireComponent(typeof(CollideAndSlideComponent))]
 [RequireComponent(typeof(PlayerInputComponent))]
-[RequireComponent(typeof(TransformComponent))]
+// [RequireComponent(typeof(TransformComponent))]
 public class PlayerEntity : MonoBehaviour, IEntity
 {
     public IComponent[] Components { get; set; }

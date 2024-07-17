@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +34,10 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
     state.SeedType = seedType;
     state.CurrentPhase = 0;
     state.CurrentGrowTick = 0;
+
+    _cropModel = transform.GetChild(0).gameObject;
+    
+    transform.Find("Interaction").gameObject.layer = LayerMask.NameToLayer("Default");
   }
 
   private void FixedUpdate()
@@ -49,6 +54,7 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
     {
       state.IsGrown = true;
       state.CurrentPhase = _cropData.Phases.Count - 1;
+      transform.Find("Interaction").gameObject.layer = LayerMask.NameToLayer("Interactable");
       return;
     }
 
@@ -59,14 +65,16 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
       {
         if (state.CurrentPhase != i)
         {
-          if (state.CurrentPhase > 0)
+          // if (state.CurrentPhase > 0) 
           {
-            _cropModel.gameObject.SetActive(false);
+            _cropModel.SetActive(false);
             //GameObject.Destroy(_cropModel);
           }
 
           state.CurrentPhase = i;
           // var cropPhase = _cropData.Phases[state.CurrentPhase];
+          Debug.Log($"{i}/{_cropData.Phases.Count}");
+          Debug.Log($"{transform.GetChild(i)}");
           var crop = transform.GetChild(i).gameObject;
 
           // var cropPrefab = PrefabPool.Prefabs[cropPhase.prefabPath];
@@ -74,7 +82,7 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
           crop.transform.localPosition = Vector3.zero + Vector3.up * 0.235f;
 
           Debug.Log(this,this);
-          crop.gameObject.SetActive(true);
+          crop.SetActive(true);
           _cropModel = crop;
         }
 
@@ -83,9 +91,44 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
     }
   }
 
+  public INTERACTABLE_TYPE GetInteractableType()
+  {
+    return INTERACTABLE_TYPE.CROP;
+  }
+
   public void Interact(IPlayer player)
   {
     Debug.Log("Interacting with crop");
+    ref var state = ref _state;
+
+    if (state.IsGrown)
+    {
+      // Pickup 
+      // var t = player.AddItem(_cropData.Product, _cropData.ProductQuantity);
+      Debug.Log($"{state.SeedType} Crop died");
+      // var dropPrefab = PrefabPool.Prefabs[_nodeData.itemType];
+      var position = transform.position;
+      var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
+      var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
+      var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+      var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[_cropData.Product]];
+
+      var item = Instantiate(itemPrefab, Vector3.zero,
+        Quaternion.identity, itemTemplate.transform);
+
+      item.transform.localPosition = Vector3.zero;
+    
+      itemTemplate.GetComponent<Item>().SetItemType(_cropData.Product);
+
+      // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+      var hitDirection = player.Transform.forward;
+      hitDirection.y = 1;
+      itemTemplate.GetComponent<Rigidbody>().AddForce(hitDirection * 3f, ForceMode.Impulse);
+      // drop.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
+
+      //drop.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+      gameObject.SetActive(false);
+    }
   }
 
   private readonly Dictionary<ITEM_TYPE, CropData> _crops = new Dictionary<ITEM_TYPE, CropData>()
@@ -121,7 +164,9 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
             percentage = 1.0f,
             // prefabPath = "Prefabs/Crops/crop_wheat_4"
           },
-        }
+        },
+        Product = ITEM_TYPE.WHEAT,
+        ProductQuantity = 5
       }
     },
     {
@@ -155,7 +200,9 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
             percentage = 1.0f,
             // prefabPath = "Prefabs/Crops/crop_wheat_4"
           },
-        }
+        },
+        Product = ITEM_TYPE.FLAX,
+        ProductQuantity = 3
       }
     }
   };

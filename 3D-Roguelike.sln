@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorTests", "EditorTests.csproj", "{d9cf389e-90ed-24ff-20b9-6101c98dc603}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{26046744-9339-b29a-7ada-60a57d7a7e8a}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Editor", "FastScriptReload.Editor.csproj", "{09d2139c-ebfa-f8fb-6319-25882b73eb66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Runtime", "FastScriptReload.Runtime.csproj", "{0adacf49-32db-0353-1a8d-d38d758ed316}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests.csproj", "{29980a56-c454-2033-88aa-5ec73334602b}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Tests.Runtime", "FastScriptReload.Tests.Runtime.csproj", "{19972a85-6971-7389-84e9-ca45b362d550}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Tests.Editor", "FastScriptReload.Tests.Editor.csproj", "{f4b167c7-5675-8e14-677a-361be8626058}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26046744-9339-b29a-7ada-60a57d7a7e8a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26046744-9339-b29a-7ada-60a57d7a7e8a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09d2139c-ebfa-f8fb-6319-25882b73eb66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09d2139c-ebfa-f8fb-6319-25882b73eb66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0adacf49-32db-0353-1a8d-d38d758ed316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0adacf49-32db-0353-1a8d-d38d758ed316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29980a56-c454-2033-88aa-5ec73334602b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29980a56-c454-2033-88aa-5ec73334602b}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19972a85-6971-7389-84e9-ca45b362d550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19972a85-6971-7389-84e9-ca45b362d550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{f4b167c7-5675-8e14-677a-361be8626058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{f4b167c7-5675-8e14-677a-361be8626058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -53,28 +53,36 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
       state.IsConsuming = false;
     }
     
-    if (weaponState.EquippedWeapon != ITEM_TYPE.NULL)
+    if (weaponState.EquippedWeapon != ITEM_TYPE.NULL && ItemPool.ItemDamages[weaponState.EquippedWeapon] > 0)
     {
       if (input.PrimaryAttackClicked && state.RemainingCooldown < 0)
       {
         _animator.SetTrigger(AttackHash);
+        
+        // Detect Damages
         var hits = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
-          1 << LayerMask.NameToLayer("Damagable"), QueryTriggerInteraction.Collide);
+          1 << LayerMask.NameToLayer("Damagable") | 1 << LayerMask.NameToLayer("Interactable"), QueryTriggerInteraction.Collide);
 
         if (hits != 0)
         {
           var hit = _hits[0];
 
-          var damagable = HitboxSystem.ColliderHashToDamagable[hit.colliderInstanceID];
-          damagable?.TakeDamage(_player, _cameraTransform.forward, ItemPool.ItemTools[weaponState.EquippedWeapon],
-            ItemPool.ItemDamages[weaponState.EquippedWeapon]);
+          if (HitboxSystem.ColliderHashToDamagable.ContainsKey(hit.colliderInstanceID))
+          {
+            var damagable = HitboxSystem.ColliderHashToDamagable[hit.colliderInstanceID];
+            damagable?.TakeDamage(_player, _cameraTransform.forward, ItemPool.ItemTools[weaponState.EquippedWeapon],
+              ItemPool.ItemDamages[weaponState.EquippedWeapon]);
+          }
+          else Debug.LogError($"Failed to find damagable for {_hits[0].transform.root}({hits})");
+          
         }
+        
 
         state.RemainingCooldown = state.AttackCooldown;
         state.HasChanged = true;
       }
       
-      Debug.Log(input.SecondaryAttackHeld);
+      // Debug.Log(input.SecondaryAttackHeld);
       if (input.SecondaryAttackHeld && ItemPool.ItemConsumables.Contains(weaponState.EquippedWeapon))
       {
         if (!state.IsConsuming && state.RemainingCooldown < 0)
