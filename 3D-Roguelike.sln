@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorTests", "EditorTests.csproj", "{d9cf389e-90ed-24ff-20b9-6101c98dc603}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{26046744-9339-b29a-7ada-60a57d7a7e8a}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorTests", "EditorTests.csproj", "{d9cf389e-90ed-24ff-20b9-6101c98dc603}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Editor", "FastScriptReload.Editor.csproj", "{09d2139c-ebfa-f8fb-6319-25882b73eb66}"
 EndProject
@@ -20,10 +20,10 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26046744-9339-b29a-7ada-60a57d7a7e8a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26046744-9339-b29a-7ada-60a57d7a7e8a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09d2139c-ebfa-f8fb-6319-25882b73eb66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{09d2139c-ebfa-f8fb-6319-25882b73eb66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0adacf49-32db-0353-1a8d-d38d758ed316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
