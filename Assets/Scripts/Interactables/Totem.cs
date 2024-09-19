@@ -8,7 +8,7 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
 
   private bool started;
 
-  private Mob[] _spawnedEnemies = new Mob[3];
+  private Damagable[] _spawnedEnemies = new Damagable[3];
 
   private int remainingEnemies;
   public static string[] Animations = new string[]
@@ -124,7 +124,7 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
       animal.transform.position = hit.point;
       
       if(animal == null) Debug.LogError("Animal is null");
-      _spawnedEnemies[i] = animal.GetComponent<Mob>();
+      _spawnedEnemies[i] = animal.GetComponent<Damagable>();
     }
   }
 

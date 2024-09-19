@@ -18,6 +18,8 @@ public class Herb : MonoBehaviour, IInteractable, IHoverable
   {
     _outline = transform.GetChild(0).GetComponent<Outline>();
     _outline.enabled = false;
+
+    transform.GetChild(0).GetChild(0).GetComponent<Collider>().enabled = false;
   }
 
   public INTERACTABLE_TYPE GetInteractableType()

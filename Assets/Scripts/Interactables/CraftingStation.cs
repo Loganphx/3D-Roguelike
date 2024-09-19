@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
@@ -6,10 +7,20 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
     public static Recipe[] Recipes = Array.Empty<Recipe>();
 
     private int health = 100;
+
     private void Awake()
     {
-        var collider = transform.GetChild(0).Find("Interaction").GetComponent<Collider>();
-        HitboxSystem.ColliderHashToDamagable.Add(collider.GetInstanceID(), this);
+        GetComponent<Damagable>().Initialize(new LootTable(new List<LootTableItem>()
+        {
+            new()
+            {
+                ItemType = ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION,
+                maxAmount = 1,
+                minAmount = 1,
+                dropChance = 100,
+                useStats = false
+            }
+        }), 100);
     }
 
     public INTERACTABLE_TYPE GetInteractableType()
@@ -24,18 +35,18 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
 
     public Transform Transform => transform;
 
-    public void TakeDamage(IDamager player, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
+    public void OnHit(IDamager player, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
     {
         health -= damage;
 
         if (health <= 0)
         {
             Death(hitDirection);
+            GetComponent<Damagable>().OnHit(player, hitDirection, hitPosition, toolType, damage);
         }
     }
 
     private void Death(Vector3 hitDirection)
     {
-        this.Death(hitDirection, ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION);
     }
 }

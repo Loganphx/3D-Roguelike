@@ -7,6 +7,8 @@ public enum TOOL_TYPE
   NULL = 0,
   AXE,
   PICKAXE,
+  SHOVEL,
+  SCYTHE,
 }
 public enum ITEM_TYPE
 {
@@ -80,7 +82,7 @@ public class Item : MonoBehaviour, IInteractable, IHoverable
   private Outline _outline;
 
   [SerializeField] private ITEM_TYPE itemType;
-
+  private int amount; 
   private void Awake()
   {
     if(itemType == ITEM_TYPE.NULL) return;
@@ -126,9 +128,10 @@ public class Item : MonoBehaviour, IInteractable, IHoverable
     _outline.enabled = false;
   }
 
-  public void SetItemType(ITEM_TYPE itemType)
+  public void SetItemType(ITEM_TYPE itemType, int amount)
   {
     this.itemType = itemType;
+    this.amount = amount;
     GetComponent<Rigidbody>().isKinematic = false;
     
     Awake();

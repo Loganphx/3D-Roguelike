@@ -1,4 +1,4 @@
-﻿public enum NodeTypes
+﻿public enum NODE_TYPE
 {
     Stone,
     Iron,

@@ -1,3 +1,4 @@
+using Interactables;
 using UnityEngine;
 
 public class BuildingBlockAnchor : MonoBehaviour, IDeployable, IHoverable

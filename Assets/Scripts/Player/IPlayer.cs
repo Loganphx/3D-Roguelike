@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IPlayer : IDamager
+public interface IPlayer : IDamager, IDamagable
 {
   public Transform Transform { get; }
 

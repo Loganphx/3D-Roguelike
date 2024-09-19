@@ -1,6 +1,6 @@
-﻿namespace Muck.Trees
+﻿namespace Interactables.Trees
 {
-    public enum TreeTypes
+    public enum TREE_TYPE
     {
         Tree,
         Birch,

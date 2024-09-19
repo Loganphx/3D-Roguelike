@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
 public class Node : MonoBehaviour, IDamagable
 {
-  [SerializeField] private NodeTypes _nodeType;
+  [SerializeField] private NODE_TYPE _nodeType;
 
   private NodeData _nodeData;
 
@@ -16,41 +17,21 @@ public class Node : MonoBehaviour, IDamagable
   {
     _nodeData = _nodes[_nodeType];
     _nodeState.CurrentHealth = _nodeData.Health;
-    
-    var colliders = transform.GetComponentsInChildren<Collider>();
-    foreach (var collider in colliders)
-    {
-      HitboxSystem.ColliderHashToDamagable.Add(collider.GetInstanceID(), this);
-    }
+
+    var damagable = GetComponent<DamagableResource>();
+    damagable.Initialize(LootTablePool.NodeLootTables[_nodeType], _nodeData.Health);
+    damagable.Initialize(TOOL_TYPE.PICKAXE, _nodeData.MinimumToolDamage);
   }
 
-  public void TakeDamage(IDamager player, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
+  public void OnHit(IDamager player, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
   {
-    ref var nodeState = ref _nodeState;
-    if (nodeState.CurrentHealth <= 0) return;
-
-    if(!toolType.HasFlag(TOOL_TYPE.PICKAXE)) return;
-    if(damage < _nodeData.MinimumToolDamage) return;
-
-    nodeState.CurrentHealth -= damage;
-    Debug.Log($"Hit {_nodeType} Node for {damage} => {nodeState.CurrentHealth} / {_nodeData.Health}");
-    
-    if (nodeState.CurrentHealth <= 0)
-      Death(hitDirection);
-  }
-  
-  private void Death(Vector3 hitDirection)
-  {
-    Debug.Log($"{_nodeType} Node died");
-    // var dropPrefab = PrefabPool.Prefabs[_nodeData.itemType];
-    
-    this.Death(hitDirection, _nodeData.ItemType);
+    GetComponent<Damagable>().OnHit(player, hitDirection, hitPosition, toolType, damage);
   }
 
-  private static readonly Dictionary<NodeTypes, NodeData> _nodes = new Dictionary<NodeTypes, NodeData>()
+  private static readonly Dictionary<NODE_TYPE, NodeData> _nodes = new Dictionary<NODE_TYPE, NodeData>()
   {
     {
-      NodeTypes.Stone, new NodeData(
+      NODE_TYPE.Stone, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
         health: 100, 
         itemId: ITEM_TYPE.ROCK,
@@ -58,7 +39,7 @@ public class Node : MonoBehaviour, IDamagable
         minimumToolDamage:10)
     },
     {
-      NodeTypes.Coal, new NodeData(
+      NODE_TYPE.Coal, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
         health: 100,
         itemId: ITEM_TYPE.ORE_COAL,
@@ -66,7 +47,7 @@ public class Node : MonoBehaviour, IDamagable
         minimumToolDamage:25)
     },
     {
-      NodeTypes.Iron, new NodeData(
+      NODE_TYPE.Iron, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
         health: 100,
         itemId: ITEM_TYPE.ORE_IRON,
@@ -74,7 +55,7 @@ public class Node : MonoBehaviour, IDamagable
         minimumToolDamage:25)
     },
     {
-      NodeTypes.Gold, new NodeData(
+      NODE_TYPE.Gold, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
         health: 100,
         itemId: ITEM_TYPE.ORE_GOLD,
@@ -82,7 +63,7 @@ public class Node : MonoBehaviour, IDamagable
         minimumToolDamage:25)
     },
     {
-      NodeTypes.Mythril, new NodeData(
+      NODE_TYPE.Mythril, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
         health:  100,
         itemId: ITEM_TYPE.ORE_MYTHRIL,
@@ -90,7 +71,7 @@ public class Node : MonoBehaviour, IDamagable
         minimumToolDamage:50)
     },
     {
-      NodeTypes.Adamantite, new NodeData(
+      NODE_TYPE.Adamantite, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
         health:  100,
         itemId:ITEM_TYPE.ORE_ADAMANTITE,

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ECS.Movement.Services;
 using FastScriptReload.Examples;
+using Interactables;
 using UnityEngine;
 
 public class HitboxSystem

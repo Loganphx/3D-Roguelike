@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Interactables;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,9 +18,9 @@ public class MobData
     public MobAttackData[] attacks;
 }
 
-public enum MobType
+public enum MOB_TYPE
 {
-    Sheep = 1,
+    SHEEP = 1,
 }
 
 public struct MobState : IState
@@ -38,23 +39,18 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
     private PhysicsScene _physicsScene;
     private MobData _mobData;
 
-    [SerializeField] private MobType _mobType;
+    [SerializeField] private MOB_TYPE _mobType;
     
-    private IPlayer _target;
+    private IDamagable _target;
     private MobAttackData _currentAttack;
 
-    private MobState _mobState;
     private bool isAttacking;
     private bool isPathing;
 
     public Transform Transform => _transform;
-    public int CurrentHealth
+    public void OnHit(IDamager damager, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
     {
-        get
-        {
-            ref var state = ref _mobState;
-            return state.CurrentHealth;
-        }
+        GetComponent<Damagable>().OnHit(damager, hitDirection, hitPosition, toolType, damage);
     }
 
     private void Awake()
@@ -65,20 +61,10 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
         _rigidbody = GetComponent<Rigidbody>();
         
         _physicsScene = gameObject.scene.GetPhysicsScene();
-
-        var colliders = _transform.GetComponentsInChildren<Collider>();
-        foreach (var collider in colliders)
-        {
-            HitboxSystem.ColliderHashToDamagable.Add(collider.GetInstanceID(), this);
-        }
         
         _mobData = mobs[_mobType];
 
-        _mobState = new MobState()
-        {
-            CurrentHealth = 100,
-            MaxHealth = 100
-        };    
+        GetComponent<Damagable>().Initialize(LootTablePool.MobLootTables[_mobType], 100);
     }
 
 
@@ -88,8 +74,9 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
         
         if (!isAttacking)
         {
+            var (build, buildPosition, buildDistance) = ResourceManager.GetClosestBuild(position);
             var (player, playerPosition, playerDistance) = PlayerPool.GetClosestPlayer(position);
-            if (float.IsPositiveInfinity(playerDistance))
+            if (float.IsPositiveInfinity(playerDistance) && float.IsPositiveInfinity(buildDistance))
             {
                 if (isPathing)
                 {
@@ -98,8 +85,24 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
                 }
                 return;
             }
-            
-            _target = player;
+
+            float targetDistance = 0;
+            Vector3 targetPosition;
+            if (float.IsPositiveInfinity(buildDistance) || playerDistance < buildDistance)
+            {
+                Debug.Log($"Player {playerDistance} < {buildDistance}");
+                _target = player;
+                targetDistance = playerDistance;
+                targetPosition = playerPosition;
+            }
+            else 
+            {
+                Debug.Log($"Build {buildDistance} < {playerDistance}");
+                _target = build;
+                targetDistance = buildDistance;
+                targetPosition = buildPosition;
+            }
+
             _currentAttack = _mobData.attacks[0];
 
             _navMeshAgent.stoppingDistance = _currentAttack.attackDistance;
@@ -108,13 +111,13 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
             // TODO: Determine which attack to use based on ?
 
             
-            if (playerDistance >= _currentAttack.attackDistance)
+            if (targetDistance >= _currentAttack.attackDistance)
             {
                 isPathing = true;
                 _navMeshAgent.isStopped = false;
                 _rigidbody.isKinematic = true;
                 // Do some sort of pathing
-                _navMeshAgent.SetDestination(playerPosition);
+                _navMeshAgent.SetDestination(targetPosition);
                 _animator.SetBool(IsMovingHash, true);
             }
             else
@@ -128,7 +131,7 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
                     _animator.SetBool(IsMovingHash, false);
                 }
                 
-                // _transform.LookAt(playerPosition);
+                _transform.LookAt(targetPosition);
                 _animator.SetTrigger(AttackHash);
             }
             
@@ -145,7 +148,7 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
     [InvokedByAnimationEvent, UsedImplicitly]
     private void StartAttack()
     {
-        Debug.Log("Mob.StartAttack");
+        // Debug.Log("Mob.StartAttack");
         isAttacking = true;
     }
     
@@ -161,12 +164,17 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
         {
             attackOrigin = attackOrigin.Find(path);
         }
-        
-        var hit = _physicsScene.Raycast(attackOrigin.position, attackOrigin.forward, _hits, 5, (1 << LayerMask.NameToLayer("Player")), QueryTriggerInteraction.Collide);
-        if (hit != 0)
+
+        var hitDirection = _target.Transform.position - attackOrigin.position;
+        Debug.DrawRay(attackOrigin.position, hitDirection, Color.red, 2);
+        var hits = _physicsScene.Raycast(attackOrigin.position, hitDirection, 
+            _hits, 5, (1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Damagable")), QueryTriggerInteraction.Collide);
+        if (hits != 0)
         {
-            // Debug.Log(_hits[0].transform.root);
-            HitboxSystem.ColliderHashToDamagable[_hits[0].collider.GetHashCode()].TakeDamage(this, attackOrigin.forward, TOOL_TYPE.NULL, 10);
+            Debug.Log(_hits[0].transform.root);
+            var hit = _hits[0];
+            HitboxSystem.ColliderHashToDamagable[_hits[0].collider.GetHashCode()]
+                .OnHit(this, attackOrigin.forward, hit.point, TOOL_TYPE.NULL, 10);
         }
     }
     
@@ -179,10 +187,10 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
         isAttacking = false;
     }
 
-    private static Dictionary<MobType, MobData> mobs = new Dictionary<MobType, MobData>()
+    private static Dictionary<MOB_TYPE, MobData> mobs = new Dictionary<MOB_TYPE, MobData>()
     {
         {
-            MobType.Sheep, new MobData()
+            MOB_TYPE.SHEEP, new MobData()
             {
                 stopOnAttack = true,
                 ignoreBuildings = true,
@@ -202,23 +210,6 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
     private readonly RaycastHit[] _hits = new RaycastHit[5];
     private static readonly int AttackHash = Animator.StringToHash("Attack");
     private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
-    
-    public void TakeDamage(IDamager damager, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
-    {
-        ref var mobState = ref _mobState;
-        if(mobState.CurrentHealth <= 0) return;
-    
-        mobState.CurrentHealth -= damage;
-        Debug.Log($"Hit {_mobType} for {damage} => {mobState.CurrentHealth} / {_mobState.MaxHealth}");
-        if (mobState.CurrentHealth <= 0)
-        {
-            Death(hitDirection);
-        }
-    }
-    public void Death(Vector3 hitDirection)
-    {
-        this.Death(hitDirection, ITEM_TYPE.COIN);
-    }
     
     
     // private void OnCollisionEnter(Collision other)

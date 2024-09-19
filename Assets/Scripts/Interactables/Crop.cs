@@ -119,7 +119,7 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
 
       item.transform.localPosition = Vector3.zero;
     
-      itemTemplate.GetComponent<Item>().SetItemType(_cropData.Product);
+      itemTemplate.GetComponent<Item>().SetItemType(_cropData.Product, 1);
 
       // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
       var hitDirection = player.Transform.forward;
