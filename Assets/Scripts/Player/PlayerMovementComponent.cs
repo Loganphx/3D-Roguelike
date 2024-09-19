@@ -26,7 +26,7 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
     MovementState = new PlayerMovementState()
     {
       maxBounces = 5,
-      skinWidth = 0.2f,
+      skinWidth = 0.05f,
       maxSlopeAngle = 45,
       gravity = new Vector3(0, -15 / 50f, 0),
       currentGravityForce = new Vector3(0, 0, 0),
@@ -117,16 +117,21 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
     Vector3 moveAmount
   )
   {
+    // Debug.Log(moveAmount);
     var transformPos = transform.position;
-    moveAmount = CollideAndSlide(ref playerMovementData, moveAmount, transformPos, 0,
-      false, moveAmount);
-
-    if (!playerMovementData.isGrounded)
+    int passes = 1;
+    for (int i = 0; i < passes; i++)
     {
-      moveAmount += HandleGravity(ref playerMovementData, transformPos, moveAmount);
+      moveAmount = CollideAndSlide(ref playerMovementData, moveAmount, transformPos, 0,
+        false, moveAmount);
+      
+      if (!playerMovementData.isGrounded)
+      {
+        moveAmount += HandleGravity(ref playerMovementData, transformPos, moveAmount);
+      }
+      
+      transform.position = transformPos + moveAmount;
     }
-
-    transform.position = transformPos + moveAmount;
   }
 
   private Vector3 HandleGravity(ref PlayerMovementState playerMovementData,
@@ -134,7 +139,7 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
     Vector3 moveAmount)
   {
     moveAmount += CollideAndSlide(ref playerMovementData,
-      playerMovementData.currentGravityForce * Time.fixedDeltaTime,
+      playerMovementData.currentGravityForce * (Time.fixedDeltaTime / 1),
       position + moveAmount,
       0,
       true,
@@ -175,9 +180,9 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
   {
     if (depth >= playerMovementData.maxBounces) return Vector3.zero;
 
-    float dist = vel.magnitude + playerMovementData.skinWidth;
+    float dist = (vel.magnitude * 1.25f) + playerMovementData.skinWidth;
     Debug.DrawLine(pos, pos + vel * dist, Color.blue);
-    var count = _physicsScene.SphereCast(pos, playerMovementData.extents.x, vel.normalized, _hits, dist,
+    var count = _physicsScene.SphereCast(pos+ new Vector3(0,0.5f,0), playerMovementData.extents.x, vel.normalized, _hits, dist,
       _collisionLayerMask, QueryTriggerInteraction.Ignore);
     if (count == 0)
     {
@@ -195,6 +200,10 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
     Vector3 leftOver = vel - playerMovementData.snapToSurface;
     float angle = Vector3.Angle(Vector3.up, hit.normal);
 
+    // 0.0004410058
+
+    // 0.000143916
+    // 0.003600035
     if (playerMovementData.snapToSurface.sqrMagnitude <= playerMovementData.skinWidth)
       playerMovementData.snapToSurface = Vector3.zero;
 
@@ -207,6 +216,7 @@ internal class PlayerMovementComponent : IComponent<PlayerMovementState>
     // wall or steep slope.
     else
     {
+      // Debug.Log(angle);
       float scale = 1 - Vector3.Dot(new Vector3(hit.normal.x, 0, hit.normal.z).normalized,
         -new Vector3(initialVelocity.x, 0, initialVelocity.z).normalized);
 
