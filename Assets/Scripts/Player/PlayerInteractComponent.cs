@@ -1,4 +1,5 @@
 using ECS.Movement.Services;
+using Interactables;
 using UnityEngine;
 
 public enum INTERACTABLE_TYPE : byte
@@ -38,6 +39,8 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
 
     private readonly int _groundLayer = 1 << LayerMask.NameToLayer("Ground");
 
+    private Transform _hoverPrefab;
+    
     public PlayerInteractState _state = new PlayerInteractState()
     {
         HasChanged = true,
@@ -61,6 +64,11 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
         ref var state = ref _state;
         state.HasChanged = false;
 
+        if (weaponState.EquippedWeapon != ITEM_TYPE.BUILDING_FOUNDATION && _hoverPrefab != null && _hoverPrefab.position != new Vector3(0, -100, 0))
+        {
+            _hoverPrefab.position = new Vector3(0, -100, 0);
+        }
+        
         if (hitCount > 0)
         {
             for (int i = 0; i < hitCount; i++)
@@ -124,19 +132,19 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
                     {
                         if (weaponState.EquippedWeapon == ITEM_TYPE.BUILDING_FOUNDATION)
                         {
-                            var hoverPrefab = PrefabPool
+                            _hoverPrefab = PrefabPool
                                 .SpawnedPrefabs[
                                     IDeployable.ItemToDeployable[typeof(BuildingBlock)][weaponState.EquippedWeapon]]
                                 .transform;
-                            var box = hoverPrefab.GetChild(0);
+                            var box = _hoverPrefab.GetChild(0);
 
                             var meshRenderer = box.GetComponent<MeshRenderer>();
 
                             var localScale = box.localScale;
                             var startPos = _hits[0].point;
 
-                            hoverPrefab.position = startPos;
-                            hoverPrefab.forward = _player.Transform.forward;
+                            _hoverPrefab.position = startPos;
+                            _hoverPrefab.forward = _player.Transform.forward;
                             //Debug.DrawLine(startPos, startPos + box.up, Color.blue, 5f);
                             var hits = Physics.OverlapBoxNonAlloc(startPos, localScale / 2, _overlapHits, box.rotation,
                                 ~_groundLayer, QueryTriggerInteraction.Ignore);
@@ -156,21 +164,21 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
                                         .Instantiate(PrefabPool.Prefabs[
                                             IDeployable.ItemToDeployable[typeof(BuildingBlock)][
                                                 weaponState.EquippedWeapon]]).transform;
-                                    buildingBlock.position = hoverPrefab.position;
-                                    buildingBlock.forward = hoverPrefab.forward;
+                                    buildingBlock.position = _hoverPrefab.position;
+                                    buildingBlock.forward = _hoverPrefab.forward;
 
-                                    hoverPrefab.position = new Vector3(0, -100, 0);
+                                    _hoverPrefab.position = new Vector3(0, -100, 0);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        var hoverPrefab = PrefabPool
+                        _hoverPrefab = PrefabPool
                             .SpawnedPrefabs[
                                 IDeployable.ItemToDeployable[typeof(BuildingBlock)][weaponState.EquippedWeapon]]
                             .transform;
-                        hoverPrefab.position = Vector3.down;
+                        _hoverPrefab.position = Vector3.down;
                     }
                 }
                 else if (IDeployable.ItemToDeployable[typeof(CraftingStation)].ContainsKey(weaponState.EquippedWeapon))
@@ -293,7 +301,7 @@ internal class PlayerDropComponent
 
         item.transform.localPosition = Vector3.zero;
 
-        itemTemplate.GetComponent<Item>().SetItemType(itemType);
+        itemTemplate.GetComponent<Item>().SetItemType(itemType, quantity);
 
         // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
         // hitDirection.y = 1;
