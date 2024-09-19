@@ -48,7 +48,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
 
     if (state.IsConsuming && !input.SecondaryAttackHeld)
     {
-      // Debug.Log("Setting consume animation to false");
+      Debug.Log("Setting consume animation to false");
       _animator.SetBool(ConsumeHash, false);
       state.IsConsuming = false;
     }
@@ -70,7 +70,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
           if (HitboxSystem.ColliderHashToDamagable.ContainsKey(hit.colliderInstanceID))
           {
             var damagable = HitboxSystem.ColliderHashToDamagable[hit.colliderInstanceID];
-            damagable?.TakeDamage(_player, _cameraTransform.forward, ItemPool.ItemTools[weaponState.EquippedWeapon],
+            damagable?.OnHit(_player, _cameraTransform.forward, hit.point, ItemPool.ItemTools[weaponState.EquippedWeapon],
               ItemPool.ItemDamages[weaponState.EquippedWeapon]);
           }
           else Debug.LogError($"Failed to find damagable for {_hits[0].transform.root}({hits})");
@@ -81,50 +81,51 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
         state.RemainingCooldown = state.AttackCooldown;
         state.HasChanged = true;
       }
-      
-      // Debug.Log(input.SecondaryAttackHeld);
-      if (input.SecondaryAttackHeld && ItemPool.ItemConsumables.Contains(weaponState.EquippedWeapon))
-      {
-        if (!state.IsConsuming && state.RemainingCooldown < 0)
-        {
-          Debug.Log("Setting consume animation to true");
-          // Start Consuming Animation and Countdown
-          _animator.SetBool(ConsumeHash, true);
-          state.RemainingCooldown = state.ConsumeCooldown;
-          state.IsConsuming = true;
-          state.HasChanged = true;
-        }
-        else if (state.IsConsuming && state.RemainingCooldown < 0)
-        {
-          Debug.Log($"Consumable: {input.SecondaryAttackHeld}");
-
-          if (weaponState.EquippedWeapon == ITEM_TYPE.MUSHROOM_HEALSHROOM)
-          {
-            Debug.Log("Healing player");
-            _player.AddHealth(10);
-            _player.RemoveItem(weaponState.EquippedSlot, 1);
-          }
-          else if (weaponState.EquippedWeapon == ITEM_TYPE.MUSHROOM_MUNCHSHROOM)
-          {
-            Debug.Log("Hungering player");
-            _player.AddHunger(10);
-            _player.RemoveItem(weaponState.EquippedSlot, 1);
-          }
-          else if (weaponState.EquippedWeapon == ITEM_TYPE.MUSHROOM_ZOOMSHROOM)
-          {
-            Debug.Log("Zooming player");
-            _player.AddStamina(10);
-            _player.RemoveItem(weaponState.EquippedSlot, 1);
-          }
-
-          _animator.SetBool(ConsumeHash, false);
-
-          state.IsConsuming = false;
-          state.HasChanged = true;
-        }
-      }
     }
 
+    // Debug.Log(input.SecondaryAttackHeld);
+    if (input.SecondaryAttackHeld && ItemPool.ItemConsumables.Contains(weaponState.EquippedWeapon))
+    {
+      // Debug.Log("Attempting to consume");
+      if (!state.IsConsuming && state.RemainingCooldown < 0)
+      {
+        // Debug.Log("Setting consume animation to true");
+        // Start Consuming Animation and Countdown
+        _animator.SetBool(ConsumeHash, true);
+        state.RemainingCooldown = state.ConsumeCooldown;
+        state.IsConsuming = true;
+        state.HasChanged = true;
+      }
+      else if (state.IsConsuming && state.RemainingCooldown < 0)
+      {
+        Debug.Log($"Consumable: {input.SecondaryAttackHeld}");
+
+        if (weaponState.EquippedWeapon == ITEM_TYPE.MUSHROOM_HEALSHROOM)
+        {
+          Debug.Log("Healing player");
+          _player.AddHealth(10);
+          _player.RemoveItem(weaponState.EquippedSlot, 1);
+        }
+        else if (weaponState.EquippedWeapon == ITEM_TYPE.MUSHROOM_MUNCHSHROOM)
+        {
+          Debug.Log("Hungering player");
+          _player.AddHunger(10);
+          _player.RemoveItem(weaponState.EquippedSlot, 1);
+        }
+        else if (weaponState.EquippedWeapon == ITEM_TYPE.MUSHROOM_ZOOMSHROOM)
+        {
+          Debug.Log("Zooming player");
+          _player.AddStamina(10);
+          _player.RemoveItem(weaponState.EquippedSlot, 1);
+        }
+
+        _animator.SetBool(ConsumeHash, false);
+
+        state.IsConsuming = false;
+        state.HasChanged = true;
+      }
+    }
+    
     if (state.RemainingCooldown >= 0)
     {
       state.RemainingCooldown -= Time.fixedDeltaTime;

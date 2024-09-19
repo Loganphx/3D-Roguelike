@@ -69,7 +69,7 @@ public class Player : IPlayer, IDamagable
     var collider = _playerTransform.GetComponentInChildren<Collider>();
     var animator = _playerTransform.GetComponent<Animator>();
     var physicsScene = _playerTransform.gameObject.scene.GetPhysicsScene();
-    LayerMask collisionLayerMask = ~(1 << LayerMask.NameToLayer("Player"));
+    LayerMask collisionLayerMask = ~(1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Damagable"));
     _playerMovementComponent =
       new PlayerMovementComponent(_playerTransform, collider, physicsScene, collisionLayerMask);
 
@@ -78,7 +78,7 @@ public class Player : IPlayer, IDamagable
     _playerAttackComponent = new PlayerAttackComponent(this, cameraTransform, animator, physicsScene);
 
     _playerHealthComponent = new PlayerHealthComponent(this, 100);
-    _playerStaminaComponent = new PlayerStaminaComponent(this, 100);
+    _playerStaminaComponent = new PlayerStaminaComponent(this, 10000);
     _playerHungerComponent = new PlayerHungerComponent(this, 100);
     _playerInventoryComponent = new PlayerInventoryComponent(this);
     _playerPowerupComponent = new PlayerPowerupComponent(this);
@@ -261,7 +261,7 @@ public class Player : IPlayer, IDamagable
     }
   }
 
-  public void TakeDamage(IDamager damager, Vector3 hitDirection, TOOL_TYPE toolType, int damage)
+  public void OnHit(IDamager damager, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
   {
     Debug.Log($"Player took {damage} damage from {damager}");
     _playerHealthComponent.TakeDamage(damage);
