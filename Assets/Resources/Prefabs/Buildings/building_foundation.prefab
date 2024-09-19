@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2278344403951543933}
   m_Layer: 6
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Exclude
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -108,7 +108,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6535335020149875675}
   - component: {fileID: 3899598937809695208}
+  - component: {fileID: 5460438090133978215}
   - component: {fileID: 2867665226847629444}
+  - component: {fileID: 8378968727204069989}
   m_Layer: 0
   m_Name: building_foundation
   m_TagString: Untagged
@@ -148,6 +150,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8827e4f5cec0024cab07553db04a16e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5460438090133978215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658367428070289939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c966b6342a44baa9207cf77520093ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &2867665226847629444
 Animator:
   serializedVersion: 7
@@ -170,6 +184,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!208 &8378968727204069989
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658367428070289939}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.34, y: 0.585, z: 1.34}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &2242486837653648484
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +257,7 @@ GameObject:
   - component: {fileID: 2150362083358733823}
   m_Layer: 6
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Exclude
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -280,7 +310,7 @@ GameObject:
   - component: {fileID: 2226387814116082946}
   m_Layer: 6
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Exclude
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -333,7 +363,7 @@ GameObject:
   - component: {fileID: 2364324289353784728}
   m_Layer: 6
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Exclude
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
