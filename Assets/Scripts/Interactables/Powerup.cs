@@ -4,14 +4,18 @@ using UnityEngine;
 public enum POWERUP_TYPE
 {
   NULL = 0,
-  EXTRA_JUMP,
+  // COMMON
   INCREASE_HEALTH,
   INCREASE_STAMINA,
   SLOW_HUNGER,
+  SHIELD,
+  // UNCOMMON
+  EXTRA_JUMP, 
+  // RARE
   EXTRA_MELEE_DAMAGE,
-  
+  // EPIC
   PIGGY_BANK,
-  
+  // LEGENDARY
   THORS_HAMMER,
   
   MAX_VALUE
@@ -36,6 +40,7 @@ public class Powerup : MonoBehaviour, IInteractable, IHoverable
     { POWERUP_TYPE.INCREASE_HEALTH,RarityTypes.COMMON},
     { POWERUP_TYPE.INCREASE_STAMINA,RarityTypes.COMMON},
     { POWERUP_TYPE.SLOW_HUNGER,RarityTypes.COMMON},
+    { POWERUP_TYPE.SHIELD,RarityTypes.COMMON},
     { POWERUP_TYPE.EXTRA_JUMP, RarityTypes.UNCOMMON },
     { POWERUP_TYPE.EXTRA_MELEE_DAMAGE,RarityTypes.RARE},
     { POWERUP_TYPE.PIGGY_BANK,RarityTypes.EPIC},
@@ -48,6 +53,11 @@ public class Powerup : MonoBehaviour, IInteractable, IHoverable
     _outline.enabled = false;
     
     transform.GetComponentInChildren<MeshRenderer>().material.color = _rarityColors[PowerupColors[_powerupType]];
+  }
+
+  public void SetPowerupType(POWERUP_TYPE powerupType)
+  {
+    this._powerupType = powerupType;
   }
 
   private void FixedUpdate()
