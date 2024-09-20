@@ -46,17 +46,22 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                     new SpawnTableEntry()
                     {
                         PowerupId = POWERUP_TYPE.INCREASE_HEALTH,
-                        Chance = 33,
+                        Chance = 25,
                     },
                     new SpawnTableEntry()
                     {
                         PowerupId = POWERUP_TYPE.INCREASE_STAMINA,
-                        Chance = 66,
+                        Chance = 25,
                     },
                     new SpawnTableEntry()
                     {
                         PowerupId = POWERUP_TYPE.SLOW_HUNGER,
-                        Chance = 1,
+                        Chance = 25,
+                    },
+                    new SpawnTableEntry()
+                    {
+                        PowerupId = POWERUP_TYPE.SLOW_HUNGER,
+                        Chance = 25,
                     }
                 }
             },
@@ -177,7 +182,7 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
         hinge.localRotation = Quaternion.Euler(Math.Abs(hinge.localEulerAngles.x - 90) < 1f ?
             0 : 90, 0, 0);
 
-        var powerupPrefab = PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[((POWERUP_TYPE)(int)Rarity)]];
+        var powerupPrefab = GeneratePowerup();
         var position = transform.position;
         var powerUpPos = new Vector3(position.x, position.y + 1f, position.z);
         var powerup = Instantiate(powerupPrefab, powerUpPos, Quaternion.identity);
@@ -196,22 +201,28 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
     }
 
     // ReSharper disable once UnusedMember.Local
-    private void GeneratePowerup()
+    private GameObject GeneratePowerup()
     {
         int random = Random.Range(0, 100);
         foreach (var entry in ChestData.SpawnTable.Entries)
         {
             if (random < entry.Chance)
             {
-                SpawnPowerup(entry.PowerupId);
-                return;
+                return SpawnPowerup(entry.PowerupId);
             }
         }
+
+        return null;
     }
 
-    private void SpawnPowerup(POWERUP_TYPE powerupId)
+    private GameObject SpawnPowerup(POWERUP_TYPE powerupId)
     {
-        Instantiate(PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[powerupId]], transform.position, Quaternion.identity);
+        Debug.Log($"Spawning {powerupId}");
+        var powerup = Instantiate(PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[powerupId]], transform.position,
+            Quaternion.identity);
+        powerup.GetComponent<Powerup>().SetPowerupType(powerupId);
+
+        return powerup;
     }
 
     public void OnHoverEnter(IPlayer player)

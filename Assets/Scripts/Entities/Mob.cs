@@ -90,14 +90,14 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
             Vector3 targetPosition;
             if (float.IsPositiveInfinity(buildDistance) || playerDistance < buildDistance)
             {
-                Debug.Log($"Player {playerDistance} < {buildDistance}");
+                // Debug.Log($"Player {playerDistance} < {buildDistance}");
                 _target = player;
                 targetDistance = playerDistance;
                 targetPosition = playerPosition;
             }
             else 
             {
-                Debug.Log($"Build {buildDistance} < {playerDistance}");
+                // Debug.Log($"Build {buildDistance} < {playerDistance}");
                 _target = build;
                 targetDistance = buildDistance;
                 targetPosition = buildPosition;
