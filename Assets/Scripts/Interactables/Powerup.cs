@@ -58,6 +58,7 @@ public class Powerup : MonoBehaviour, IInteractable, IHoverable
   public void SetPowerupType(POWERUP_TYPE powerupType)
   {
     this._powerupType = powerupType;
+    transform.GetComponentInChildren<MeshRenderer>().material.color = _rarityColors[PowerupColors[_powerupType]];
   }
 
   private void FixedUpdate()

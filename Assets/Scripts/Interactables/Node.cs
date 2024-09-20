@@ -33,10 +33,10 @@ public class Node : MonoBehaviour, IDamagable
     {
       NODE_TYPE.Stone, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
-        health: 100, 
+        health: 50, 
         itemId: ITEM_TYPE.ROCK,
         requiredToolType:TOOL_TYPE.PICKAXE,
-        minimumToolDamage:10)
+        minimumToolDamage:5)
     },
     {
       NODE_TYPE.Coal, new NodeData(
@@ -44,7 +44,7 @@ public class Node : MonoBehaviour, IDamagable
         health: 100,
         itemId: ITEM_TYPE.ORE_COAL,
         requiredToolType:TOOL_TYPE.PICKAXE,
-        minimumToolDamage:25)
+        minimumToolDamage:10)
     },
     {
       NODE_TYPE.Iron, new NodeData(
@@ -52,12 +52,12 @@ public class Node : MonoBehaviour, IDamagable
         health: 100,
         itemId: ITEM_TYPE.ORE_IRON,
         requiredToolType:TOOL_TYPE.PICKAXE,
-        minimumToolDamage:25)
+        minimumToolDamage:10)
     },
     {
       NODE_TYPE.Gold, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
-        health: 100,
+        health: 125,
         itemId: ITEM_TYPE.ORE_GOLD,
         requiredToolType:TOOL_TYPE.PICKAXE,
         minimumToolDamage:25)
@@ -65,18 +65,18 @@ public class Node : MonoBehaviour, IDamagable
     {
       NODE_TYPE.Mythril, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
-        health:  100,
+        health:  250,
         itemId: ITEM_TYPE.ORE_MYTHRIL,
         requiredToolType:TOOL_TYPE.PICKAXE,
-        minimumToolDamage:50)
+        minimumToolDamage:25)
     },
     {
       NODE_TYPE.Adamantite, new NodeData(
         color: new Color(0.5f, 0.5f, 0.5f),
-        health:  100,
+        health:  500,
         itemId:ITEM_TYPE.ORE_ADAMANTITE,
         requiredToolType:TOOL_TYPE.PICKAXE,
-        minimumToolDamage:100)
+        minimumToolDamage:50)
     },
   };
 }

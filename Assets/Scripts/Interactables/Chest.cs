@@ -29,7 +29,8 @@ public enum RarityTypes
     UNCOMMON,
     RARE,
     EPIC,
-    LEGENDARY
+    LEGENDARY,
+    MAX_VALUE
 }
 public class Chest : MonoBehaviour, IInteractable, IHoverable
 {
@@ -182,11 +183,9 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
         hinge.localRotation = Quaternion.Euler(Math.Abs(hinge.localEulerAngles.x - 90) < 1f ?
             0 : 90, 0, 0);
 
-        var powerupPrefab = GeneratePowerup();
         var position = transform.position;
         var powerUpPos = new Vector3(position.x, position.y + 1f, position.z);
-        var powerup = Instantiate(powerupPrefab, powerUpPos, Quaternion.identity);
-        powerup.GetComponentInChildren<MeshRenderer>().material.color = ChestData.Color;
+        GeneratePowerup(powerUpPos);
 
         enabled = false;
         var transforms = GetComponentsInChildren<Collider>();
@@ -201,24 +200,27 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
     }
 
     // ReSharper disable once UnusedMember.Local
-    private GameObject GeneratePowerup()
+    private GameObject GeneratePowerup(Vector3 position)
     {
-        int random = Random.Range(0, 100);
-        foreach (var entry in ChestData.SpawnTable.Entries)
+        while (true)
         {
-            if (random < entry.Chance)
+            foreach (var entry in ChestData.SpawnTable.Entries)
             {
-                return SpawnPowerup(entry.PowerupId);
+                int random = Random.Range(0, 100);
+                if (random < entry.Chance)
+                {
+                    return SpawnPowerup(entry.PowerupId, position);
+                }
             }
         }
 
         return null;
     }
 
-    private GameObject SpawnPowerup(POWERUP_TYPE powerupId)
+    private GameObject SpawnPowerup(POWERUP_TYPE powerupId, Vector3 position)
     {
         Debug.Log($"Spawning {powerupId}");
-        var powerup = Instantiate(PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[powerupId]], transform.position,
+        var powerup = Instantiate(PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[powerupId]], position,
             Quaternion.identity);
         powerup.GetComponent<Powerup>().SetPowerupType(powerupId);
 
