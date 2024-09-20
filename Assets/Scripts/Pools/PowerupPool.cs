@@ -8,6 +8,7 @@ public static class PowerupPool
         { POWERUP_TYPE.INCREASE_HEALTH, "Sprites/Powerups/powerup_common" },
         { POWERUP_TYPE.INCREASE_STAMINA, "Sprites/Powerups/powerup_common" },
         { POWERUP_TYPE.SLOW_HUNGER, "Sprites/Powerups/powerup_common" },
+        { POWERUP_TYPE.SHIELD, "Sprites/Powerups/powerup_common" },
 
         { POWERUP_TYPE.EXTRA_JUMP, "Sprites/Powerups/powerup_uncommon" },
 

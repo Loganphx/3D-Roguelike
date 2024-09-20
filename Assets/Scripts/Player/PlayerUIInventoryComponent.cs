@@ -14,12 +14,11 @@ internal class ItemSlotUI
 internal class PlayerUIInventoryComponent
 {
   private readonly GameObject _inventoryPanel;
-  private readonly GameObject _hotbarPanel;
   private readonly List<ItemSlotUI> _itemSlots;
 
   private readonly TMP_Text _goldText;
 
-  public PlayerUIInventoryComponent(GameObject inventoryPanel, GameObject hotbarPanel,
+  public PlayerUIInventoryComponent(GameObject inventoryPanel,
     Transform inventorySlotsParent,
     TMP_Text goldText)
   {

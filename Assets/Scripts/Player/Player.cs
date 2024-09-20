@@ -38,6 +38,8 @@ public class Player : IPlayer, IDamagable
 
   private PlayerUIHUDComponent _playerUIHUDComponent;
   private PlayerUIInventoryComponent _playerUIInventoryComponent;
+  private PlayerUIChatComponent _playerUIChatComponent;
+  private PlayerUIStatsComponent _playerUIStatsComponent;
   private PlayerUIHotbarComponent _playerUIHotbarComponent;
   private PlayerUIPowerupComponent _playerUIPowerupComponent;
   private PlayerUIInteractComponent _playerUIInteractComponent;
@@ -78,7 +80,7 @@ public class Player : IPlayer, IDamagable
     _playerAttackComponent = new PlayerAttackComponent(this, cameraTransform, animator, physicsScene);
 
     _playerHealthComponent = new PlayerHealthComponent(this, 100);
-    _playerStaminaComponent = new PlayerStaminaComponent(this, 10000);
+    _playerStaminaComponent = new PlayerStaminaComponent(this, 100);
     _playerHungerComponent = new PlayerHungerComponent(this, 100);
     _playerInventoryComponent = new PlayerInventoryComponent(this);
     _playerPowerupComponent = new PlayerPowerupComponent(this);
@@ -89,15 +91,21 @@ public class Player : IPlayer, IDamagable
     var panel = canvas.GetChild(0).GetChild(0);
     _playerUIHUDComponent = new PlayerUIHUDComponent(
       panel.Find("Health").Find("Text").GetComponent<TMP_Text>(),
-      panel.Find("Health").Find("Panel").GetComponent<Image>(),
+      panel.Find("Health").Find("Panel_Health").GetComponent<Image>(),
+      panel.Find("Health").Find("Panel_Shield").GetComponent<Image>(),
       panel.Find("Stamina").Find("Panel").GetComponent<Image>(),
       panel.Find("Hunger").Find("Panel").GetComponent<Image>()
     );
 
     _playerUIInventoryComponent = new PlayerUIInventoryComponent(canvas.Find("Inventory").gameObject,
-      canvas.Find("Hotbar").gameObject,
       canvas.Find("Inventory").Find("Panel").Find("Slots"),
       canvas.Find("Gold").GetChild(0).Find("Text").GetComponent<TMP_Text>());
+    _playerUIChatComponent =
+      new PlayerUIChatComponent(canvas.Find("Chat").Find("Scroll View").Find("Viewport").Find("Content").gameObject,
+        canvas.Find("Chat").Find("Scroll View").Find("Scrollbar Vertical"));
+    
+    _playerUIStatsComponent = new PlayerUIStatsComponent(canvas.Find("Inventory").Find("Panel").Find("Stats").Find("Panel").gameObject);
+    
     _playerUIHotbarComponent = new PlayerUIHotbarComponent(canvas.Find("Hotbar").gameObject, canvas.Find("Hotbar"));
 
     _playerUIPowerupComponent = new PlayerUIPowerupComponent(canvas.Find("Powerups"));
@@ -114,6 +122,14 @@ public class Player : IPlayer, IDamagable
     
     AddItem(ITEM_TYPE.WOOD, 10);
     AddItem(ITEM_TYPE.ROCK, 10);
+
+    AddPowerup(POWERUP_TYPE.INCREASE_HEALTH);
+    AddPowerup(POWERUP_TYPE.INCREASE_STAMINA);
+    AddPowerup(POWERUP_TYPE.SLOW_HUNGER);
+    AddPowerup(POWERUP_TYPE.SHIELD);
+    AddPowerup(POWERUP_TYPE.EXTRA_JUMP);
+    AddPowerup(POWERUP_TYPE.EXTRA_MELEE_DAMAGE);
+    // _playerUIChatComponent.HandleMessage("Loganphx has joined the game.");
     // AddItem(ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, 1);
     // AddItem(ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, 1);
   }
@@ -138,9 +154,12 @@ public class Player : IPlayer, IDamagable
     ref var inputState = ref playerInput.InputState;
     ref var input = ref inputState.Input;
     ref var inventoryState = ref _playerInventoryComponent._state;
+    ref var healthState = ref _playerHealthComponent._healthState;
     ref var staminaState = ref _playerStaminaComponent._staminaState;
     ref var hungerState = ref _playerHungerComponent._hungerState;
     ref var weaponState = ref _playerWeaponComponent._state;
+    ref var attackState = ref _playerAttackComponent._state;
+    ref var movementState = ref _playerMovementComponent.MovementState;
 
 
     var hasChanged = _playerMovementComponent.ProcessInput(ref input, ref staminaState);
@@ -165,6 +184,7 @@ public class Player : IPlayer, IDamagable
     if (hasChanged) HasChanged = true;
 
     _playerUIInventoryComponent.OnFixedUpdate(ref inventoryState);
+    _playerUIStatsComponent.OnFixedUpdate(ref healthState, ref attackState, ref movementState);
     _playerUIHotbarComponent.OnFixedUpdate(ref inventoryState);
     _playerUIPowerupComponent.OnFixedUpdate(ref _playerPowerupComponent._state);
     _playerUIInteractComponent.OnFixedUpdate(ref _playerInteractComponent._state, ref inventoryState);
@@ -249,15 +269,58 @@ public class Player : IPlayer, IDamagable
     _playerInventoryComponent.RemoveItem(slotIndex, amount);
   }
 
-  public void AddPowerup(POWERUP_TYPE powerupId, int amount)
+  public void AddPowerup(POWERUP_TYPE powerupId, int amount = 1)
   {
-    Debug.Log($"Player picked up {powerupId}");
+    _playerUIChatComponent.HandleMessage(amount > 1
+      ? $"Player picked up {powerupId} x {amount}"
+      : $"Player picked up {powerupId}");
+
     _playerPowerupComponent.AddPowerup(powerupId, amount);
 
-    if (powerupId == POWERUP_TYPE.EXTRA_JUMP)
+    switch (powerupId)
     {
-      ref var state = ref _playerMovementComponent.MovementState;
-      state.maxJumps++;
+      case POWERUP_TYPE.EXTRA_JUMP:
+      {
+        ref var state = ref _playerMovementComponent.MovementState;
+        state.maxJumps++;
+        break;
+      }
+      case POWERUP_TYPE.INCREASE_HEALTH:
+      {
+        ref var state = ref _playerHealthComponent._healthState;
+        state.Health += 10;
+        state.MaxHealth += 10;
+        break;
+      }
+      case POWERUP_TYPE.INCREASE_STAMINA:
+      {
+        ref var state = ref _playerStaminaComponent._staminaState;
+        state.Stamina += 10;
+        state.MaxStamina += 10;
+        break;
+      }
+      case POWERUP_TYPE.SLOW_HUNGER:
+      {
+        ref var state = ref _playerHungerComponent._hungerState;
+        state.HungerDrainRate *= .9f;
+        break;
+      }
+      case POWERUP_TYPE.SHIELD:
+      {
+        ref var state = ref _playerHealthComponent._healthState;
+        state.Shield += 10;
+        state.MaxShield += 10;
+        break;
+      }
+      case POWERUP_TYPE.EXTRA_MELEE_DAMAGE:
+      {
+        ref var state = ref _playerAttackComponent._state;
+        state.Strength += 10;
+        break;
+      }
+      default:
+        Debug.LogException(new NotSupportedException($"{powerupId} is not yet implemented"));
+        break;
     }
   }
 
@@ -270,6 +333,11 @@ public class Player : IPlayer, IDamagable
   public void AddHealth(int amount)
   {
     _playerHealthComponent.AddHealth(amount);
+  }
+
+  public void AddShield(int amount)
+  {
+    _playerHealthComponent.AddShield(amount);
   }
 
   public void AddStamina(int amount)
