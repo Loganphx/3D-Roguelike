@@ -45,10 +45,10 @@ internal class PlayerStaminaComponent : IComponent<PlayerStaminaState>
             return state.HasChanged;
         }
         
-        state.Stamina = Mathf.Min(state.Stamina + .25f, state.MaxStamina);
+        state.Stamina = Mathf.Min(state.Stamina + state.MaxStamina/400f, state.MaxStamina);
         state.HasChanged = true;
         
-        hungerState.Hunger -= Time.fixedDeltaTime/2f;
+        hungerState.Hunger -= (Time.fixedDeltaTime/2f) * hungerState.HungerDrainRate;
         hungerState.HasChanged = true;
         
         return state.HasChanged;

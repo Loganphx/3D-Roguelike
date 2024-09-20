@@ -6,6 +6,8 @@ internal struct PlayerHungerState : IState
     public float Hunger;
     public float MaxHunger;
 
+    public float HungerDrainRate; 
+
     public bool HasChanged;
 }
 
@@ -19,6 +21,7 @@ internal class PlayerHungerComponent : IComponent<PlayerHungerState>
         ref var state = ref _hungerState;
         state.MaxHunger = maxHunger;
         state.Hunger = maxHunger;
+        state.HungerDrainRate = 1.0f;
         state.HasChanged = true;
     }
     
