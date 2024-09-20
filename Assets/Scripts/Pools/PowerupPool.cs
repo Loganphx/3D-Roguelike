@@ -25,6 +25,7 @@ public static class PowerupPool
         { POWERUP_TYPE.INCREASE_HEALTH, "Prefabs/Powerups/powerup_common" },
         { POWERUP_TYPE.INCREASE_STAMINA, "Prefabs/Powerups/powerup_common" },
         { POWERUP_TYPE.SLOW_HUNGER, "Prefabs/Powerups/powerup_common" },
+        { POWERUP_TYPE.SHIELD, "Prefabs/Powerups/powerup_common" },
 
         { POWERUP_TYPE.EXTRA_JUMP, "Prefabs/Powerups/powerup_uncommon" },
 

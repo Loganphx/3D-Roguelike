@@ -231,7 +231,5 @@ internal class PlayerInventoryComponent : IComponent<PlayerInventoryState>
         item.HasChanged = false;
       }
     }
-    
-    
   }
 }

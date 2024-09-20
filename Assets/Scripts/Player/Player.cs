@@ -33,11 +33,13 @@ public class Player : IPlayer, IDamagable
   
   [SerializeField]
   internal PlayerInventoryComponent _playerInventoryComponent;
+  internal PlayerEquipmentComponent _playerEquipmentComponent;
   internal PlayerPowerupComponent _playerPowerupComponent;
   internal PlayerWeaponComponent _playerWeaponComponent;
 
   private PlayerUIHUDComponent _playerUIHUDComponent;
   private PlayerUIInventoryComponent _playerUIInventoryComponent;
+  private PlayerUIEquipmentComponent _playerUIEquipmentComponent;
   private PlayerUIChatComponent _playerUIChatComponent;
   private PlayerUIStatsComponent _playerUIStatsComponent;
   private PlayerUIHotbarComponent _playerUIHotbarComponent;
@@ -83,6 +85,7 @@ public class Player : IPlayer, IDamagable
     _playerStaminaComponent = new PlayerStaminaComponent(this, 100);
     _playerHungerComponent = new PlayerHungerComponent(this, 100);
     _playerInventoryComponent = new PlayerInventoryComponent(this);
+    _playerEquipmentComponent = new PlayerEquipmentComponent(this);
     _playerPowerupComponent = new PlayerPowerupComponent(this);
     _playerWeaponComponent =
       new PlayerWeaponComponent(this, _playerTransform.Find("Eyes").Find("Arm").Find("Arm").Find("Anchor"));
@@ -100,6 +103,8 @@ public class Player : IPlayer, IDamagable
     _playerUIInventoryComponent = new PlayerUIInventoryComponent(canvas.Find("Inventory").gameObject,
       canvas.Find("Inventory").Find("Panel").Find("Slots"),
       canvas.Find("Gold").GetChild(0).Find("Text").GetComponent<TMP_Text>());
+    _playerUIEquipmentComponent =
+      new PlayerUIEquipmentComponent(canvas.Find("Inventory").Find("Panel").Find("Character").gameObject);
     _playerUIChatComponent =
       new PlayerUIChatComponent(canvas.Find("Chat").Find("Scroll View").Find("Viewport").Find("Content").gameObject,
         canvas.Find("Chat").Find("Scroll View").Find("Scrollbar Vertical"));
@@ -122,6 +127,11 @@ public class Player : IPlayer, IDamagable
     
     AddItem(ITEM_TYPE.WOOD, 10);
     AddItem(ITEM_TYPE.ROCK, 10);
+    
+    EquipItem(0, ITEM_TYPE.HELMET_IRON);
+    EquipItem(1, ITEM_TYPE.CHESTPLATE_IRON);
+    EquipItem(2, ITEM_TYPE.LEGGINGS_IRON);
+    EquipItem(3, ITEM_TYPE.BOOTS_IRON);
 
     AddPowerup(POWERUP_TYPE.INCREASE_HEALTH);
     AddPowerup(POWERUP_TYPE.INCREASE_STAMINA);
@@ -154,6 +164,7 @@ public class Player : IPlayer, IDamagable
     ref var inputState = ref playerInput.InputState;
     ref var input = ref inputState.Input;
     ref var inventoryState = ref _playerInventoryComponent._state;
+    ref var equipmentState = ref _playerEquipmentComponent._state;
     ref var healthState = ref _playerHealthComponent._healthState;
     ref var staminaState = ref _playerStaminaComponent._staminaState;
     ref var hungerState = ref _playerHungerComponent._hungerState;
@@ -182,8 +193,13 @@ public class Player : IPlayer, IDamagable
 
     hasChanged = _playerHungerComponent.OnFixedUpdate();
     if (hasChanged) HasChanged = true;
-
+    
+    hasChanged = _playerHealthComponent.OnFixedUpdate(ref hungerState);
+    if (hasChanged) HasChanged = true;
+    
     _playerUIInventoryComponent.OnFixedUpdate(ref inventoryState);
+    _playerUIEquipmentComponent.OnFixedUpdate(ref equipmentState);
+
     _playerUIStatsComponent.OnFixedUpdate(ref healthState, ref attackState, ref movementState);
     _playerUIHotbarComponent.OnFixedUpdate(ref inventoryState);
     _playerUIPowerupComponent.OnFixedUpdate(ref _playerPowerupComponent._state);
@@ -207,6 +223,9 @@ public class Player : IPlayer, IDamagable
     // RESETTING HAS CHANGED FLAGS
     _playerInventoryComponent.OnFixedUpdate();
 
+    hasChanged = _playerEquipmentComponent.OnFixedUpdate(ref healthState);
+    if (hasChanged) HasChanged = true;
+    
     _playerUIInteractComponent.OnLateFixedUpdate(ref _playerInteractComponent._state);
   }
 
@@ -248,6 +267,11 @@ public class Player : IPlayer, IDamagable
       ItemPool.ItemDeployables.Contains(itemId),
       ItemPool.ItemConsumables.Contains(itemId),
       amount);
+  }
+
+  public void EquipItem(int slotIndex, ITEM_TYPE itemType)
+  {
+    _playerEquipmentComponent.EquipItem(slotIndex, itemType);
   }
 
   public void RemoveItem(ITEM_TYPE itemId, int amount)
