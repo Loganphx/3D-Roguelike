@@ -82,7 +82,7 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
           {
             var damagable = HitboxSystem.ColliderHashToDamagable[hit.colliderInstanceID];
             damagable?.OnHit(_player, _cameraTransform.forward, hit.point, ItemPool.ItemTools[weaponState.EquippedWeapon],
-              ItemPool.ItemDamages[weaponState.EquippedWeapon]);
+              ItemPool.ItemDamages[weaponState.EquippedWeapon] + state.Strength);
           }
           else Debug.LogError($"Failed to find damagable for {_hits[0].transform.root}({hits})");
           
