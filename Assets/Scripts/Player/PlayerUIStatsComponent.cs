@@ -21,8 +21,8 @@ internal class PlayerUIStatsComponent
     {
         if (healthState.HasChanged)
         {
-            stats[STAT_TYPE.HEALTH].SetText(healthState.Health.ToString());
-            stats[STAT_TYPE.SHIELD].SetText(healthState.Shield.ToString());
+            stats[STAT_TYPE.HEALTH].SetText(healthState.Health.ToString("N0"));
+            stats[STAT_TYPE.SHIELD].SetText(healthState.Shield.ToString("N0"));
             stats[STAT_TYPE.ARMOR].SetText(healthState.Armor.ToString());
         }
 
