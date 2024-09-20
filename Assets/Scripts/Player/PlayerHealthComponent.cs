@@ -1,15 +1,21 @@
 using System;
+using UnityEngine;
 
 internal struct PlayerHealthState : IState
 {
-    public int Health;
+    public float Health;
     public int MaxHealth;
     
-    public int Shield;
+    public float Shield;
     public int MaxShield;
     
+    // Every 10 Armor is 1% Damage Reduction
     public int Armor;
 
+    public float HealthRegen;
+    
+    public float RegenCooldown; 
+    
     public bool IsDead;
 
     public bool HasChanged;
@@ -33,12 +39,46 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
         state.HasChanged = true;
     }
 
-    public void TakeDamage(int damage)
+    public bool OnFixedUpdate(ref PlayerHungerState hungerState)
     {
         ref var state = ref _healthState;
+        state.HasChanged = false;
+        
+        if (state.RegenCooldown > 0)
+        {
+            state.RegenCooldown -= Time.fixedDeltaTime;
+            state.HasChanged = true;
+        }
+        
+        if (state.RegenCooldown > 0)
+        {
+            return state.HasChanged;
+        }
 
+        if (hungerState.Hunger != 0)
+        {
+            if (!Mathf.Approximately(state.Health, state.MaxHealth))
+            {
+                AddHealth((Mathf.Log10(state.MaxHealth)-1) * 0.005f + state.HealthRegen); // Around 6m to full by default
+            }
+            else if(state.MaxShield != 0)
+            {
+                AddShield((Mathf.Log10(state.MaxShield)) * 0.005f); // Around 3m to full by default
+            }
+        }
+        
+        return state.HasChanged;
+    }
+    public void TakeDamage(float damage)
+    {
+        if (damage <= 0) return;
+        
+        ref var state = ref _healthState;
+
+        var damageReduction = (state.Armor / 10f) / 100f; // 600 / 10 = .60% DR
         // Shield = 50, Damage = 100 (50-100) = -(-50)
         // Shield = 40, Damage = 30 (40-30) = -(10)
+        damage *= (1 - damageReduction); // 40%
         var damageLeft = -(state.Shield - damage);
 
         DecreaseShield(damage);
@@ -47,18 +87,22 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
         {
             DecreaseHealth(damageLeft);
         }
+
+        state.RegenCooldown = 2f;
     }
 
-    public void AddHealth(int amount)
+    public void AddHealth(float amount)
     {
         if(amount == 0) return;
 
         ref var state = ref _healthState;
+        
         state.Health = Math.Min(state.Health + amount, state.MaxHealth);
+        state.IsDead = state.Health == 0;
         state.HasChanged = true;
     }
 
-    public void DecreaseHealth(int amount)
+    public void DecreaseHealth(float amount)
     {
         if(amount == 0) return;
         
@@ -73,7 +117,7 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
         }
     }
 
-    public void AddShield(int amount)
+    public void AddShield(float amount)
     {
         if(amount == 0) return;
 
@@ -82,7 +126,7 @@ internal class PlayerHealthComponent : IComponent<PlayerHealthState>
         state.HasChanged = true;
     }
 
-    public void DecreaseShield(int amount)
+    public void DecreaseShield(float amount)
     {
         if(amount == 0) return;
         
