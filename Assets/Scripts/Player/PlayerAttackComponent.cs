@@ -3,6 +3,11 @@ using UnityEngine;
 
 internal struct PlayerAttackState : IState
 {
+  public float CritChance;
+  public int Strength;
+  public float AttackSpeed;
+  public int MaxHit;
+  
   public float RemainingCooldown;
   public float AttackCooldown;
   public float ConsumeCooldown;
@@ -20,11 +25,14 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
   private readonly RaycastHit[] _hits = new RaycastHit[5];
   private readonly Animator _animator;
 
-  private PlayerAttackState _state = new PlayerAttackState()
+  public PlayerAttackState _state = new PlayerAttackState()
   {
     AttackCooldown = 0.5f,
     ConsumeCooldown = 1.6f,
     RemainingCooldown = 0,
+    AttackSpeed = 1.0f,
+    CritChance = 5f,
+    Strength = 0,
     HasChanged = true
   };
 
@@ -55,6 +63,9 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
     
     if (weaponState.EquippedWeapon != ITEM_TYPE.NULL && ItemPool.ItemDamages[weaponState.EquippedWeapon] > 0)
     {
+      CalculateMaxHit(ref weaponState);
+      
+      // TODO Refactor cooldown to be apart of the animation using animation events
       if (input.PrimaryAttackClicked && state.RemainingCooldown < 0)
       {
         _animator.SetTrigger(AttackHash);
@@ -139,5 +150,18 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
     return state.HasChanged;
   }
 
+  private void CalculateMaxHit(ref PlayerWeaponState weaponState)
+  {
+    ref var state = ref _state;
+    
+    // Use (Strength * Damage) * 2
+    var newMaxHit = ItemPool.ItemDamages[weaponState.EquippedWeapon] + state.Strength;
+
+    if (state.MaxHit != newMaxHit)
+    {
+      state.MaxHit = newMaxHit;
+      state.HasChanged = true;
+    }
+  }
   public PlayerAttackState State => _state;
 }
