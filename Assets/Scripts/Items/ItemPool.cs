@@ -57,6 +57,21 @@ public static class ItemPool
     { ITEM_TYPE.ARROW_IRON, "Sprites/Items/arrow_iron" },
     { ITEM_TYPE.ARROW_MYTHRIL, "Sprites/Items/arrow_mythril" },
     { ITEM_TYPE.ARROW_ADAMANTITE, "Sprites/Items/arrow_adamantite" },
+    
+    { ITEM_TYPE.HELMET_IRON, "Sprites/Items/helmet_iron" },
+    { ITEM_TYPE.CHESTPLATE_IRON, "Sprites/Items/chestplate_iron" },
+    { ITEM_TYPE.LEGGINGS_IRON, "Sprites/Items/leggings_iron" },
+    { ITEM_TYPE.BOOTS_IRON, "Sprites/Items/boots_iron" },
+    
+    { ITEM_TYPE.HELMET_MYTHRIL, "Sprites/Items/helmet_mythril" },
+    { ITEM_TYPE.CHESTPLATE_MYTHRIL, "Sprites/Items/chestplate_mythril" },
+    { ITEM_TYPE.LEGGINGS_MYTHRIL, "Sprites/Items/leggings_mythril" },
+    { ITEM_TYPE.BOOTS_MYTHRIL, "Sprites/Items/boots_mythril" },
+    
+    { ITEM_TYPE.HELMET_ADAMANTITE, "Sprites/Items/helmet_adamantite" },
+    { ITEM_TYPE.CHESTPLATE_ADAMANTITE, "Sprites/Items/chestplate_adamantite" },
+    { ITEM_TYPE.LEGGINGS_ADAMANTITE, "Sprites/Items/leggings_adamantite" },
+    { ITEM_TYPE.BOOTS_ADAMANTITE, "Sprites/Items/boots_adamantite" },
   };
 
   public static readonly Dictionary<ITEM_TYPE, string> ItemPrefabs = new Dictionary<ITEM_TYPE, string>()
@@ -321,5 +336,43 @@ public static class ItemPool
     ITEM_TYPE.MUSHROOM_HEALSHROOM,
     ITEM_TYPE.MUSHROOM_MUNCHSHROOM,
     ITEM_TYPE.MUSHROOM_ZOOMSHROOM,
+  };
+
+  public static readonly Dictionary<ITEM_TYPE, ARMOR_TYPE> ItemEquipment = new Dictionary<ITEM_TYPE, ARMOR_TYPE>()
+  {
+    { ITEM_TYPE.HELMET_IRON, ARMOR_TYPE.HELMET },
+    { ITEM_TYPE.CHESTPLATE_IRON, ARMOR_TYPE.CHESTPLATE },
+    { ITEM_TYPE.LEGGINGS_IRON, ARMOR_TYPE.LEGGINGS },
+    { ITEM_TYPE.BOOTS_IRON, ARMOR_TYPE.BOOTS },
+
+    { ITEM_TYPE.HELMET_MYTHRIL, ARMOR_TYPE.HELMET },
+    { ITEM_TYPE.CHESTPLATE_MYTHRIL, ARMOR_TYPE.CHESTPLATE },
+    { ITEM_TYPE.LEGGINGS_MYTHRIL, ARMOR_TYPE.LEGGINGS },
+    { ITEM_TYPE.BOOTS_MYTHRIL, ARMOR_TYPE.BOOTS },
+
+    { ITEM_TYPE.HELMET_ADAMANTITE, ARMOR_TYPE.HELMET },
+    { ITEM_TYPE.CHESTPLATE_ADAMANTITE, ARMOR_TYPE.CHESTPLATE },
+    { ITEM_TYPE.LEGGINGS_ADAMANTITE, ARMOR_TYPE.LEGGINGS },
+    { ITEM_TYPE.BOOTS_ADAMANTITE, ARMOR_TYPE.BOOTS },
+  };
+
+  public static readonly Dictionary<ITEM_TYPE, int> ItemArmors = new Dictionary<ITEM_TYPE, int>()
+  {
+    // 10 Armor is 1% DR
+    // 25
+    { ITEM_TYPE.HELMET_IRON, 30 },
+    { ITEM_TYPE.CHESTPLATE_IRON, 50 },
+    { ITEM_TYPE.LEGGINGS_IRON, 50 },
+    { ITEM_TYPE.BOOTS_IRON, 20 },
+    // 50
+    { ITEM_TYPE.HELMET_MYTHRIL, 60 },
+    { ITEM_TYPE.CHESTPLATE_MYTHRIL, 100 },
+    { ITEM_TYPE.LEGGINGS_MYTHRIL, 100 },
+    { ITEM_TYPE.BOOTS_MYTHRIL, 40 },
+    // 100
+    { ITEM_TYPE.HELMET_ADAMANTITE, 120 },
+    { ITEM_TYPE.CHESTPLATE_ADAMANTITE, 200 },
+    { ITEM_TYPE.LEGGINGS_ADAMANTITE, 200 },
+    { ITEM_TYPE.BOOTS_ADAMANTITE, 80 },
   };
 }

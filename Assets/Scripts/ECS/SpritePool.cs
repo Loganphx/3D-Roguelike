@@ -70,6 +70,23 @@ public static class SpritePool
       { "Sprites/Items/arrow_iron", Resources.Load<Sprite>("Sprites/Items/arrow_iron") },
       { "Sprites/Items/arrow_mythril", Resources.Load<Sprite>("Sprites/Items/arrow_mythril") },
       { "Sprites/Items/arrow_adamantite", Resources.Load<Sprite>("Sprites/Items/arrow_adamantite") },
+      
+      { "Sprites/Items/helmet_iron", Resources.Load<Sprite>("Sprites/Items/helmet_iron") },
+      { "Sprites/Items/chestplate_iron", Resources.Load<Sprite>("Sprites/Items/chestplate_iron") },
+      { "Sprites/Items/leggings_iron", Resources.Load<Sprite>("Sprites/Items/leggings_iron") },
+      { "Sprites/Items/boots_iron", Resources.Load<Sprite>("Sprites/Items/boots_iron") },
+            
+      { "Sprites/Items/helmet_mythril", Resources.Load<Sprite>("Sprites/Items/helmet_mythril") },
+      { "Sprites/Items/chestplate_mythril", Resources.Load<Sprite>("Sprites/Items/chestplate_mythril") },
+      { "Sprites/Items/leggings_mythril", Resources.Load<Sprite>("Sprites/Items/leggings_mythril") },
+      { "Sprites/Items/boots_mythril", Resources.Load<Sprite>("Sprites/Items/boots_mythril") },
+
+      { "Sprites/Items/helmet_adamantite", Resources.Load<Sprite>("Sprites/Items/helmet_adamantite") },
+      { "Sprites/Items/chestplate_adamantite", Resources.Load<Sprite>("Sprites/Items/chestplate_adamantite") },
+      { "Sprites/Items/leggings_adamantite", Resources.Load<Sprite>("Sprites/Items/leggings_adamantite") },
+      { "Sprites/Items/boots_adamantite", Resources.Load<Sprite>("Sprites/Items/boots_adamantite") },
+      
+      
     }; 
   }
 

@@ -80,5 +80,6 @@ public class Damagable : MonoBehaviour, IDamagable
     }
 
     public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
 
 }
