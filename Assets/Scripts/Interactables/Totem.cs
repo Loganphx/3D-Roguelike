@@ -131,11 +131,10 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
   public void Death()
   {
     // GameObject.CreatePrimitive(PrimitiveType.Cube).transform.position = transform.position + (Vector3.up * 0.45f);
-    var powerupPrefab =
-      PrefabPool.Prefabs[
-        PowerupPool.PowerupPrefabs[
-          (POWERUP_TYPE)new Random().Next((int)(POWERUP_TYPE.NULL + 1), (int)(RarityTypes.LEGENDARY + 1))]];
+    var powerupType = (POWERUP_TYPE)UnityEngine.Random.Range((int)POWERUP_TYPE.NULL + 1, (int)POWERUP_TYPE.MAX_VALUE);
+    var powerupPrefab = PrefabPool.Prefabs[PowerupPool.PowerupPrefabs[powerupType]];
     var powerup = Instantiate(powerupPrefab, transform.position + (Vector3.up * 0.45f), Quaternion.identity);
+    powerup.GetComponent<Powerup>().SetPowerupType(powerupType);
     gameObject.SetActive(false);
   }
 
