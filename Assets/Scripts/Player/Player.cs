@@ -40,6 +40,7 @@ public class Player : IPlayer, IDamagable
   private PlayerUIHUDComponent _playerUIHUDComponent;
   private PlayerUIInventoryComponent _playerUIInventoryComponent;
   private PlayerUIEquipmentComponent _playerUIEquipmentComponent;
+  private PlayerUITrackerComponent _playerUITrackerComponent;
   private PlayerUIChatComponent _playerUIChatComponent;
   private PlayerUIStatsComponent _playerUIStatsComponent;
   private PlayerUIHotbarComponent _playerUIHotbarComponent;
@@ -105,6 +106,10 @@ public class Player : IPlayer, IDamagable
       canvas.Find("Gold").GetChild(0).Find("Text").GetComponent<TMP_Text>());
     _playerUIEquipmentComponent =
       new PlayerUIEquipmentComponent(canvas.Find("Inventory").Find("Panel").Find("Character").gameObject);
+    _playerUITrackerComponent = new PlayerUITrackerComponent(
+      canvas.Find("Gold").Find("Panel_Gold").Find("Text").GetComponent<TMP_Text>(),
+      canvas.Find("Gold").Find("Panel_Time").Find("Text").GetComponent<TMP_Text>(),
+      canvas.Find("Gold").Find("Panel_Day").Find("Text").GetComponent<TMP_Text>());
     _playerUIChatComponent =
       new PlayerUIChatComponent(canvas.Find("Chat").Find("Scroll View").Find("Viewport").Find("Content").gameObject,
         canvas.Find("Chat").Find("Scroll View").Find("Scrollbar Vertical"));
@@ -200,6 +205,7 @@ public class Player : IPlayer, IDamagable
     _playerUIInventoryComponent.OnFixedUpdate(ref inventoryState);
     _playerUIEquipmentComponent.OnFixedUpdate(ref equipmentState);
 
+    _playerUITrackerComponent.OnFixedUpdate(ref inventoryState, ref DayManager.Instance.dayState);
     _playerUIStatsComponent.OnFixedUpdate(ref healthState, ref attackState, ref movementState);
     _playerUIHotbarComponent.OnFixedUpdate(ref inventoryState);
     _playerUIPowerupComponent.OnFixedUpdate(ref _playerPowerupComponent._state);

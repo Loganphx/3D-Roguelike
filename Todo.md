@@ -8,21 +8,22 @@
 [//]: # (- 3. Setup INCREASE_HEALTH, INCREASE_STAMINA, SLOW_HUNGER, and EXTRA_MELEE_DAMAGE Powerups)
 [//]: # (- 4. Setup Health Regen + Shield Regen &#40;Player&#41;)
 [//]: # (- 5. Health Bar for Entities )
-- 6. Setup Player Equipment Component
-- 7. Tie in Equipment UI
-- 8. Day/Night Cycle (Probably Jupiter)
-- 9. Setup Crafting via workbench
-- 10. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
-- 11. Setup Smelting via furnace/forge
-- 12. Setup Anvil to craft tools and armor
-- 13. Setup Cauldron/Crucible to cook food
-- 14. Fix it so crops give seeds
-- 15. Make it so trees drops apples (for food)
-- 16. Add Slingshot (Rocks) / Bow (Arrows)
-- 17. Create Ranged Mobs
-- 18. Create Flying Mobs (Shoot Projectiles)
-- 19. Implement death (Player)
-- 20. Redesign Movement Controller (Rigidbody)
+[//]: # (- 6. Setup Player Equipment Component)
+[//]: # (- 7. Tie in Equipment UI)
+[//]: # (- 8. Day/Night Cycle &#40;Probably Jupiter&#41;)
+- 9. Mob Spawning at Night
+- 10. Setup Crafting via workbench
+- 11. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
+- 12. Setup Smelting via furnace/forge
+- 13. Setup Anvil to craft tools and armor
+- 14. Setup Cauldron/Crucible to cook food
+- 15. Fix it so crops give seeds
+- 16. Make it so trees drops apples (for food)
+- 17. Add Slingshot (Rocks) / Bow (Arrows)
+- 18. Create Ranged Mobs
+- 19. Create Flying Mobs (Shoot Projectiles)
+- 20. Implement death (Player)
+- 21. Redesign Movement Controller (Rigidbody)
 
 - Fix Bug with Mobs now able to accidently hit eachother
 - Split Damage into Resource Damage and Weapon Damage

@@ -16208,7 +16208,7 @@ GameObject:
   - component: {fileID: 5361180812454271170}
   - component: {fileID: 1937881565798682708}
   m_Layer: 3
-  m_Name: Panel (3)
+  m_Name: Panel_Day
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23518,7 +23518,7 @@ Camera:
   m_GameObject: {fileID: 2705449941506219876}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.3018868, g: 0, b: 0.046550967, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -28450,7 +28450,7 @@ GameObject:
   - component: {fileID: 7336707604624002707}
   - component: {fileID: 1923277172232586894}
   m_Layer: 3
-  m_Name: Panel
+  m_Name: Panel_Gold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41017,7 +41017,7 @@ GameObject:
   - component: {fileID: 169781346171081687}
   - component: {fileID: 2013588590873128791}
   m_Layer: 3
-  m_Name: Panel (1)
+  m_Name: Panel_Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
