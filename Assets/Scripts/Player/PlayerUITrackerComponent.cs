@@ -18,9 +18,8 @@ internal class PlayerUITrackerComponent
     {
         _goldText.SetText(inventoryState.GoldCount.ToString());
 
-        // if (dayState.HasChanged)
+        if (dayState.HasChanged)
         {
-            // 15.8
             var hour = (int)Mathf.Floor(dayState.currentHour);
             var remainingHour = dayState.currentHour - hour;
             var minutes = (int)(remainingHour * 60);

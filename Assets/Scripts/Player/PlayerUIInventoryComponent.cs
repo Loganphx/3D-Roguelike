@@ -16,14 +16,11 @@ internal class PlayerUIInventoryComponent
   private readonly GameObject _inventoryPanel;
   private readonly List<ItemSlotUI> _itemSlots;
 
-  private readonly TMP_Text _goldText;
 
   public PlayerUIInventoryComponent(GameObject inventoryPanel,
-    Transform inventorySlotsParent,
-    TMP_Text goldText)
+    Transform inventorySlotsParent)
   {
     _inventoryPanel = inventoryPanel;
-    _goldText = goldText;
 
     _itemSlots = new List<ItemSlotUI>();
     Debug.Log(inventorySlotsParent.childCount);
@@ -62,9 +59,7 @@ internal class PlayerUIInventoryComponent
   public void OnFixedUpdate(ref PlayerInventoryState inventoryState)
   {
     if (!inventoryState.HasChanged) return;
-
-    _goldText.text = inventoryState.GoldCount.ToString();
-
+    
     bool hasChanged = false;
 
     for (int i = 0; i < inventoryState.Items.Length; i++)

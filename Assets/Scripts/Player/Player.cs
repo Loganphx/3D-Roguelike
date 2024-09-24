@@ -102,10 +102,10 @@ public class Player : IPlayer, IDamagable
     );
 
     _playerUIInventoryComponent = new PlayerUIInventoryComponent(canvas.Find("Inventory").gameObject,
-      canvas.Find("Inventory").Find("Panel").Find("Slots"),
-      canvas.Find("Gold").GetChild(0).Find("Text").GetComponent<TMP_Text>());
+      canvas.Find("Inventory").Find("Panel").Find("Slots"));
     _playerUIEquipmentComponent =
       new PlayerUIEquipmentComponent(canvas.Find("Inventory").Find("Panel").Find("Character").gameObject);
+    
     _playerUITrackerComponent = new PlayerUITrackerComponent(
       canvas.Find("Gold").Find("Panel_Gold").Find("Text").GetComponent<TMP_Text>(),
       canvas.Find("Gold").Find("Panel_Time").Find("Text").GetComponent<TMP_Text>(),
