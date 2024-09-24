@@ -66,6 +66,9 @@ public class World : MonoBehaviour
       // Seeds
       { ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, "Prefabs/Deployables/deployable_crafting_station" },
     });
+   
+    var dayManager = new GameObject("DayManager", typeof(DayManager));
+    dayManager.transform.SetParent(transform);
     
     Application.targetFrameRate = 90;
   }
