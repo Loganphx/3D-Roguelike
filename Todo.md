@@ -10,20 +10,22 @@
 [//]: # (- 5. Health Bar for Entities )
 [//]: # (- 6. Setup Player Equipment Component)
 [//]: # (- 7. Tie in Equipment UI)
-[//]: # (- 8. Day/Night Cycle &#40;Probably Jupiter&#41;)
-- 9. Mob Spawning at Night
+[//]: # (- 8. Day/Night Cycle)
+
+- 09. Mob Spawning at Night
 - 10. Setup Crafting via workbench
 - 11. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
-- 12. Setup Smelting via furnace/forge
-- 13. Setup Anvil to craft tools and armor
-- 14. Setup Cauldron/Crucible to cook food
-- 15. Fix it so crops give seeds
-- 16. Make it so trees drops apples (for food)
-- 17. Add Slingshot (Rocks) / Bow (Arrows)
-- 18. Create Ranged Mobs
-- 19. Create Flying Mobs (Shoot Projectiles)
-- 20. Implement death (Player)
-- 21. Redesign Movement Controller (Rigidbody)
+- 12. Tie in Equipment UI to inventory logic
+- 13. Setup Smelting via furnace/forge
+- 14. Setup Anvil to craft tools and armor
+- 15. Setup Cauldron/Crucible to cook food
+- 16. Fix it so crops give seeds
+- 17. Make it so trees drops apples (for food)
+- 18. Add Slingshot (Rocks) / Bow (Arrows)
+- 19. Create Ranged Mobs
+- 20. Create Flying Mobs (Shoot Projectiles)
+- 21. Implement death (Player)
+- 22. Redesign Movement Controller (Rigidbody)
 
 - Fix Bug with Mobs now able to accidently hit eachother
 - Split Damage into Resource Damage and Weapon Damage

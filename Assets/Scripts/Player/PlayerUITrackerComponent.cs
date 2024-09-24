@@ -24,7 +24,7 @@ internal class PlayerUITrackerComponent
             var hour = (int)Mathf.Floor(dayState.currentHour);
             var remainingHour = dayState.currentHour - hour;
             var minutes = (int)(remainingHour * 60);
-            _hourText.SetText($"{hour}:{minutes:00}");
+            _hourText.SetText($"{hour:00}:{minutes:00}");
             _dayText.SetText(dayState.currentDay.ToString());
         }
     }
