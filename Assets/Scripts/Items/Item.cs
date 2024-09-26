@@ -101,7 +101,7 @@ public class Item : MonoBehaviour, IInteractable, IHoverable
   {
     if(itemType == ITEM_TYPE.NULL) return;
     
-    Debug.Log($"Item {itemType} awake");
+    // Debug.Log($"Item {itemType} awake");
     _outline = transform.GetChild(0).GetComponent<Outline>();
     _outline.enabled = false;
     

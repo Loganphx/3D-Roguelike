@@ -67,8 +67,11 @@ public class World : MonoBehaviour
       { ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, "Prefabs/Deployables/deployable_crafting_station" },
     });
    
-    var dayManager = new GameObject("DayManager", typeof(DayManager));
+    var dayManager = new GameObject("DayManager", typeof(DayManager)).GetComponent<DayManager>();
     dayManager.transform.SetParent(transform);
+
+    var mobSpawner = new MobSpawner();
+    dayManager.NightStarted += mobSpawner.SpawnEnemies;
     
     Application.targetFrameRate = 90;
   }

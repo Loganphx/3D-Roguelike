@@ -116,12 +116,11 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
     {
       var position = positions[i];
 
+      // TODO update layer mask since it will be ignoring other things like players and such.
+      Physics.Raycast(position, Vector3.down, out var hit, 10f, 1 << LayerMask.NameToLayer("Ground"));
       var prefab = PrefabPool.Prefabs["Prefabs/Entities/Mob"];
       if(prefab == null) Debug.LogError("Prefab is null");
-      var animal =GameObject
-        .Instantiate(prefab, position, Quaternion.identity);
-      Physics.Raycast(position, Vector3.down, out var hit, 10f, 1 << LayerMask.NameToLayer("Ground"));
-      animal.transform.position = hit.point;
+      var animal =GameObject.Instantiate(prefab, hit.point, Quaternion.identity);
       
       if(animal == null) Debug.LogError("Animal is null");
       _spawnedEnemies[i] = animal.GetComponent<Damagable>();
