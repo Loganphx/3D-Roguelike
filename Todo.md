@@ -11,9 +11,9 @@
 [//]: # (- 6. Setup Player Equipment Component)
 [//]: # (- 7. Tie in Equipment UI)
 [//]: # (- 8. Day/Night Cycle)
-
-- 09. Mob Spawning at Night
-- 10. Setup Crafting via workbench
+[//]: # (- 09. Mob Spawning at Night)
+[//]: # (- 10. Setup Crafting via workbench)
+- 11. Setup Recipe Crafting
 - 11. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
 - 12. Tie in Equipment UI to inventory logic
 - 13. Setup Smelting via furnace/forge

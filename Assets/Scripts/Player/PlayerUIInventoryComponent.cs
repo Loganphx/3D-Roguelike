@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 internal class ItemSlotUI
 {
+  public GameObject GameObject;
   public Image Image;
   public TMP_Text AmountText;
   public ITEM_TYPE type;
@@ -29,6 +30,7 @@ internal class PlayerUIInventoryComponent
       var child = inventorySlotsParent.GetChild(i);
       var itemSlot = new ItemSlotUI()
       {
+        GameObject = child.gameObject,
         Image = child.Find("Image").GetComponent<Image>(),
         AmountText = child.Find("Amount").GetComponent<TMP_Text>(),
         type = ITEM_TYPE.NULL

@@ -60,6 +60,7 @@ public static class SpritePool
       { "Sprites/Items/deployable_chest", Resources.Load<Sprite>("Sprites/Items/deployable_chest") },
       
       { "Sprites/Items/building_foundation", Resources.Load<Sprite>("Sprites/Items/building_foundation") },
+      { "Sprites/Items/building_foundation_triangle", Resources.Load<Sprite>("Sprites/Items/building_foundation_triangle") },
       { "Sprites/Items/building_wall", Resources.Load<Sprite>("Sprites/Items/building_wall") },
       { "Sprites/Items/building_ramp", Resources.Load<Sprite>("Sprites/Items/building_ramp") },
       

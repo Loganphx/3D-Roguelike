@@ -1,5 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+
+public class InvokedByButtonAttribute : Attribute
+{
+    public InvokedByButtonAttribute(params string[] buttonNames)
+    {
+        
+    }
+}
 
 internal class PlayerUIEquipmentComponent
 {

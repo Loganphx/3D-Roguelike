@@ -37,6 +37,7 @@ public static class ItemPool
     { ITEM_TYPE.DEPLOYABLE_CHEST, "Sprites/Items/deployable_chest" },
     
     { ITEM_TYPE.BUILDING_FOUNDATION, "Sprites/Items/building_foundation" },
+    { ITEM_TYPE.BUILDING_FOUNDATION_TRIANGLE, "Sprites/Items/building_foundation_triangle" },
     { ITEM_TYPE.BUILDING_WALL, "Sprites/Items/building_wall" },
     { ITEM_TYPE.BUILDING_RAMP, "Sprites/Items/building_ramp" },
 
