@@ -51,6 +51,11 @@ public static class ItemPool
     { ITEM_TYPE.TOOL_AXE_MYTHRIL, "Sprites/Items/axe_mythril" },
     { ITEM_TYPE.TOOL_AXE_ADAMANTITE, "Sprites/Items/axe_adamantite" },
     
+    { ITEM_TYPE.WEAPON_SWORD_WOODEN, "Sprites/Items/sword_wooden" },
+    { ITEM_TYPE.WEAPON_SWORD_IRON, "Sprites/Items/sword_iron" },
+    { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, "Sprites/Items/sword_mythril" },
+    { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE, "Sprites/Items/sword_adamantite" },
+    
     { ITEM_TYPE.BARK, "Sprites/Items/bark" },
     { ITEM_TYPE.BOWL, "Sprites/Items/bowl" },
     
@@ -121,6 +126,11 @@ public static class ItemPool
     { ITEM_TYPE.TOOL_AXE_IRON, "Prefabs/Models/model_axe_iron" },
     { ITEM_TYPE.TOOL_AXE_MYTHRIL, "Prefabs/Models/model_axe_mythril" },
     { ITEM_TYPE.TOOL_AXE_ADAMANTITE, "Prefabs/Models/model_axe_adamantite" },
+    
+    { ITEM_TYPE.WEAPON_SWORD_WOODEN, "Prefabs/Models/model_sword_wooden" },
+    { ITEM_TYPE.WEAPON_SWORD_IRON, "Prefabs/Models/model_sword_iron" },
+    { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, "Prefabs/Models/model_sword_mythril" },
+    { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE, "Prefabs/Models/model_sword_adamantite" },
   };
 
   
@@ -172,6 +182,11 @@ public static class ItemPool
     { ITEM_TYPE.TOOL_PICKAXE_MYTHRIL, 1 },
     { ITEM_TYPE.TOOL_PICKAXE_ADAMANTITE , 1 },
     
+    { ITEM_TYPE.WEAPON_SWORD_WOODEN, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_IRON, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE , 1 },
+    
     { ITEM_TYPE.BARK , 10 },
     { ITEM_TYPE.BOWL , 5 },
     
@@ -216,6 +231,11 @@ public static class ItemPool
     { ITEM_TYPE.TOOL_AXE_IRON, 25 },
     { ITEM_TYPE.TOOL_AXE_MYTHRIL, 50 },
     { ITEM_TYPE.TOOL_AXE_ADAMANTITE, 100 },
+    
+    { ITEM_TYPE.WEAPON_SWORD_WOODEN, 10 },
+    { ITEM_TYPE.WEAPON_SWORD_IRON, 25 },
+    { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, 50 },
+    { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE, 100 },
     
     { ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, 0 },
     { ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, 0 },
@@ -272,6 +292,10 @@ public static class ItemPool
     { ITEM_TYPE.TOOL_AXE_IRON, 1 },
     { ITEM_TYPE.TOOL_AXE_MYTHRIL, 1 },
     { ITEM_TYPE.TOOL_AXE_ADAMANTITE, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_WOODEN, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_IRON, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, 1 },
+    { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE, 1 },
     { ITEM_TYPE.BARK, 1 },
     { ITEM_TYPE.BOWL, 1 },
     
@@ -324,6 +348,11 @@ public static class ItemPool
     { ITEM_TYPE.TOOL_PICKAXE_IRON, TOOL_TYPE.PICKAXE },
     { ITEM_TYPE.TOOL_PICKAXE_MYTHRIL, TOOL_TYPE.PICKAXE },
     { ITEM_TYPE.TOOL_PICKAXE_ADAMANTITE, TOOL_TYPE.PICKAXE },
+    
+    { ITEM_TYPE.WEAPON_SWORD_WOODEN, TOOL_TYPE.NULL },
+    { ITEM_TYPE.WEAPON_SWORD_IRON, TOOL_TYPE.NULL },
+    { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, TOOL_TYPE.NULL },
+    { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE, TOOL_TYPE.NULL },
     
     { ITEM_TYPE.ARROW_STONE, TOOL_TYPE.NULL },
     { ITEM_TYPE.ARROW_IRON, TOOL_TYPE.NULL },

@@ -76,8 +76,8 @@ internal class PlayerAttackComponent : IComponent<PlayerAttackState>
 
         if (hits != 0)
         {
-          var hit = _hits[0];
-
+          var hit = _hits.SortRaycastHits(hits);
+          
           if (HitboxSystem.ColliderHashToDamagable.ContainsKey(hit.colliderInstanceID))
           {
             var damagable = HitboxSystem.ColliderHashToDamagable[hit.colliderInstanceID];

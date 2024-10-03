@@ -55,6 +55,11 @@ public static class PrefabPool
       { "Prefabs/Models/model_axe_iron", Resources.Load<GameObject>("Prefabs/Models/model_axe_iron") },
       { "Prefabs/Models/model_axe_mythril", Resources.Load<GameObject>("Prefabs/Models/model_axe_mythril") },
       { "Prefabs/Models/model_axe_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_axe_adamantite") },
+    
+      { "Prefabs/Models/model_sword_wooden", Resources.Load<GameObject>("Prefabs/Models/model_sword_wooden") },
+      { "Prefabs/Models/model_sword_iron", Resources.Load<GameObject>("Prefabs/Models/model_sword_iron") },
+      { "Prefabs/Models/model_sword_mythril", Resources.Load<GameObject>("Prefabs/Models/model_sword_mythril") },
+      { "Prefabs/Models/model_sword_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_sword_adamantite") },
       
       { "Prefabs/Deployables/deployable_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/deployable_farm_planter") },
       { "Prefabs/Deployables/blueprint_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_crafting_station") },

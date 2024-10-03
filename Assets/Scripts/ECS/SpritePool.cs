@@ -52,6 +52,11 @@ public static class SpritePool
       { "Sprites/Items/axe_iron", Resources.Load<Sprite>("Sprites/Items/axe_iron") },
       { "Sprites/Items/axe_mythril", Resources.Load<Sprite>("Sprites/Items/axe_mythril") },
       { "Sprites/Items/axe_adamantite", Resources.Load<Sprite>("Sprites/Items/axe_adamantite") },
+   
+      { "Sprites/Items/sword_wooden", Resources.Load<Sprite>("Sprites/Items/sword_wooden") },
+      { "Sprites/Items/sword_iron", Resources.Load<Sprite>("Sprites/Items/sword_iron") },
+      { "Sprites/Items/sword_mythril", Resources.Load<Sprite>("Sprites/Items/sword_mythril") },
+      { "Sprites/Items/sword_adamantite", Resources.Load<Sprite>("Sprites/Items/sword_adamantite") },
       
       { "Sprites/Items/deployable_farm_planter", Resources.Load<Sprite>("Sprites/Items/deployable_farm_planter") },
       { "Sprites/Items/deployable_crafting_station", Resources.Load<Sprite>("Sprites/Items/deployable_crafting_station") },
