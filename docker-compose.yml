@@ -1,0 +1,8 @@
+services:
+  elysium_sql:
+    image: mcr.microsoft.com/azure-sql-edge
+    environment:
+      ACCEPT_EULA: "1"
+      MSSQL_SA_PASSWORD: "PoliceBox21"
+    ports:
+      - "1445:1433"
