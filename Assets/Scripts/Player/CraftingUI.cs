@@ -21,13 +21,13 @@ internal static class StringExtensions
 }
 internal class CraftingUI : MonoBehaviour
 {
-
     [Header("Config Data")]
     private Color selectedTabColor = "4B2614".HexToColor();
     private Color selectedTextColor = "FFC200".HexToColor();
     private Color unselectedTabColor = "6C402A".HexToColor();
     private Color unselectedTextColor = "FFFFFF".HexToColor();
     
+    public static CraftingUI Instance;
     private static readonly (TabTypes tab, ITEM_TYPE[] items)[] tabs = new (TabTypes tab, ITEM_TYPE[] items)[]
     { 
         (TabTypes.Basic, new []
@@ -38,14 +38,15 @@ internal class CraftingUI : MonoBehaviour
         (TabTypes.Tools, new []
         {
             ITEM_TYPE.TOOL_PICKAXE_WOODEN,
-            ITEM_TYPE.TOOL_AXE_WOODEN
+            ITEM_TYPE.TOOL_AXE_WOODEN,
+            ITEM_TYPE.WEAPON_SWORD_WOODEN,
         }),
         (TabTypes.Stations, new []
         {
+            ITEM_TYPE.DEPLOYABLE_FURNACE,
             ITEM_TYPE.DEPLOYABLE_CAULDRON,
             ITEM_TYPE.DEPLOYABLE_CHEST,
             ITEM_TYPE.DEPLOYABLE_FARM_PLANTER,
-            ITEM_TYPE.DEPLOYABLE_FURNACE,
         }),
         (TabTypes.Build, new []
         {
@@ -64,10 +65,18 @@ internal class CraftingUI : MonoBehaviour
 
     private TabTypes _selectedTab;
 
-    private ItemSlotUI[] cells;
+    public ItemSlotUI[] cells;
 
+    private Action<ITEM_TYPE> _craftItem;
+    public void Init(Action<ITEM_TYPE> craftItem)
+    {
+        _craftItem = craftItem;
+    }
+    
     private void Awake()
     {
+        Instance = this;
+        
         slotHolder = transform.Find("Panel").Find("RecipeSlots");
         
         itemSlotPrefab = slotHolder.GetChild(0).gameObject;
@@ -146,6 +155,9 @@ internal class CraftingUI : MonoBehaviour
                 Image = image,
                 AmountText = image.GetComponentInChildren<TMP_Text>()
             };
+
+            var button = itemSlot.transform.GetComponent<Button>();
+            button.onClick.AddListener(() => _craftItem(itemType));
             
             itemSlotUI.Image.enabled = true;
             itemSlotUI.Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[itemType]];

@@ -1,6 +1,5 @@
 # Roguelike TODO
 
-[//]: # (- Fix AI Pathfinding not functioning.)
 [//]: # (- Tie in Loot Tables)
 [//]: # (- Setup Mobs Targeting Builds as well)
 [//]: # (- 1. Tie in stats to inventory stats display)
@@ -13,7 +12,7 @@
 [//]: # (- 8. Day/Night Cycle)
 [//]: # (- 09. Mob Spawning at Night)
 [//]: # (- 10. Setup Crafting via workbench)
-- 11. Setup Recipe Crafting
+[//]: # (- 11. Setup Recipe Crafting)
 - 11. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
 - 12. Tie in Equipment UI to inventory logic
 - 13. Setup Smelting via furnace/forge

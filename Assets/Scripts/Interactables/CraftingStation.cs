@@ -138,7 +138,7 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
 
     public void Interact(IPlayer player)
     {
-        throw new NotImplementedException();
+        //
     }
 
     public Transform Transform => transform;

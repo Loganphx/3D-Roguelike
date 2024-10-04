@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ECS.Movement.Services;
 using TMPro;
 using UnityEngine;
@@ -130,7 +131,7 @@ public class Player : IPlayer, IDamagable
     AddItem(ITEM_TYPE.TOOL_AXE_WOODEN, 1);
     AddItem(ITEM_TYPE.TOOL_PICKAXE_WOODEN, 1);
     
-    AddItem(ITEM_TYPE.WOOD, 10);
+    AddItem(ITEM_TYPE.WOOD, 25);
     AddItem(ITEM_TYPE.ROCK, 10);
     
     EquipItem(0, ITEM_TYPE.HELMET_IRON);
