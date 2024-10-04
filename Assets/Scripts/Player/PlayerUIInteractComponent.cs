@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -125,25 +126,9 @@ internal class PlayerUIInteractComponent
           INTERACTABLE_TYPE.FLETCHING_TABLE => FletchingTable.Recipes,
           _ => Array.Empty<Recipe>()
         };
-        var recipeSlots = panel.transform.Find("Panel").Find("RecipeSlots");
-        for (int i = 0; i < recipes.Length; i++)
-        {
-          ref var recipe = ref recipes[i];
-          var slot = recipeSlots.GetChild(i);
-          try
-          {
-            var button = slot.GetComponent<Button>();
-            var i1 = i;
-            button.onClick.AddListener(() => { Recipe_Select(i1); });
-            slot.gameObject.SetActive(true);
-            slot.GetChild(0).GetComponent<Image>().sprite =
-              SpritePool.Sprites[ItemPool.ItemSprites[recipe.ProductItemId]];
-          }
-          catch (Exception e)
-          {
-            Debug.LogException(e);
-          }
-        }
+        
+        if(interactState.InteractableType == INTERACTABLE_TYPE.CRAFTING_STATION) 
+          CraftingUI.Instance.Init(Recipe_Select);
       }
     }
 
@@ -188,16 +173,24 @@ internal class PlayerUIInteractComponent
     }
   }
 
-  private void Recipe_Select(int recipeIndex)
+  private void Recipe_Select(ITEM_TYPE itemType)
   {
     Debug.Log("Selecting Recipe...");
     ref var uiState = ref _interactUIState;
-    uiState.SelectedRecipeIndex = recipeIndex;
+    uiState.SelectedRecipeIndex = -1;
+    for (int i = 0; i < CraftingStation.Recipes.Length; i++)
+    {
+      if (CraftingStation.Recipes[i].ProductItemId == itemType)
+      {
+        uiState.SelectedRecipeIndex = i;
+      }
+    }    
     uiState.HasChanged = true;
   }
 
   private bool Recipe_CanCraft(ref PlayerInteractState interactState, int recipeIndex)
   {
+    Debug.Log($"Recipe_CanCraft: {recipeIndex}");
     ref Recipe recipe = ref CraftingStation.Recipes[recipeIndex];
     if (interactState.InteractableType == INTERACTABLE_TYPE.FLETCHING_TABLE)
     {
@@ -233,6 +226,7 @@ internal class PlayerUIInteractComponent
 
   private void Recipe_Craft(ref PlayerInteractState interactState, int recipeIndex)
   {
+    Debug.Log($"Recipe_Craft: {recipeIndex}");
     ref var uiState = ref _interactUIState;
       
     ref Recipe recipe = ref CraftingStation.Recipes[recipeIndex];
@@ -247,6 +241,7 @@ internal class PlayerUIInteractComponent
     if (!Recipe_CanCraft(ref interactState, recipeIndex))
     {
       Debug.Log("Cannot Craft");
+      uiState.SelectedRecipeIndex = -1;
       return;
     }
 

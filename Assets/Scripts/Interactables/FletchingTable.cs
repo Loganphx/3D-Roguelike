@@ -11,6 +11,5 @@ internal class FletchingTable : MonoBehaviour, IInteractable
 
     public void Interact(IPlayer player)
     {
-        throw new NotImplementedException();
     }
 }
