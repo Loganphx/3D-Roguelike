@@ -78,6 +78,12 @@ public static class ItemPool
     { ITEM_TYPE.CHESTPLATE_ADAMANTITE, "Sprites/Items/chestplate_adamantite" },
     { ITEM_TYPE.LEGGINGS_ADAMANTITE, "Sprites/Items/leggings_adamantite" },
     { ITEM_TYPE.BOOTS_ADAMANTITE, "Sprites/Items/boots_adamantite" },
+    
+    { ITEM_TYPE.ROPE, "Sprites/Items/rope" },
+    { ITEM_TYPE.WEAPON_BOW_WOODEN, "Sprites/Items/bow_wooden" },
+    { ITEM_TYPE.WEAPON_BOW_IRON, "Sprites/Items/bow_iron" },
+    { ITEM_TYPE.WEAPON_BOW_MYTHRIL, "Sprites/Items/bow_mythril" },
+    { ITEM_TYPE.WEAPON_BOW_ADAMANTITE, "Sprites/Items/bow_adamantite" },
   };
 
   public static readonly Dictionary<ITEM_TYPE, string> ItemPrefabs = new Dictionary<ITEM_TYPE, string>()

@@ -72,7 +72,7 @@ public static class SpritePool
       { "Sprites/Items/bowl", Resources.Load<Sprite>("Sprites/Items/bowl") },
       { "Sprites/Items/bark", Resources.Load<Sprite>("Sprites/Items/bark") },
       
-      { "Sprites/Items/arrow_stone", Resources.Load<Sprite>("Sprites/Items/axe_wooden") },
+      { "Sprites/Items/arrow_stone", Resources.Load<Sprite>("Sprites/Items/arrow_stone") },
       { "Sprites/Items/arrow_iron", Resources.Load<Sprite>("Sprites/Items/arrow_iron") },
       { "Sprites/Items/arrow_mythril", Resources.Load<Sprite>("Sprites/Items/arrow_mythril") },
       { "Sprites/Items/arrow_adamantite", Resources.Load<Sprite>("Sprites/Items/arrow_adamantite") },
@@ -91,6 +91,13 @@ public static class SpritePool
       { "Sprites/Items/chestplate_adamantite", Resources.Load<Sprite>("Sprites/Items/chestplate_adamantite") },
       { "Sprites/Items/leggings_adamantite", Resources.Load<Sprite>("Sprites/Items/leggings_adamantite") },
       { "Sprites/Items/boots_adamantite", Resources.Load<Sprite>("Sprites/Items/boots_adamantite") },
+      
+      { "Sprites/Items/rope", Resources.Load<Sprite>("Sprites/Items/rope") },
+      
+      { "Sprites/Items/bow_wooden", Resources.Load<Sprite>("Sprites/Items/bow_wooden") },
+      { "Sprites/Items/bow_iron", Resources.Load<Sprite>("Sprites/Items/bow_iron") },
+      { "Sprites/Items/bow_mythril", Resources.Load<Sprite>("Sprites/Items/bow_mythril") },
+      { "Sprites/Items/bow_adamantite", Resources.Load<Sprite>("Sprites/Items/bow_adamantite") },
       
       
     }; 

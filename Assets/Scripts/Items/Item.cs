@@ -93,6 +93,12 @@ public enum ITEM_TYPE
   WEAPON_SWORD_IRON,
   WEAPON_SWORD_MYTHRIL,
   WEAPON_SWORD_ADAMANTITE,
+  
+  ROPE,
+  WEAPON_BOW_WOODEN,
+  WEAPON_BOW_IRON,
+  WEAPON_BOW_MYTHRIL,
+  WEAPON_BOW_ADAMANTITE,
 }
 
 public class Item : MonoBehaviour, IInteractable, IHoverable
