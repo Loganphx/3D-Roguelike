@@ -4,58 +4,32 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-internal static class StringExtensions
+public class FletchingUI : MonoBehaviour
 {
-    public static byte[] StringToByteArray(this string hex) {
-        return Enumerable.Range(0, hex.Length)
-            .Where(x => x % 2 == 0)
-            .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-            .ToArray();
-    }
-
-    public static Color HexToColor(this string hex)
-    {
-        var rgb = hex.StringToByteArray();
-        return new Color(rgb[0]/255f, rgb[1]/255f, rgb[2]/255f);
-    }
-}
-
-internal class CraftingUI : MonoBehaviour
-{
-    [Header("Config Data")]
+     [Header("Config Data")]
     private Color selectedTabColor = "4B2614".HexToColor();
     private Color selectedTextColor = "FFC200".HexToColor();
     private Color unselectedTabColor = "6C402A".HexToColor();
     private Color unselectedTextColor = "FFFFFF".HexToColor();
     
-    public static CraftingUI Instance;
-    private static readonly (TabTypes tab, ITEM_TYPE[] items)[] tabs = new (TabTypes tab, ITEM_TYPE[] items)[]
+    public static FletchingUI Instance;
+    private static readonly (FletchingTabTypes tab, ITEM_TYPE[] items)[] tabs = new (FletchingTabTypes tab, ITEM_TYPE[] items)[]
     { 
-        (TabTypes.Basic, new []
+        (FletchingTabTypes.Basic, new []
         {
-            ITEM_TYPE.BARK,
-            ITEM_TYPE.BOWL
+            ITEM_TYPE.ROPE,
         }),
-        (TabTypes.Tools, new []
+        (FletchingTabTypes.Ammo, new []
         {
-            ITEM_TYPE.TOOL_PICKAXE_WOODEN,
-            ITEM_TYPE.TOOL_AXE_WOODEN,
-            ITEM_TYPE.WEAPON_SWORD_WOODEN,
+            ITEM_TYPE.ARROW_STONE,
+            ITEM_TYPE.ARROW_IRON,
+            ITEM_TYPE.ARROW_MYTHRIL,
+            ITEM_TYPE.ARROW_ADAMANTITE,
         }),
-        (TabTypes.Stations, new []
+        (FletchingTabTypes.Weapons, new []
         {
-            ITEM_TYPE.DEPLOYABLE_FURNACE,
-            ITEM_TYPE.DEPLOYABLE_CAULDRON,
-            ITEM_TYPE.DEPLOYABLE_CHEST,
-            ITEM_TYPE.DEPLOYABLE_FARM_PLANTER,
+            ITEM_TYPE.WEAPON_BOW_WOODEN,
         }),
-        (TabTypes.Build, new []
-        {
-            ITEM_TYPE.BUILDING_FOUNDATION,
-            ITEM_TYPE.BUILDING_FOUNDATION_TRIANGLE,
-            ITEM_TYPE.BUILDING_WALL,
-        }),
-        
     };
 
     private Transform slotHolder;
@@ -64,9 +38,9 @@ internal class CraftingUI : MonoBehaviour
     private Image[] tabImages;
     private TMP_Text[] tabTexts;
 
-    private TabTypes _selectedTab;
+    private FletchingTabTypes _selectedTab;
 
-    public ItemSlotUI[] cells;
+    internal ItemSlotUI[] cells;
 
     private Action<ITEM_TYPE> _craftItem;
     public void Init(Action<ITEM_TYPE> craftItem)
@@ -100,13 +74,13 @@ internal class CraftingUI : MonoBehaviour
 
     private void OnEnable()
     {
-        OpenTab((int)TabTypes.Basic);
+        OpenTab((int)FletchingTabTypes.Basic);
     }
 
     [InvokedByButton("Button_Basic", "Button_Tools", "Button_Stations", "Button_Build")]
     private void OpenTab(int i)
     {
-        _selectedTab = (TabTypes)i;
+        _selectedTab = (FletchingTabTypes)i;
 
         UpdateTabs();
         UpdateRecipes();
@@ -169,11 +143,10 @@ internal class CraftingUI : MonoBehaviour
         }
     }
 
-    enum TabTypes
+    enum FletchingTabTypes
     {
         Basic,
-        Tools,
-        Stations,
-        Build,
+        Ammo,
+        Weapons,
     }
 }
