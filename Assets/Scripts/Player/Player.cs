@@ -121,7 +121,8 @@ public class Player : IPlayer, IDamagable
 
     _playerUIPowerupComponent = new PlayerUIPowerupComponent(canvas.Find("Powerups"));
     _playerUIInteractComponent = new PlayerUIInteractComponent(this, eventSystem, canvas.Find("CraftingStation").gameObject,
-      canvas.Find("Furnace").gameObject, canvas.Find("Cauldron").gameObject, canvas.Find("FletchingTable").gameObject);
+      canvas.Find("Furnace").gameObject, canvas.Find("Cauldron").gameObject, canvas.Find("FletchingTable").gameObject,
+      canvas.Find("Anvil").gameObject);
 
     AddItem(ITEM_TYPE.COIN, 1000);
     AddItem(ITEM_TYPE.SEED_WHEAT, 5);

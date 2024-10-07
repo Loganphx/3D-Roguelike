@@ -10,6 +10,7 @@ public enum INTERACTABLE_TYPE : byte
     CAULDRON,
     CHEST,
     FLETCHING_TABLE,
+    ANVIL,
 
     HERB,
     NODE,

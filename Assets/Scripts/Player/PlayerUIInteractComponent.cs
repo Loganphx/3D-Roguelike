@@ -9,6 +9,7 @@ using UnityEngine.UI;
 internal struct PlayerUIInteractState
 {
   public bool HasChanged;
+  public INTERACTABLE_TYPE InteractableType;
   public int SelectedRecipeIndex;
 }
 
@@ -23,7 +24,7 @@ internal class PlayerUIInteractComponent
   private readonly List<ItemSlotUI> _itemSlots;
 
   public PlayerUIInteractComponent(Player player, EventSystem eventSystem, GameObject craftingStationUI, GameObject furnaceUI,
-    GameObject cauldronUI, GameObject fletchingUI)
+    GameObject cauldronUI, GameObject fletchingUI, GameObject anvilUI)
   {
     _player = player;
     _eventSystem = eventSystem;
@@ -33,6 +34,7 @@ internal class PlayerUIInteractComponent
       { INTERACTABLE_TYPE.FURNACE, furnaceUI },
       { INTERACTABLE_TYPE.CAULDRON, cauldronUI },
       { INTERACTABLE_TYPE.FLETCHING_TABLE, fletchingUI },
+      { INTERACTABLE_TYPE.ANVIL, anvilUI },
     };
     _itemSlots = new List<ItemSlotUI>();
   }
@@ -70,6 +72,7 @@ internal class PlayerUIInteractComponent
     {
       bool isContainer = !(interactState.InteractableType != INTERACTABLE_TYPE.FLETCHING_TABLE &&
                            interactState.InteractableType != INTERACTABLE_TYPE.CRAFTING_STATION &&
+                           interactState.InteractableType != INTERACTABLE_TYPE.ANVIL &&
                            interactState.InteractableType != INTERACTABLE_TYPE.FURNACE &&
                            interactState.InteractableType != INTERACTABLE_TYPE.CAULDRON);
       
@@ -120,15 +123,22 @@ internal class PlayerUIInteractComponent
           _itemSlots.Add(itemSlot);
         }
 
-        var recipes = interactState.InteractableType switch
+        ref var interactUIState = ref _interactUIState;
+        if (interactState.InteractableType == INTERACTABLE_TYPE.CRAFTING_STATION)
         {
-          INTERACTABLE_TYPE.CRAFTING_STATION => CraftingStation.Recipes,
-          INTERACTABLE_TYPE.FLETCHING_TABLE => FletchingTable.Recipes,
-          _ => Array.Empty<Recipe>()
-        };
-        
-        if(interactState.InteractableType == INTERACTABLE_TYPE.CRAFTING_STATION) 
+          interactUIState.InteractableType = INTERACTABLE_TYPE.CRAFTING_STATION;
           CraftingUI.Instance.Init(Recipe_Select);
+        }
+        else if (interactState.InteractableType == INTERACTABLE_TYPE.FLETCHING_TABLE)
+        {
+          interactUIState.InteractableType = INTERACTABLE_TYPE.FLETCHING_TABLE;
+          FletchingUI.Instance.Init(Recipe_Select);
+        }
+        else if (interactState.InteractableType == INTERACTABLE_TYPE.ANVIL)
+        {
+          interactUIState.InteractableType = INTERACTABLE_TYPE.ANVIL;
+          AnvilUI.Instance.Init(Recipe_Select);
+        }
       }
     }
 
@@ -178,9 +188,25 @@ internal class PlayerUIInteractComponent
     Debug.Log("Selecting Recipe...");
     ref var uiState = ref _interactUIState;
     uiState.SelectedRecipeIndex = -1;
-    for (int i = 0; i < CraftingStation.Recipes.Length; i++)
+    Recipe[] recipes;
+    switch (uiState.InteractableType)
     {
-      if (CraftingStation.Recipes[i].ProductItemId == itemType)
+      case INTERACTABLE_TYPE.CRAFTING_STATION:
+        recipes = CraftingStation.Recipes;
+        break;
+      case INTERACTABLE_TYPE.FLETCHING_TABLE:
+        recipes = FletchingTable.Recipes;
+        break;
+      case INTERACTABLE_TYPE.ANVIL:
+        recipes = Anvil.Recipes;
+        break;
+      default:
+        throw new ArgumentOutOfRangeException(uiState.InteractableType.ToString() + " is yet not supported");
+    }
+    
+    for (int i = 0; i < recipes.Length; i++)
+    {
+      if (recipes[i].ProductItemId == itemType)
       {
         uiState.SelectedRecipeIndex = i;
       }
@@ -191,12 +217,22 @@ internal class PlayerUIInteractComponent
   private bool Recipe_CanCraft(ref PlayerInteractState interactState, int recipeIndex)
   {
     Debug.Log($"Recipe_CanCraft: {recipeIndex}");
-    ref Recipe recipe = ref CraftingStation.Recipes[recipeIndex];
-    if (interactState.InteractableType == INTERACTABLE_TYPE.FLETCHING_TABLE)
+    ref Recipe recipe = ref CraftingStation.Recipes[0];
+    switch (interactState.InteractableType)
     {
-      recipe = ref FletchingTable.Recipes[recipeIndex];
+      case INTERACTABLE_TYPE.CRAFTING_STATION:
+        recipe = ref CraftingStation.Recipes[recipeIndex];
+        break;
+      case INTERACTABLE_TYPE.FLETCHING_TABLE:
+        recipe = ref FletchingTable.Recipes[recipeIndex];
+        break;
+      case INTERACTABLE_TYPE.ANVIL:
+        recipe = ref Anvil.Recipes[recipeIndex];
+        break;
+      default:
+        throw new ArgumentOutOfRangeException(interactState.InteractableType.ToString() + " is yet not supported");
     }
-    
+
     Debug.Log("Checking if can craft...");
     if (!_player.ContainsItem(recipe.IngredientItemId1, recipe.IngredientAmount1))
     {
@@ -219,8 +255,7 @@ internal class PlayerUIInteractComponent
       return false;
     }
     else Debug.Log($"Player has {recipe.IngredientItemId3} x {recipe.IngredientAmount3}");
-
-
+    
     return true;
   }
 
@@ -229,10 +264,20 @@ internal class PlayerUIInteractComponent
     Debug.Log($"Recipe_Craft: {recipeIndex}");
     ref var uiState = ref _interactUIState;
       
-    ref Recipe recipe = ref CraftingStation.Recipes[recipeIndex];
-    if (interactState.InteractableType == INTERACTABLE_TYPE.FLETCHING_TABLE)
+    ref Recipe recipe = ref CraftingStation.Recipes[0];
+    switch (interactState.InteractableType)
     {
-      recipe = ref FletchingTable.Recipes[recipeIndex];
+      case INTERACTABLE_TYPE.CRAFTING_STATION:
+        recipe = ref CraftingStation.Recipes[recipeIndex];
+        break;
+      case INTERACTABLE_TYPE.FLETCHING_TABLE:
+        recipe = ref FletchingTable.Recipes[recipeIndex];
+        break;
+      case INTERACTABLE_TYPE.ANVIL:
+        recipe = ref Anvil.Recipes[recipeIndex];
+        break;
+      default:
+        throw new ArgumentOutOfRangeException(interactState.InteractableType.ToString() + " is yet not supported");
     }
 
     // ref var recipe = interactState.InteractableType == INTERACTABLE_TYPE.CRAFTING_STATION ? ref CraftingStation.Recipes[recipeIndex] : ref FletchingTable.Recipes[recipeIndex];
