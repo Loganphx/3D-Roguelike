@@ -1,24 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
-internal static class StringExtensions
-{
-    public static byte[] StringToByteArray(this string hex) {
-        return Enumerable.Range(0, hex.Length)
-            .Where(x => x % 2 == 0)
-            .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-            .ToArray();
-    }
-
-    public static Color HexToColor(this string hex)
-    {
-        var rgb = hex.StringToByteArray();
-        return new Color(rgb[0]/255f, rgb[1]/255f, rgb[2]/255f);
-    }
-}
 
 internal class CraftingUI : MonoBehaviour
 {
@@ -69,17 +55,16 @@ internal class CraftingUI : MonoBehaviour
     public ItemSlotUI[] cells;
 
     private Action<ITEM_TYPE> _craftItem;
-    public void Init(Action<ITEM_TYPE> craftItem)
-    {
-        _craftItem = craftItem;
-    }
-    
+
+    private int uiLayer;
+    private RectTransform _recipePreview;
+
     private void Awake()
     {
         Instance = this;
         
         slotHolder = transform.Find("Panel").Find("RecipeSlots");
-        
+        _recipePreview = transform.Find("RecipePreview").GetComponent<RectTransform>();
         itemSlotPrefab = slotHolder.GetChild(0).gameObject;
         
         // CraftingUI/Panel/Tabs_Header/
@@ -96,11 +81,93 @@ internal class CraftingUI : MonoBehaviour
         }
 
         cells = Array.Empty<ItemSlotUI>();
+        
+        uiLayer = LayerMask.NameToLayer("UI");
     }
+
 
     private void OnEnable()
     {
         OpenTab((int)TabTypes.Basic);
+    }
+
+    public void Init(Action<ITEM_TYPE> craftItem)
+    {
+        _craftItem = craftItem;
+    }
+
+    private void Update()
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        var mousePosition = Input.mousePosition; 
+        eventData.position = mousePosition;
+        List<RaycastResult> raysastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, raysastResults);
+
+        foreach (var raycastResult in raysastResults)
+        {
+            if (raycastResult.gameObject.layer == uiLayer)
+            {
+                var cell = cells.First(t => t.GameObject == raycastResult.gameObject);
+                DisplayRecipe(cell.type, mousePosition);
+                return;
+            }
+        }
+        
+        HideRecipe();
+    }
+
+    private void DisplayRecipe(ITEM_TYPE product, Vector3 mousePosition)
+    {
+        var recipe = CraftingStation.Recipes.First(t => t.ProductItemId == product);
+        _recipePreview.gameObject.SetActive(true);
+        var sizeDelta = _recipePreview.sizeDelta;
+        
+        _recipePreview.position = new Vector3(mousePosition.x + sizeDelta.x/2, mousePosition.y + sizeDelta.y/2, 0);
+        
+        var productPanel = _recipePreview.GetChild(0).gameObject;
+        var ingredientPanel1 = _recipePreview.GetChild(1).gameObject;
+        var ingredientPanel2 = _recipePreview.GetChild(2).gameObject;
+        var ingredientPanel3 = _recipePreview.GetChild(3).gameObject;
+
+        productPanel.GetComponent<TextMeshProUGUI>().text = recipe.ProductItemId + " x " + recipe.ProductAmount;
+        if (recipe.IngredientItemId1 == ITEM_TYPE.NULL)
+        {
+            ingredientPanel1.SetActive(false);
+        }
+        else
+        {
+            ingredientPanel1.SetActive(true);
+            ingredientPanel1.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId1 + " - " + recipe.IngredientAmount1;
+        }
+        
+        if (recipe.IngredientItemId2 == ITEM_TYPE.NULL)
+        {
+            ingredientPanel2.SetActive(false);
+        }
+        else
+        {
+            ingredientPanel2.SetActive(true);
+            ingredientPanel2.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId2 + " - " + recipe.IngredientAmount2;
+        }
+        
+        if (recipe.IngredientItemId3 == ITEM_TYPE.NULL)
+        {
+            ingredientPanel3.SetActive(false);
+        }
+        else
+        {
+            ingredientPanel3.SetActive(true);
+            ingredientPanel3.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId3 + " - " + recipe.IngredientAmount3;
+        }
+        
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_recipePreview);
+        
+    }
+
+    private void HideRecipe()
+    {
+        _recipePreview.gameObject.SetActive(false);
     }
 
     [InvokedByButton("Button_Basic", "Button_Tools", "Button_Stations", "Button_Build")]
@@ -154,7 +221,8 @@ internal class CraftingUI : MonoBehaviour
             {
                 GameObject = itemSlot.gameObject,
                 Image = image,
-                AmountText = image.GetComponentInChildren<TMP_Text>()
+                AmountText = image.GetComponentInChildren<TMP_Text>(),
+                type = itemType,
             };
 
             var button = itemSlot.transform.GetComponent<Button>();
