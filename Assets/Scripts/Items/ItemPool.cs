@@ -99,6 +99,11 @@ public static class ItemPool
     { ITEM_TYPE.ORE_GOLD, "Prefabs/Models/model_ore_gold" },
     { ITEM_TYPE.ORE_MYTHRIL, "Prefabs/Models/model_ore_mythril" },
     { ITEM_TYPE.ORE_ADAMANTITE, "Prefabs/Models/model_ore_adamantite" },
+    
+    { ITEM_TYPE.INGOT_IRON, "Prefabs/Models/model_ingot_iron" },
+    { ITEM_TYPE.INGOT_GOLD, "Prefabs/Models/model_ingot_gold" },
+    { ITEM_TYPE.INGOT_MYTHRIL, "Prefabs/Models/model_ingot_mythril" },
+    { ITEM_TYPE.INGOT_ADAMANTITE, "Prefabs/Models/model_ingot_adamantite" },
           
     { ITEM_TYPE.WOOD, "Prefabs/Models/model_wood_tree" },
     { ITEM_TYPE.WOOD_BIRCH, "Prefabs/Models/model_wood_birch" },

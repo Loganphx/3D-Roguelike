@@ -16,13 +16,20 @@ public static class PrefabPool
       
       { "Prefabs/Items/item_template", Resources.Load<GameObject>("Prefabs/Items/item_template") },
 
-      { "Prefabs/Models/model_ore_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_ore_adamantite") },
       { "Prefabs/Models/model_coin", Resources.Load<GameObject>("Prefabs/Models/model_coin") },
+
+      { "Prefabs/Models/model_rock", Resources.Load<GameObject>("Prefabs/Models/model_rock") },
+      { "Prefabs/Models/model_ore_iron", Resources.Load<GameObject>("Prefabs/Models/model_ore_iron") },
       { "Prefabs/Models/model_ore_coal", Resources.Load<GameObject>("Prefabs/Models/model_ore_coal") },
       { "Prefabs/Models/model_ore_gold", Resources.Load<GameObject>("Prefabs/Models/model_ore_gold") },
-      { "Prefabs/Models/model_ore_iron", Resources.Load<GameObject>("Prefabs/Models/model_ore_iron") },
       { "Prefabs/Models/model_ore_mythril", Resources.Load<GameObject>("Prefabs/Models/model_ore_mythril") },
-      { "Prefabs/Models/model_rock", Resources.Load<GameObject>("Prefabs/Models/model_rock") },
+      { "Prefabs/Models/model_ore_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_ore_adamantite") },
+
+      { "Prefabs/Models/model_ingot_iron", Resources.Load<GameObject>("Prefabs/Models/model_ingot_iron") },
+      { "Prefabs/Models/model_ingot_gold", Resources.Load<GameObject>("Prefabs/Models/model_ingot_gold") },
+      { "Prefabs/Models/model_ingot_mythril", Resources.Load<GameObject>("Prefabs/Models/model_ingot_mythril") },
+      { "Prefabs/Models/model_ingot_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_ingot_adamantite") },
+
       { "Prefabs/Models/model_wood_tree", Resources.Load<GameObject>("Prefabs/Models/model_wood_tree") },
       { "Prefabs/Models/model_wood_birch", Resources.Load<GameObject>("Prefabs/Models/model_wood_birch") },
       { "Prefabs/Models/model_wood_fir", Resources.Load<GameObject>("Prefabs/Models/model_wood_fir") },
