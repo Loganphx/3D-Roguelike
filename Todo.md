@@ -15,8 +15,9 @@
 [//]: # (- 11. Setup Recipe Crafting)
 - 11. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
 - 12. Tie in Equipment UI to inventory logic
-- 13. Setup Smelting via furnace/forge
-- 14. Setup Anvil to craft tools and armor
+
+[//]: # (- 13. Setup Smelting via furnace/forge)
+[//]: # (- 14. Setup Anvil to craft tools and armor)
 - 15. Setup Cauldron/Crucible to cook food
 - 16. Fix it so crops give seeds
 - 17. Make it so trees drops apples (for food)
