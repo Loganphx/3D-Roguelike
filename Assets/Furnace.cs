@@ -34,7 +34,8 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
     {
         ResourceManager.Builds.Add(GetHashCode(), this);
 
-        GetComponent<Damagable>().Initialize(new LootTable(new List<LootTableItem>()
+        var damagable = GetComponent<Damagable>();
+        damagable.Initialize(new LootTable(new List<LootTableItem>()
         {
             new()
             {
@@ -45,7 +46,8 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
                 useStats = false
             }
         }), 100);
-        
+        damagable.OnDeath += OnDeath;
+
         _outline = transform.GetChild(0).GetComponent<Outline>();
         _outline.enabled = false;
         
@@ -60,9 +62,71 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
             ItemId = ITEM_TYPE.ORE_IRON,
             Amount = 64,
         };
-        
+
         
     }
+
+    private void OnDeath()
+    {
+        // DROP ITEMS
+        var position = transform.position;
+        var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
+        var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
+        var hitDirection = -transform.forward;
+        
+        if (ingredientItem.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[ingredientItem.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero,
+                Quaternion.identity, itemTemplate.transform);
+
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(ingredientItem.ItemId, ingredientItem.Amount);
+
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+
+        if (fuelItem.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[fuelItem.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity, itemTemplate.transform);
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(fuelItem.ItemId, fuelItem.Amount);
+
+            // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+
+        if (productItem.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[productItem.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity, itemTemplate.transform);
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(productItem.ItemId, productItem.Amount);
+
+            // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+    }
+
     public void OnEnable()
     {
         ResourceManager.Builds.TryAdd(GetHashCode(), this);

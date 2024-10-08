@@ -48,7 +48,8 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
     {
         ResourceManager.Builds.Add(GetHashCode(), this);
 
-        GetComponent<Damagable>().Initialize(new LootTable(new List<LootTableItem>()
+        var damagable = GetComponent<Damagable>();
+        damagable.Initialize(new LootTable(new List<LootTableItem>()
         {
             new()
             {
@@ -59,6 +60,7 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
                 useStats = false
             }
         }), 100);
+        damagable.OnDeath += OnDeath;
         
         _outline = transform.GetChild(0).GetComponent<Outline>();
         _outline.enabled = false;
@@ -208,6 +210,121 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
         CancelSmelt();
     }
 
+    private void OnDeath()
+    {
+        // DROP ITEMS
+        var position = transform.position;
+        var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
+        var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
+        var hitDirection = -transform.forward;
+        
+        if (ingredientItem1.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[ingredientItem1.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero,
+                Quaternion.identity, itemTemplate.transform);
+
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(ingredientItem1.ItemId, ingredientItem1.Amount);
+
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+        
+        if (ingredientItem2.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[ingredientItem2.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero,
+                Quaternion.identity, itemTemplate.transform);
+
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(ingredientItem2.ItemId, ingredientItem2.Amount);
+
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+        
+        if (ingredientItem3.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[ingredientItem3.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero,
+                Quaternion.identity, itemTemplate.transform);
+
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(ingredientItem3.ItemId, ingredientItem3.Amount);
+
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+
+        if (ingredientItem4.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[ingredientItem4.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero,
+                Quaternion.identity, itemTemplate.transform);
+
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(ingredientItem4.ItemId, ingredientItem4.Amount);
+
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+        
+        if (fuelItem.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[fuelItem.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity, itemTemplate.transform);
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(fuelItem.ItemId, fuelItem.Amount);
+
+            // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+
+        if (productItem.ItemId != ITEM_TYPE.NULL)
+        {
+            var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+            var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[productItem.ItemId]];
+
+            var item = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity, itemTemplate.transform);
+            item.transform.localPosition = Vector3.zero;
+
+            itemTemplate.GetComponent<Item>().SetItemType(productItem.ItemId, productItem.Amount);
+
+            // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+            hitDirection.y = 1;
+            var rigidBody = itemTemplate.GetComponent<Rigidbody>();
+            rigidBody.linearDamping = 0.5f;
+            rigidBody.AddForce(hitDirection * 3f, ForceMode.Impulse);
+        }
+    }
+        
     public INTERACTABLE_TYPE GetInteractableType()
     {
         return INTERACTABLE_TYPE.CAULDRON;
