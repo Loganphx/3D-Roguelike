@@ -158,6 +158,11 @@ public static class ItemPool
     { ITEM_TYPE.WOOD_OAK, 42 },
     { ITEM_TYPE.WOOD_DARKOAK, 42 },
 
+    { ITEM_TYPE.INGOT_IRON, 69 },
+    { ITEM_TYPE.INGOT_GOLD, 69 },
+    { ITEM_TYPE.INGOT_MYTHRIL, 69 },
+    { ITEM_TYPE.INGOT_ADAMANTITE, 69 },
+    
     { ITEM_TYPE.SEED_WHEAT, 5 },
     { ITEM_TYPE.SEED_FLAX, 5 },
     
@@ -410,5 +415,11 @@ public static class ItemPool
     { ITEM_TYPE.CHESTPLATE_ADAMANTITE, 200 },
     { ITEM_TYPE.LEGGINGS_ADAMANTITE, 200 },
     { ITEM_TYPE.BOOTS_ADAMANTITE, 80 },
+  };
+
+  public static readonly Dictionary<ITEM_TYPE, int> ItemBurnTimes = new Dictionary<ITEM_TYPE, int>()
+  {
+    { ITEM_TYPE.WOOD, 10 },
+    { ITEM_TYPE.ORE_COAL, 64 },
   };
 }
