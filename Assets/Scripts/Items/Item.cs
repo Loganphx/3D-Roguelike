@@ -1,15 +1,6 @@
 using System;
 using UnityEngine;
 
-[Flags]
-public enum TOOL_TYPE
-{
-  NULL = 0,
-  AXE,
-  PICKAXE,
-  SHOVEL,
-  SCYTHE,
-}
 public enum ITEM_TYPE
 {
   NULL = 0,
@@ -100,6 +91,19 @@ public enum ITEM_TYPE
   WEAPON_BOW_IRON,
   WEAPON_BOW_MYTHRIL,
   WEAPON_BOW_ADAMANTITE,
+  
+  DEPLOYABLE_FLETCHING_TABLE,
+  DEPLOYABLE_ANVIL,
+}
+
+[Flags]
+public enum TOOL_TYPE
+{
+  NULL = 0,
+  AXE,
+  PICKAXE,
+  SHOVEL,
+  SCYTHE,
 }
 
 public class Item : MonoBehaviour, IInteractable, IHoverable

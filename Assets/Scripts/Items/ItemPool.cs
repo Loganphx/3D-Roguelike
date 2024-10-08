@@ -32,7 +32,9 @@ public static class ItemPool
 
     { ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, "Sprites/Items/deployable_farm_planter" },
     { ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, "Sprites/Items/deployable_crafting_station" },
+    { ITEM_TYPE.DEPLOYABLE_FLETCHING_TABLE, "Sprites/Items/deployable_fletching_table" },
     { ITEM_TYPE.DEPLOYABLE_FURNACE, "Sprites/Items/deployable_furnace" },
+    { ITEM_TYPE.DEPLOYABLE_ANVIL, "Sprites/Items/deployable_anvil" },
     { ITEM_TYPE.DEPLOYABLE_CAULDRON, "Sprites/Items/deployable_cauldron" },
     { ITEM_TYPE.DEPLOYABLE_CHEST, "Sprites/Items/deployable_chest" },
     

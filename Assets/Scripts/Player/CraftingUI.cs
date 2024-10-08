@@ -31,7 +31,9 @@ internal class CraftingUI : MonoBehaviour
         (TabTypes.Stations, new []
         {
             ITEM_TYPE.DEPLOYABLE_FURNACE,
+            ITEM_TYPE.DEPLOYABLE_ANVIL,
             ITEM_TYPE.DEPLOYABLE_CAULDRON,
+            ITEM_TYPE.DEPLOYABLE_FLETCHING_TABLE,
             ITEM_TYPE.DEPLOYABLE_CHEST,
             ITEM_TYPE.DEPLOYABLE_FARM_PLANTER,
         }),

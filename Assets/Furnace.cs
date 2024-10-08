@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class Furnace : MonoBehaviour
 {
-    public Recipe[] recipes = new[]
+    public static Recipe[] Recipes = new[]
     {
         new Recipe()
         {
@@ -98,7 +98,7 @@ public class Furnace : MonoBehaviour
                     return;
                 }
                 
-                var recipe = recipes.First(t => t.IngredientItemId1 == ingredientItem.ItemId);
+                var recipe = Recipes.First(t => t.IngredientItemId1 == ingredientItem.ItemId);
 
                 if (recipe.ProductItemId != ITEM_TYPE.NULL)
                 {
@@ -137,7 +137,7 @@ public class Furnace : MonoBehaviour
     {
         if(!IsSmelting) return;
         
-        var recipe = recipes.First(t => t.IngredientItemId1 == ingredientItem.ItemId);
+        var recipe = Recipes.First(t => t.IngredientItemId1 == ingredientItem.ItemId);
         
         if (productItem.ItemId == ITEM_TYPE.NULL)
         {

@@ -64,6 +64,14 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
         },
         new Recipe()
         {
+            ProductItemId = ITEM_TYPE.DEPLOYABLE_ANVIL,
+            ProductAmount = 1,
+            
+            IngredientItemId1 = ITEM_TYPE.INGOT_IRON,
+            IngredientAmount1 = 5,
+        },
+        new Recipe()
+        {
             ProductItemId = ITEM_TYPE.DEPLOYABLE_CAULDRON,
             ProductAmount = 1,
             
@@ -73,6 +81,15 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
             IngredientItemId2 = ITEM_TYPE.WOOD,
             IngredientAmount2 = 10,
         },
+        new Recipe()
+        {
+            ProductItemId = ITEM_TYPE.DEPLOYABLE_FLETCHING_TABLE,
+            ProductAmount = 1,
+            
+            IngredientItemId1 = ITEM_TYPE.WOOD,
+            IngredientAmount1 = 25,
+        },
+        
         new Recipe()
         {
             ProductItemId = ITEM_TYPE.DEPLOYABLE_CHEST,
