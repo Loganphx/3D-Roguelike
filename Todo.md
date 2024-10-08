@@ -13,19 +13,18 @@
 [//]: # (- 09. Mob Spawning at Night)
 [//]: # (- 10. Setup Crafting via workbench)
 [//]: # (- 11. Setup Recipe Crafting)
-- 11. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
-- 12. Tie in Equipment UI to inventory logic
-
-[//]: # (- 13. Setup Smelting via furnace/forge)
-[//]: # (- 14. Setup Anvil to craft tools and armor)
+[//]: # (- 12. Setup Smelting via furnace/forge)
+[//]: # (- 13. Setup Anvil to craft tools and armor)
+[//]: # (- 14. Fix it so crops give seeds)
 - 15. Setup Cauldron/Crucible to cook food
-- 16. Fix it so crops give seeds
-- 17. Make it so trees drops apples (for food)
-- 18. Add Slingshot (Rocks) / Bow (Arrows)
-- 19. Create Ranged Mobs
-- 20. Create Flying Mobs (Shoot Projectiles)
-- 21. Implement death (Player)
-- 22. Redesign Movement Controller (Rigidbody)
+- 16. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
+- 17. Tie in Equipment UI to inventory logic
+- 18. Make it so trees drops apples (for food)
+- 19. Add Slingshot (Rocks) / Bow (Arrows)
+- 20. Create Ranged Mobs
+- 21. Create Flying Mobs (Shoot Projectiles)
+- 22. Implement death (Player)
+- 23. Redesign Movement Controller (Rigidbody)
 
 - Fix Bug with Mobs now able to accidently hit eachother
 - Split Damage into Resource Damage and Weapon Damage

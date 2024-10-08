@@ -68,8 +68,7 @@ internal class CropData
   public int GrowTime;
   public List<CropPhase> Phases;
   
-  public ITEM_TYPE Product;
-  public byte ProductQuantity;
+  public LootTable LootTable;
 }
 
 public struct FarmPlotState

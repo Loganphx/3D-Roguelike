@@ -13,7 +13,14 @@ public class HealthBarUI : MonoBehaviour
     {
         _damagable = GetComponent<Damagable>();
         _canvas = GetComponentInChildren<Canvas>();
-        _healthBarFill = _canvas.transform.Find("Panel_HealthBar").Find("Panel_Fill").GetComponent<Image>();
+        try
+        {
+            _healthBarFill = _canvas.transform.Find("Panel_HealthBar").Find("Panel_Fill").GetComponent<Image>();
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e, this);
+        }
     }
 
     private void FixedUpdate()

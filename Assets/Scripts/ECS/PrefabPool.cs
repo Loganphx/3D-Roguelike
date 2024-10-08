@@ -37,9 +37,12 @@ public static class PrefabPool
       { "Prefabs/Models/model_seed_flax", Resources.Load<GameObject>("Prefabs/Models/model_seed_flax") },
       
       { "Prefabs/Models/model_wheat", Resources.Load<GameObject>("Prefabs/Models/model_wheat") },
+      { "Prefabs/Models/model_flax", Resources.Load<GameObject>("Prefabs/Models/model_flax") },
       
       { "Prefabs/Models/model_farm_planter", Resources.Load<GameObject>("Prefabs/Models/model_farm_planter") },
       { "Prefabs/Models/model_crafting_station", Resources.Load<GameObject>("Prefabs/Models/model_crafting_station") },
+      { "Prefabs/Models/model_fletching_table", Resources.Load<GameObject>("Prefabs/Models/model_fletching_table") },
+      { "Prefabs/Models/model_anvil", Resources.Load<GameObject>("Prefabs/Models/model_anvil") },
       { "Prefabs/Models/model_furnace", Resources.Load<GameObject>("Prefabs/Models/model_furnace") },
       { "Prefabs/Models/model_cauldron", Resources.Load<GameObject>("Prefabs/Models/model_cauldron") },
       
@@ -64,6 +67,7 @@ public static class PrefabPool
       { "Prefabs/Deployables/deployable_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/deployable_farm_planter") },
       { "Prefabs/Deployables/blueprint_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_crafting_station") },
       { "Prefabs/Deployables/deployable_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/deployable_crafting_station") },
+      { "Prefabs/Deployables/deployable_fletching_table", Resources.Load<GameObject>("Prefabs/Deployables/deployable_fletching_table") },
       { "Prefabs/Deployables/deployable_furnace", Resources.Load<GameObject>("Prefabs/Deployables/deployable_furnace") },
       { "Prefabs/Deployables/deployable_cauldron", Resources.Load<GameObject>("Prefabs/Deployables/deployable_cauldron") },
       

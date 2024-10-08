@@ -79,7 +79,8 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
 
           // var cropPrefab = PrefabPool.Prefabs[cropPhase.prefabPath];
           // var crop = GameObject.Instantiate(cropPrefab, Vector3.zero, Quaternion.identity, transform);
-          crop.transform.localPosition = Vector3.zero + Vector3.up * 0.235f;
+          if(state.CurrentPhase != _cropData.Phases.Count - 1) 
+            crop.transform.localPosition = Vector3.zero + Vector3.up * 0.235f;
 
           Debug.Log(this,this);
           crop.SetActive(true);
@@ -110,21 +111,27 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
 
       var position = transform.position;
       var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
-      var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
-      var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
-      var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[_cropData.Product]];
+      
+      var loot = _cropData.LootTable.GetLoot(player);
+      foreach (var itemData in loot)
+      {
+        var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
+        var itemTemplate = Instantiate(itemTemplatePrefab, dropPosition, Quaternion.identity);
+        var itemPrefab = PrefabPool.Prefabs[ItemPool.ItemPrefabs[itemData.item]];
 
-      var item = Instantiate(itemPrefab, Vector3.zero,
-        Quaternion.identity, itemTemplate.transform);
+        var item = Instantiate(itemPrefab, Vector3.zero,
+          Quaternion.identity, itemTemplate.transform);
 
-      item.transform.localPosition = Vector3.zero;
+        item.transform.localPosition = Vector3.zero;
     
-      itemTemplate.GetComponent<Item>().SetItemType(_cropData.Product, 1);
+        itemTemplate.GetComponent<Item>().SetItemType(itemData.item, itemData.amount);
 
-      // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
-      var hitDirection = player.Transform.forward;
-      hitDirection.y = 1;
-      itemTemplate.GetComponent<Rigidbody>().AddForce(hitDirection * 3f, ForceMode.Impulse);
+        // var drop = GameObject.Instantiate(dropPrefab, dropPosition, Quaternion.identity);
+        var hitDirection = player.Transform.forward;
+        hitDirection.y = 1;
+        itemTemplate.GetComponent<Rigidbody>().AddForce(hitDirection * 3f, ForceMode.Impulse);
+      }
+    
       // drop.GetComponent<Rigidbody>().AddForce(hitDirection * 10f, ForceMode.Impulse);
 
       //drop.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
@@ -166,8 +173,25 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
             // prefabPath = "Prefabs/Crops/crop_wheat_4"
           },
         },
-        Product = ITEM_TYPE.WHEAT,
-        ProductQuantity = 5
+        LootTable = new LootTable(new List<LootTableItem>()
+        {
+         new LootTableItem()
+         {
+           ItemType = ITEM_TYPE.WHEAT,
+           dropChance = 100,
+           minAmount = 1,
+           maxAmount = 5,
+           useStats = true,
+         },
+         new LootTableItem()
+         {
+           ItemType = ITEM_TYPE.SEED_WHEAT,
+           dropChance = 100,
+           minAmount = 1,
+           maxAmount = 3,
+           useStats = true,
+         } 
+        })
       }
     },
     {
@@ -202,8 +226,26 @@ public class Crop : MonoBehaviour, IInteractable, IHoverable
             // prefabPath = "Prefabs/Crops/crop_wheat_4"
           },
         },
-        Product = ITEM_TYPE.FLAX,
-        ProductQuantity = 3
+        
+        LootTable = new LootTable(new List<LootTableItem>()
+        {
+          new LootTableItem()
+          {
+            ItemType = ITEM_TYPE.FLAX,
+            dropChance = 100,
+            minAmount = 1,
+            maxAmount = 5,
+            useStats = true,
+          },
+          new LootTableItem()
+          {
+            ItemType = ITEM_TYPE.SEED_FLAX,
+            dropChance = 100,
+            minAmount = 1,
+            maxAmount = 3,
+            useStats = true,
+          } 
+        }),
       }
     }
   };
