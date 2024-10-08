@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using Interactables;
 using UnityEngine;
 
-public class Anvil : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Damagable), typeof(HealthBarUI))]
+public class Anvil : MonoBehaviour, IInteractable, IHoverable, IDamagable
 {
     public static Recipe[] Recipes =
     {
@@ -99,6 +102,43 @@ public class Anvil : MonoBehaviour, IInteractable
             ITEM_TYPE.INGOT_ADAMANTITE, 4),
 
     };
+
+    private Outline _outline;
+    private void Awake()
+    {
+        ResourceManager.Builds.Add(GetHashCode(), this);
+
+        GetComponent<Damagable>().Initialize(new LootTable(new List<LootTableItem>()
+        {
+            new()
+            {
+                ItemType = ITEM_TYPE.DEPLOYABLE_ANVIL,
+                maxAmount = 1,
+                minAmount = 1,
+                dropChance = 100,
+                useStats = false
+            }
+        }), 100);
+        
+        _outline = transform.GetChild(0).GetComponent<Outline>();
+        _outline.enabled = false;
+    }
+
+    public void OnEnable()
+    {
+        ResourceManager.Builds.TryAdd(GetHashCode(), this);
+    }
+
+    private void OnDestroy()
+    {
+        ResourceManager.Builds.Remove(GetHashCode());
+    }
+
+    private void OnDisable()
+    {
+        ResourceManager.Builds.Remove(GetHashCode());
+    }
+    
     public INTERACTABLE_TYPE GetInteractableType()
     {
         return INTERACTABLE_TYPE.ANVIL;
@@ -106,5 +146,21 @@ public class Anvil : MonoBehaviour, IInteractable
 
     public void Interact(IPlayer player)
     {
+    }
+
+    public Transform Transform => transform;
+    public void OnHit(IDamager damager, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
+    {
+        GetComponent<Damagable>().OnHit(damager, hitDirection, hitPosition, toolType, damage);
+    }
+
+    public void OnHoverEnter(IPlayer player)
+    {
+        _outline.enabled = true;
+    }
+
+    public void OnHoverExit(IPlayer player)
+    {
+        _outline.enabled = false;
     }
 }

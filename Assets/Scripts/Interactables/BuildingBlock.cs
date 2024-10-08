@@ -4,38 +4,6 @@ using UnityEngine;
 
 namespace Interactables
 {
-    public static class ResourceManager
-    {
-        public static Dictionary<int, BuildingBlock> Builds = new Dictionary<int, BuildingBlock>();
-
-        public static (IDamagable closestPlayer, Vector3 closestPlayerPosition, float closestDistance) GetClosestBuild(Vector3 position)
-        {
-            var closestDistance = float.PositiveInfinity;
-            Vector3 closestPlayerPosition = Vector3.negativeInfinity;
-            IDamagable closestPlayer = null;
-        
-            // Debug.Log(Players.Count);
-            foreach (var build in Builds)
-            {
-                // if (!build..IsDead)
-                {
-                    var playerPosition = build.Value.Transform.position;
-                    var distance = Vector3.Distance(build.Value.Transform.position, position);
-                    // Debug.Log(distance);
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestPlayerPosition = playerPosition;
-                        closestPlayer   = build.Value;
-                    }
-                }
-                // else Debug.LogWarning($"Player is dead {player}");
-        
-            }
-
-            return (closestPlayer, closestPlayerPosition, closestDistance);
-        }
-    }
     public class BuildingBlock : MonoBehaviour, IDamagable
     {
         private BuildingBlockAnchor[] _anchors;
@@ -64,7 +32,7 @@ namespace Interactables
             })
             ,100);
         }
-    
+
         public void Start()
         {
             for (int i = 0; i < _anchors.Length; i++)
@@ -92,6 +60,21 @@ namespace Interactables
             }
         }
 
+        public void OnEnable()
+        {
+            ResourceManager.Builds.TryAdd(GetHashCode(), this);
+        }
+
+        private void OnDestroy()
+        {
+            ResourceManager.Builds.Remove(GetHashCode());
+        }
+
+        private void OnDisable()
+        {
+            ResourceManager.Builds.Remove(GetHashCode());
+        }
+
         private void OnDrawGizmos()
         {
             if (_anchors == null) return;
@@ -116,16 +99,7 @@ namespace Interactables
         }
 
 
-        private void OnDestroy()
-        {
-            Debug.Log("OnDestroy");
-            ResourceManager.Builds.Remove(GetHashCode());
-        }
-
-        private void OnDisable()
-        {
-            ResourceManager.Builds.Remove(GetHashCode());
-        }
+     
 
         public Transform Transform => transform;
 

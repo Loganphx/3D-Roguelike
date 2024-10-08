@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Interactables;
 using UnityEngine;
 
-public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
+[RequireComponent(typeof(Damagable), typeof(HealthBarUI))]
+public class CraftingStation : MonoBehaviour, IInteractable, IHoverable, IDamagable
 {
     public static Recipe[] Recipes = {
         new Recipe()
@@ -132,9 +134,12 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
         },
         
     };
-    
+
+    private Outline _outline;
     private void Awake()
     {
+        ResourceManager.Builds.Add(GetHashCode(), this);
+        
         GetComponent<Damagable>().Initialize(new LootTable(new List<LootTableItem>()
         {
             new()
@@ -146,8 +151,26 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
                 useStats = false
             }
         }), 100);
+        
+        _outline = transform.GetChild(0).GetComponent<Outline>();
+        _outline.enabled = false;
+    }
+    
+    public void OnEnable()
+    {
+        ResourceManager.Builds.TryAdd(GetHashCode(), this);
     }
 
+    private void OnDestroy()
+    {
+        ResourceManager.Builds.Remove(GetHashCode());
+    }
+
+    private void OnDisable()
+    {
+        ResourceManager.Builds.Remove(GetHashCode());
+    }
+    
     public INTERACTABLE_TYPE GetInteractableType()
     {
         return INTERACTABLE_TYPE.CRAFTING_STATION;
@@ -163,5 +186,15 @@ public class CraftingStation : MonoBehaviour, IInteractable, IDamagable
     public void OnHit(IDamager player, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
     {
         GetComponent<Damagable>().OnHit(player, hitDirection, hitPosition, toolType, damage);
+    }
+
+    public void OnHoverEnter(IPlayer player)
+    {
+        _outline.enabled = true;
+    }
+
+    public void OnHoverExit(IPlayer player)
+    {
+        _outline.enabled = false;
     }
 }

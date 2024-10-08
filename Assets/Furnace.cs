@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Interactables;
 using UnityEngine;
 
 [Serializable]
-public class Furnace : MonoBehaviour
+[RequireComponent(typeof(Damagable), typeof(HealthBarUI))]
+public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
 {
     public static Recipe[] Recipes = new[]
     {
@@ -54,8 +57,26 @@ public class Furnace : MonoBehaviour
     [SerializeField] private InventoryItem ingredientItem;
     [SerializeField] private InventoryItem productItem;
 
+    private Outline _outline;
     private void Awake()
     {
+        ResourceManager.Builds.Add(GetHashCode(), this);
+
+        GetComponent<Damagable>().Initialize(new LootTable(new List<LootTableItem>()
+        {
+            new()
+            {
+                ItemType = ITEM_TYPE.DEPLOYABLE_FURNACE,
+                maxAmount = 1,
+                minAmount = 1,
+                dropChance = 100,
+                useStats = false
+            }
+        }), 100);
+        
+        _outline = transform.GetChild(0).GetComponent<Outline>();
+        _outline.enabled = false;
+        
         fuelItem = new InventoryItem()
         {
             ItemId = ITEM_TYPE.ORE_COAL,
@@ -67,8 +88,24 @@ public class Furnace : MonoBehaviour
             ItemId = ITEM_TYPE.ORE_IRON,
             Amount = 64,
         };
+        
+        
+    }
+    public void OnEnable()
+    {
+        ResourceManager.Builds.TryAdd(GetHashCode(), this);
     }
 
+    private void OnDestroy()
+    {
+        ResourceManager.Builds.Remove(GetHashCode());
+    }
+
+    private void OnDisable()
+    {
+        ResourceManager.Builds.Remove(GetHashCode());
+    }
+    
     private void FixedUpdate()
     {
         if (IsSmelting)
@@ -160,5 +197,30 @@ public class Furnace : MonoBehaviour
         if (ingredientItem.Amount <= 0) ingredientItem.ItemId = ITEM_TYPE.NULL;
         
         CancelSmelt();
+    }
+
+    public INTERACTABLE_TYPE GetInteractableType()
+    {
+        return INTERACTABLE_TYPE.FURNACE;
+    }
+
+    public void Interact(IPlayer player)
+    {
+    }
+
+    public Transform Transform => transform;
+    public void OnHit(IDamager damager, Vector3 hitDirection, Vector3 hitPosition, TOOL_TYPE toolType, int damage)
+    {
+        GetComponent<Damagable>().OnHit(damager, hitDirection, hitPosition, toolType, damage);
+    }
+
+    public void OnHoverEnter(IPlayer player)
+    {
+        _outline.enabled = true;
+    }
+
+    public void OnHoverExit(IPlayer player)
+    {
+        _outline.enabled = false;
     }
 }
