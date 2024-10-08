@@ -14,7 +14,31 @@ public class Furnace : MonoBehaviour
 
             IngredientItemId1 = ITEM_TYPE.ORE_IRON,
             IngredientAmount1 = 1,
-        }
+        },
+        new Recipe()
+        {
+            ProductItemId = ITEM_TYPE.INGOT_GOLD,
+            ProductAmount = 1,
+
+            IngredientItemId1 = ITEM_TYPE.ORE_GOLD,
+            IngredientAmount1 = 1,
+        },
+        new Recipe()
+        {
+            ProductItemId = ITEM_TYPE.INGOT_MYTHRIL,
+            ProductAmount = 1,
+
+            IngredientItemId1 = ITEM_TYPE.ORE_MYTHRIL,
+            IngredientAmount1 = 1,
+        },
+        new Recipe()
+        {
+            ProductItemId = ITEM_TYPE.INGOT_ADAMANTITE,
+            ProductAmount = 1,
+
+            IngredientItemId1 = ITEM_TYPE.ORE_ADAMANTITE,
+            IngredientAmount1 = 1,
+        },
     };
 
     public const int SmeltTime = 10; // 10 seconds to smelt any ore
