@@ -86,11 +86,14 @@ public class Totem : MonoBehaviour, IInteractable, IHoverable
   {
     Debug.Log("Interacting with totem");
 
+    if(remainingEnemies > 0) return;
+    
     SpawnEnemies();
 
     // Disable Interaction Trigger
 
     var interaction = transform.Find("Interaction");
+    interaction.gameObject.layer = 0;
     interaction.gameObject.SetActive(false);
 
     _animation.clip = AnimationPool.Animations[Animations[0]];
