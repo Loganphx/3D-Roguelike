@@ -71,6 +71,11 @@ public static class PrefabPool
       { "Prefabs/Models/model_sword_mythril", Resources.Load<GameObject>("Prefabs/Models/model_sword_mythril") },
       { "Prefabs/Models/model_sword_adamantite", Resources.Load<GameObject>("Prefabs/Models/model_sword_adamantite") },
       
+      { "Prefabs/Models/model_meat_cooked", Resources.Load<GameObject>("Prefabs/Models/model_meat_cooked") },
+      { "Prefabs/Models/model_bread", Resources.Load<GameObject>("Prefabs/Models/model_bread") },
+      { "Prefabs/Models/model_pot_pie", Resources.Load<GameObject>("Prefabs/Models/model_pot_pie") },
+      { "Prefabs/Models/model_beef_stew", Resources.Load<GameObject>("Prefabs/Models/model_beef_stew") },
+
       { "Prefabs/Deployables/deployable_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/deployable_farm_planter") },
       { "Prefabs/Deployables/blueprint_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_crafting_station") },
       { "Prefabs/Deployables/deployable_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/deployable_crafting_station") },
@@ -90,7 +95,7 @@ public static class PrefabPool
       { "Prefabs/Powerups/powerup_uncommon", Resources.Load<GameObject>("Prefabs/Powerups/powerup_uncommon") },
       { "Prefabs/Powerups/powerup_rare", Resources.Load<GameObject>("Prefabs/Powerups/powerup_rare") },
       { "Prefabs/Powerups/powerup_epic", Resources.Load<GameObject>("Prefabs/Powerups/powerup_epic") },
-      { "Prefabs/Powerups/powerup_legendary", Resources.Load<GameObject>("Prefabs/Powerups/powerup_legendary") },
+      { "Prefabs/Powerups/powerup_legendary", Resources.Load<GameObject>("Prefabs/Powerups/powerup_legendary") }, 
     };
     SpawnedPrefabs = new Dictionary<string, GameObject>()
     {

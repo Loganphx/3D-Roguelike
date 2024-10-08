@@ -51,9 +51,10 @@ namespace Interactables
       GetComponent<Damagable>().OnHit(player, hitDirection, hitPosition, toolType, damage);
     }
 
-    private void OnDeath()
+    private void OnDeath(Vector3 hitDirection)
     {
       _animator.SetTrigger(Death);
+      // Todo: Have tree fall in the hit direction! 
     }
 
     private static readonly Dictionary<TREE_TYPE, TreeData> _trees = new Dictionary<TREE_TYPE, TreeData>()

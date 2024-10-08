@@ -43,7 +43,7 @@ public class Damagable : MonoBehaviour, IDamagable
     private int maxHealth;
     private LootTable lootTable;
     private bool usePlayerStats;
-    public Action OnDeath;
+    public Action<Vector3> OnDeath;
 
     public void Initialize(LootTable lootTable, int maxHealth)
     {
@@ -76,7 +76,7 @@ public class Damagable : MonoBehaviour, IDamagable
     {
         var generatedLoot = lootTable.GetLoot(damager);
         this.Death(hitDirection, generatedLoot);
-        OnDeath?.Invoke();
+        OnDeath?.Invoke(hitDirection);
     }
 
     public int CurrentHealth => currentHealth;

@@ -66,13 +66,12 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
         
     }
 
-    private void OnDeath()
+    private void OnDeath(Vector3 hitDirection)
     {
         // DROP ITEMS
         var position = transform.position;
         var dropPosition = new Vector3(position.x, position.y + 0.15f, position.z);
         var itemTemplatePrefab = PrefabPool.Prefabs["Prefabs/Items/item_template"];
-        var hitDirection = -transform.forward;
         
         if (ingredientItem.ItemId != ITEM_TYPE.NULL)
         {

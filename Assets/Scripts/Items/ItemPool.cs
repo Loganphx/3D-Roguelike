@@ -146,6 +146,11 @@ public static class ItemPool
     { ITEM_TYPE.WEAPON_SWORD_IRON, "Prefabs/Models/model_sword_iron" },
     { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, "Prefabs/Models/model_sword_mythril" },
     { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE, "Prefabs/Models/model_sword_adamantite" },
+    
+    { ITEM_TYPE.FOOD_MEAT_COOKED, "Prefabs/Models/model_meat_cooked" },
+    { ITEM_TYPE.FOOD_BREAD, "Prefabs/Models/model_bread" },
+    { ITEM_TYPE.FOOD_POT_PIE, "Prefabs/Models/model_pot_pie" },
+    { ITEM_TYPE.FOOD_BEEF_STEW, "Prefabs/Models/model_beef_stew" },
   };
 
   
@@ -175,12 +180,12 @@ public static class ItemPool
     { ITEM_TYPE.SEED_WHEAT, 5 },
     { ITEM_TYPE.SEED_FLAX, 5 },
     
-    { ITEM_TYPE.WHEAT, 100 },
-    { ITEM_TYPE.FLAX, 100 },
+    { ITEM_TYPE.WHEAT, 255 },
+    { ITEM_TYPE.FLAX, 255 },
 
-    { ITEM_TYPE.MUSHROOM_HEALSHROOM, 5 },
-    { ITEM_TYPE.MUSHROOM_ZOOMSHROOM, 5 },
-    { ITEM_TYPE.MUSHROOM_MUNCHSHROOM, 5 },
+    { ITEM_TYPE.MUSHROOM_HEALSHROOM, 255 },
+    { ITEM_TYPE.MUSHROOM_ZOOMSHROOM, 255 },
+    { ITEM_TYPE.MUSHROOM_MUNCHSHROOM, 255 },
 
     { ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, 1 },
     { ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, 1 },
@@ -209,13 +214,19 @@ public static class ItemPool
     { ITEM_TYPE.WEAPON_SWORD_MYTHRIL, 1 },
     { ITEM_TYPE.WEAPON_SWORD_ADAMANTITE , 1 },
     
-    { ITEM_TYPE.BARK , 10 },
-    { ITEM_TYPE.BOWL , 5 },
+    { ITEM_TYPE.BARK , 255 },
+    { ITEM_TYPE.BOWL , 255 },
     
-    { ITEM_TYPE.ARROW_STONE , 5 },
-    { ITEM_TYPE.ARROW_IRON , 5 },
-    { ITEM_TYPE.ARROW_MYTHRIL , 5 },
-    { ITEM_TYPE.ARROW_ADAMANTITE , 5 },
+    { ITEM_TYPE.ARROW_STONE , 255 },
+    { ITEM_TYPE.ARROW_IRON , 255 },
+    { ITEM_TYPE.ARROW_MYTHRIL , 255 },
+    { ITEM_TYPE.ARROW_ADAMANTITE , 255 },
+    
+    
+    { ITEM_TYPE.FOOD_MEAT_COOKED , 50 },
+    { ITEM_TYPE.FOOD_BEEF_STEW , 50 },
+    { ITEM_TYPE.FOOD_POT_PIE , 50 },
+    { ITEM_TYPE.FOOD_BREAD , 50 },
   };
 
   // DAMAGE OF WEAPONS
@@ -281,6 +292,11 @@ public static class ItemPool
     { ITEM_TYPE.ARROW_IRON, 0 },
     { ITEM_TYPE.ARROW_MYTHRIL, 0 },
     { ITEM_TYPE.ARROW_ADAMANTITE, 0 },
+    
+    { ITEM_TYPE.FOOD_MEAT_COOKED, 0 },
+    { ITEM_TYPE.FOOD_BREAD, 0 },
+    { ITEM_TYPE.FOOD_POT_PIE, 0 },
+    { ITEM_TYPE.FOOD_BEEF_STEW, 0 },
   };
 
   // PRICES OF ITEMS
