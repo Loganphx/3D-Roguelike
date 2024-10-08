@@ -4691,6 +4691,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5bc9889216104f74080af92646dcc539, type: 3}
+--- !u!1001 &635064703
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 31.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00000023841858
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.62722
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 280972833821694494, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3299110443734491294, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      propertyPath: m_Name
+      value: deployable_furnace (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -2359875689817048061, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3299110443734491294, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1587855525}
+  m_SourcePrefab: {fileID: 100100000, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
 --- !u!1 &637044620
 GameObject:
   m_ObjectHideFlags: 0
@@ -10705,6 +10766,72 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3041185081316474261, guid: 905b0810b0657ae429c79e7650f2f3cc, type: 3}
   m_PrefabInstance: {fileID: 249579399}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1587855524 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3299110443734491294, guid: 7db1d4686581d344eb9afb0a911b72a2, type: 3}
+  m_PrefabInstance: {fileID: 635064703}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1587855525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587855524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5d48418d26d4be6b91344bcaa5e3105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SmeltProgress: 0
+  fuelItem:
+    ItemId: 0
+    Amount: 0
+    MaxStack: 0
+    ItemDamage: 0
+    IsDeployable: 0
+    IsConsumable: 0
+    HasChanged: 0
+  ingredientItem1:
+    ItemId: 0
+    Amount: 0
+    MaxStack: 0
+    ItemDamage: 0
+    IsDeployable: 0
+    IsConsumable: 0
+    HasChanged: 0
+  ingredientItem2:
+    ItemId: 0
+    Amount: 0
+    MaxStack: 0
+    ItemDamage: 0
+    IsDeployable: 0
+    IsConsumable: 0
+    HasChanged: 0
+  ingredientItem3:
+    ItemId: 0
+    Amount: 0
+    MaxStack: 0
+    ItemDamage: 0
+    IsDeployable: 0
+    IsConsumable: 0
+    HasChanged: 0
+  ingredientItem4:
+    ItemId: 0
+    Amount: 0
+    MaxStack: 0
+    ItemDamage: 0
+    IsDeployable: 0
+    IsConsumable: 0
+    HasChanged: 0
+  productItem:
+    ItemId: 0
+    Amount: 0
+    MaxStack: 0
+    ItemDamage: 0
+    IsDeployable: 0
+    IsConsumable: 0
+    HasChanged: 0
 --- !u!1 &1598549603
 GameObject:
   m_ObjectHideFlags: 0
@@ -16034,3 +16161,4 @@ SceneRoots:
   - {fileID: 1139141285}
   - {fileID: 63874479}
   - {fileID: 1392332146}
+  - {fileID: 635064703}
