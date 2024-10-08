@@ -131,36 +131,47 @@ internal class CraftingUI : MonoBehaviour
         var ingredientPanel1 = _recipePreview.GetChild(1).gameObject;
         var ingredientPanel2 = _recipePreview.GetChild(2).gameObject;
         var ingredientPanel3 = _recipePreview.GetChild(3).gameObject;
+        var ingredientPanel4 = _recipePreview.GetChild(4).gameObject;
 
         productPanel.GetComponent<TextMeshProUGUI>().text = recipe.ProductItemId + " x " + recipe.ProductAmount;
-        if (recipe.IngredientItemId1 == ITEM_TYPE.NULL)
+        if (recipe.IngredientIds[0] == ITEM_TYPE.NULL)
         {
             ingredientPanel1.SetActive(false);
         }
         else
         {
             ingredientPanel1.SetActive(true);
-            ingredientPanel1.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId1 + " - " + recipe.IngredientAmount1;
+            ingredientPanel1.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[0] + " - " + recipe.IngredientAmounts[0];
         }
         
-        if (recipe.IngredientItemId2 == ITEM_TYPE.NULL)
+        if (recipe.IngredientIds[1] == ITEM_TYPE.NULL)
         {
             ingredientPanel2.SetActive(false);
         }
         else
         {
             ingredientPanel2.SetActive(true);
-            ingredientPanel2.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId2 + " - " + recipe.IngredientAmount2;
+            ingredientPanel2.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[1] + " - " + recipe.IngredientAmounts[1];
         }
         
-        if (recipe.IngredientItemId3 == ITEM_TYPE.NULL)
+        if (recipe.IngredientIds[2] == ITEM_TYPE.NULL)
         {
             ingredientPanel3.SetActive(false);
         }
         else
         {
             ingredientPanel3.SetActive(true);
-            ingredientPanel3.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId3 + " - " + recipe.IngredientAmount3;
+            ingredientPanel3.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[2] + " - " + recipe.IngredientAmounts[2];
+        }
+        
+        if (recipe.IngredientIds[3] == ITEM_TYPE.NULL)
+        {
+            ingredientPanel4.SetActive(false);
+        }
+        else
+        {
+            ingredientPanel4.SetActive(true);
+            ingredientPanel4.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[3] + " - " + recipe.IngredientAmounts[3];
         }
         
         LayoutRebuilder.ForceRebuildLayoutImmediate(_recipePreview);

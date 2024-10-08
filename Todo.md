@@ -17,14 +17,16 @@
 [//]: # (- 13. Setup Anvil to craft tools and armor)
 [//]: # (- 14. Fix it so crops give seeds)
 - 15. Setup Cauldron/Crucible to cook food
-- 16. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
-- 17. Tie in Equipment UI to inventory logic
-- 18. Make it so trees drops apples (for food)
-- 19. Add Slingshot (Rocks) / Bow (Arrows)
-- 20. Create Ranged Mobs
-- 21. Create Flying Mobs (Shoot Projectiles)
-- 22. Implement death (Player)
-- 23. Redesign Movement Controller (Rigidbody)
+- 16. Design Furnace UI
+- 17. Design Cauldron UI
+- 18. Tie Inventory UI into Inventory Logic, to allow for moving and dropping of items
+- 19. Tie in Equipment UI to inventory logic
+- 20. Make it so trees drops apples (for food)
+- 21. Add Slingshot (Rocks) / Bow (Arrows)
+- 22. Create Ranged Mobs
+- 23. Create Flying Mobs (Shoot Projectiles)
+- 24. Implement death (Player)
+- 25. Redesign Movement Controller (Rigidbody)
 
 - Fix Bug with Mobs now able to accidently hit eachother
 - Split Damage into Resource Damage and Weapon Damage

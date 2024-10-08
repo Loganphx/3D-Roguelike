@@ -6,133 +6,21 @@ using UnityEngine;
 [RequireComponent(typeof(Damagable), typeof(HealthBarUI))]
 public class CraftingStation : MonoBehaviour, IInteractable, IHoverable, IDamagable
 {
-    public static Recipe[] Recipes = {
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.BARK,
-            ProductAmount = 5,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 5,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.BOWL,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 5,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.TOOL_AXE_WOODEN,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 10,
-            
-            IngredientItemId2 = ITEM_TYPE.BARK,
-            IngredientAmount2 = 10,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.TOOL_PICKAXE_WOODEN,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 10,
-            
-            IngredientItemId2 = ITEM_TYPE.BARK,
-            IngredientAmount2 = 10,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.WEAPON_SWORD_WOODEN,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 10,
-            
-            IngredientItemId2 = ITEM_TYPE.BARK,
-            IngredientAmount2 = 10,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.DEPLOYABLE_FURNACE,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.ROCK,
-            IngredientAmount1 = 25,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.DEPLOYABLE_ANVIL,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.INGOT_IRON,
-            IngredientAmount1 = 5,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.DEPLOYABLE_CAULDRON,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.ROCK,
-            IngredientAmount1 = 10,
-            
-            IngredientItemId2 = ITEM_TYPE.WOOD,
-            IngredientAmount2 = 10,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.DEPLOYABLE_FLETCHING_TABLE,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 25,
-        },
-        
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.DEPLOYABLE_CHEST,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 25,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.DEPLOYABLE_FARM_PLANTER,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 25,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.BUILDING_FOUNDATION,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 20,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.BUILDING_FOUNDATION_TRIANGLE,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 10,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.BUILDING_WALL,
-            ProductAmount = 1,
-            
-            IngredientItemId1 = ITEM_TYPE.WOOD,
-            IngredientAmount1 = 10,
-        },
-        
+    public static readonly Recipe[] Recipes = {
+        new Recipe(ITEM_TYPE.BARK, 5, ITEM_TYPE.WOOD, 5),
+        new Recipe(ITEM_TYPE.BOWL, 1, ITEM_TYPE.WOOD, 5),
+        new Recipe(ITEM_TYPE.TOOL_AXE_WOODEN, 1, ITEM_TYPE.WOOD, 10, ITEM_TYPE.BARK, 10),
+        new Recipe(ITEM_TYPE.TOOL_PICKAXE_WOODEN, 1, ITEM_TYPE.WOOD, 10, ITEM_TYPE.BARK, 10),
+        new Recipe(ITEM_TYPE.WEAPON_SWORD_WOODEN, 1, ITEM_TYPE.WOOD, 10, ITEM_TYPE.BARK, 10),
+        new Recipe(ITEM_TYPE.DEPLOYABLE_FURNACE, 1, ITEM_TYPE.ROCK, 25),
+        new Recipe(ITEM_TYPE.DEPLOYABLE_ANVIL, 1, ITEM_TYPE.INGOT_IRON, 5),
+        new Recipe(ITEM_TYPE.DEPLOYABLE_CAULDRON, 1, ITEM_TYPE.ROCK, 10, ITEM_TYPE.WOOD, 10),
+        new Recipe(ITEM_TYPE.DEPLOYABLE_FLETCHING_TABLE, 1, ITEM_TYPE.WOOD, 25),
+        new Recipe(ITEM_TYPE.DEPLOYABLE_CHEST, 1, ITEM_TYPE.WOOD, 25),
+        new Recipe(ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, 1, ITEM_TYPE.WOOD, 25),
+        new Recipe(ITEM_TYPE.BUILDING_FOUNDATION, 1, ITEM_TYPE.WOOD, 20),
+        new Recipe(ITEM_TYPE.BUILDING_FOUNDATION_TRIANGLE, 1, ITEM_TYPE.WOOD, 10),
+        new Recipe(ITEM_TYPE.BUILDING_WALL, 1, ITEM_TYPE.WOOD, 10),
     };
 
     private Outline _outline;

@@ -1,13 +1,12 @@
+using System.Runtime.InteropServices;
+
 public struct Recipe
 {
-    public ITEM_TYPE IngredientItemId1;
-    public byte IngredientAmount1;
-  
-    public ITEM_TYPE IngredientItemId2;
-    public byte IngredientAmount2;
-  
-    public ITEM_TYPE IngredientItemId3;
-    public byte IngredientAmount3;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+    public ITEM_TYPE[] IngredientIds;
+    
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+    public byte[] IngredientAmounts;
   
     public ITEM_TYPE ProductItemId;
     public byte ProductAmount;
@@ -17,12 +16,20 @@ public struct Recipe
         ProductItemId = productItemId;
         ProductAmount = productQuantity;
 
-        IngredientItemId1 = ITEM_TYPE.NULL;
-        IngredientAmount1 = 0;
-        IngredientItemId2 = ITEM_TYPE.NULL;
-        IngredientAmount2 = 0;
-        IngredientItemId3 = ITEM_TYPE.NULL;
-        IngredientAmount3 = 0;
+        IngredientIds = new ITEM_TYPE[4]
+        {
+            ITEM_TYPE.NULL,
+            ITEM_TYPE.NULL,
+            ITEM_TYPE.NULL,
+            ITEM_TYPE.NULL,
+        };
+        IngredientAmounts = new byte[4]
+        {
+            0,
+            0,
+            0,
+            0
+        };
     }
     
     public Recipe(ITEM_TYPE productItemId, byte productQuantity, 
@@ -31,13 +38,20 @@ public struct Recipe
         ProductItemId = productItemId;
         ProductAmount = productQuantity;
 
-        IngredientItemId1 = ingredientItemId1;
-        IngredientAmount1 = ingredientQuantity1;
-        
-        IngredientItemId2 = ITEM_TYPE.NULL;
-        IngredientAmount2 = 0;
-        IngredientItemId3 = ITEM_TYPE.NULL;
-        IngredientAmount3 = 0;
+        IngredientIds = new ITEM_TYPE[4]
+        {
+            ingredientItemId1,
+            ITEM_TYPE.NULL,
+            ITEM_TYPE.NULL,
+            ITEM_TYPE.NULL,
+        };
+        IngredientAmounts = new byte[4]
+        {
+            ingredientQuantity1,
+            0,
+            0,
+            0
+        };
     }
 
     public Recipe(ITEM_TYPE productItemId, byte productQuantity, 
@@ -47,14 +61,20 @@ public struct Recipe
         ProductItemId = productItemId;
         ProductAmount = productQuantity;
 
-        IngredientItemId1 = ingredientItemId1;
-        IngredientAmount1 = ingredientQuantity1;
-        
-        IngredientItemId2 = ingredientItemId2;
-        IngredientAmount2 = ingredientQuantity2;
-        
-        IngredientItemId3 = ITEM_TYPE.NULL;
-        IngredientAmount3 = 0;
+        IngredientIds = new ITEM_TYPE[4]
+        {
+            ingredientItemId1,
+            ingredientItemId2,
+            ITEM_TYPE.NULL,
+            ITEM_TYPE.NULL,
+        };
+        IngredientAmounts = new byte[4]
+        {
+            ingredientQuantity1,
+            ingredientQuantity2,
+            0,
+            0
+        };
     }
 
     
@@ -66,14 +86,45 @@ public struct Recipe
         ProductItemId = productItemId;
         ProductAmount = productQuantity;
 
-        IngredientItemId1 = ingredientItemId1;
-        IngredientAmount1 = ingredientQuantity1;
+        IngredientIds = new ITEM_TYPE[4]
+        {
+            ingredientItemId1,
+            ingredientItemId2,
+            ingredientItemId3,
+            ITEM_TYPE.NULL,
+        };
+        IngredientAmounts = new byte[4]
+        {
+            ingredientQuantity1,
+            ingredientQuantity2,
+            ingredientQuantity3,
+            0
+        };
+    }
+    
+    public Recipe(ITEM_TYPE productItemId, byte productQuantity, 
+        ITEM_TYPE ingredientItemId1, byte ingredientQuantity1, 
+        ITEM_TYPE ingredientItemId2, byte ingredientQuantity2,
+        ITEM_TYPE ingredientItemId3, byte ingredientQuantity3,
+        ITEM_TYPE ingredientItemId4, byte ingredientQuantity4)
+    {
+        ProductItemId = productItemId;
+        ProductAmount = productQuantity;
         
-        IngredientItemId2 = ingredientItemId2;
-        IngredientAmount2 = ingredientQuantity2;
-        
-        IngredientItemId3 = ingredientItemId3;
-        IngredientAmount3 = ingredientQuantity3;
+        IngredientIds = new ITEM_TYPE[4]
+        {
+            ingredientItemId1,
+            ingredientItemId2,
+            ingredientItemId3,
+            ingredientItemId4,
+        };
+        IngredientAmounts = new byte[4]
+        {
+            ingredientQuantity1,
+            ingredientQuantity2,
+            ingredientQuantity3,
+            ingredientQuantity4
+        };
     }
   
 }

@@ -173,7 +173,8 @@ internal class PlayerUIInteractComponent
   public void OnLateFixedUpdate(ref PlayerInteractState interactState)
   {
     if (interactState.InteractableType == INTERACTABLE_TYPE.CRAFTING_STATION ||
-        interactState.InteractableType == INTERACTABLE_TYPE.FLETCHING_TABLE)
+        interactState.InteractableType == INTERACTABLE_TYPE.FLETCHING_TABLE ||
+        interactState.InteractableType == INTERACTABLE_TYPE.ANVIL)
     {
       ref var uiState = ref _interactUIState;
       if (uiState.HasChanged && uiState.SelectedRecipeIndex != -1)
@@ -234,28 +235,34 @@ internal class PlayerUIInteractComponent
     }
 
     Debug.Log("Checking if can craft...");
-    if (!_player.ContainsItem(recipe.IngredientItemId1, recipe.IngredientAmount1))
+    if (!_player.ContainsItem(recipe.IngredientIds[0], recipe.IngredientAmounts[0]))
     {
       return false;
     }
     else
     {
-      Debug.Log($"Player has {recipe.IngredientItemId1} x {recipe.IngredientAmount1}");
+      Debug.Log($"Player has {recipe.IngredientIds[0]} x {recipe.IngredientAmounts[0]}");
     }
 
-    if (!_player.ContainsItem(recipe.IngredientItemId2, recipe.IngredientAmount2))
+    if (!_player.ContainsItem(recipe.IngredientIds[1], recipe.IngredientAmounts[1]))
     {
       return false;
     }
-    else Debug.Log($"Player has {recipe.IngredientItemId2} x {recipe.IngredientAmount2}");
+    else Debug.Log($"Player has {recipe.IngredientIds[1]} x {recipe.IngredientAmounts[1]}");
 
 
-    if (!_player.ContainsItem(recipe.IngredientItemId3, recipe.IngredientAmount3))
+    if (!_player.ContainsItem(recipe.IngredientIds[2], recipe.IngredientAmounts[2]))
     {
       return false;
     }
-    else Debug.Log($"Player has {recipe.IngredientItemId3} x {recipe.IngredientAmount3}");
-    
+    else Debug.Log($"Player has {recipe.IngredientIds[2]} x {recipe.IngredientAmounts[2]}");
+
+    if (!_player.ContainsItem(recipe.IngredientIds[3], recipe.IngredientAmounts[3]))
+    {
+      return false;
+    }
+    else Debug.Log($"Player has {recipe.IngredientIds[3]} x {recipe.IngredientAmounts[3]}");
+
     return true;
   }
 
@@ -290,12 +297,14 @@ internal class PlayerUIInteractComponent
       return;
     }
 
-    if (recipe.IngredientItemId1 != ITEM_TYPE.NULL)
-      _player.RemoveItem(recipe.IngredientItemId1, recipe.IngredientAmount1);
-    if (recipe.IngredientItemId2 != ITEM_TYPE.NULL)
-      _player.RemoveItem(recipe.IngredientItemId2, recipe.IngredientAmount2);
-    if (recipe.IngredientItemId3 != ITEM_TYPE.NULL)
-      _player.RemoveItem(recipe.IngredientItemId3, recipe.IngredientAmount3);
+    if (recipe.IngredientIds[0] != ITEM_TYPE.NULL)
+      _player.RemoveItem(recipe.IngredientIds[0], recipe.IngredientAmounts[1]);
+    if (recipe.IngredientIds[1] != ITEM_TYPE.NULL)
+      _player.RemoveItem(recipe.IngredientIds[1], recipe.IngredientAmounts[1]);
+    if (recipe.IngredientIds[2] != ITEM_TYPE.NULL)
+      _player.RemoveItem(recipe.IngredientIds[2], recipe.IngredientAmounts[2]);
+    if (recipe.IngredientIds[3] != ITEM_TYPE.NULL)
+      _player.RemoveItem(recipe.IngredientIds[3], recipe.IngredientAmounts[3]);
 
     _player.AddItem(recipe.ProductItemId, recipe.ProductAmount);
 

@@ -145,34 +145,34 @@ internal class AnvilUI : MonoBehaviour
         var ingredientPanel3 = _recipePreview.GetChild(3).gameObject;
 
         productPanel.GetComponent<TextMeshProUGUI>().text = recipe.ProductItemId + " x " + recipe.ProductAmount;
-        if (recipe.IngredientItemId1 == ITEM_TYPE.NULL)
+        if (recipe.IngredientIds[0] == ITEM_TYPE.NULL)
         {
             ingredientPanel1.SetActive(false);
         }
         else
         {
             ingredientPanel1.SetActive(true);
-            ingredientPanel1.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId1 + " - " + recipe.IngredientAmount1;
+            ingredientPanel1.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[0] + " - " + recipe.IngredientAmounts[0];
         }
         
-        if (recipe.IngredientItemId2 == ITEM_TYPE.NULL)
+        if (recipe.IngredientIds[1] == ITEM_TYPE.NULL)
         {
             ingredientPanel2.SetActive(false);
         }
         else
         {
             ingredientPanel2.SetActive(true);
-            ingredientPanel2.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId2 + " - " + recipe.IngredientAmount2;
+            ingredientPanel2.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[1] + " - " + recipe.IngredientAmounts[1];
         }
         
-        if (recipe.IngredientItemId3 == ITEM_TYPE.NULL)
+        if (recipe.IngredientIds[2] == ITEM_TYPE.NULL)
         {
             ingredientPanel3.SetActive(false);
         }
         else
         {
             ingredientPanel3.SetActive(true);
-            ingredientPanel3.GetComponent<TextMeshProUGUI>().text = recipe.IngredientItemId3 + " - " + recipe.IngredientAmount3;
+            ingredientPanel3.GetComponent<TextMeshProUGUI>().text = recipe.IngredientIds[2] + " - " + recipe.IngredientAmounts[2];
         }
         
         LayoutRebuilder.ForceRebuildLayoutImmediate(_recipePreview);

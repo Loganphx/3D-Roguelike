@@ -10,38 +10,10 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
 {
     public static Recipe[] Recipes = new[]
     {
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.INGOT_IRON,
-            ProductAmount = 1,
-
-            IngredientItemId1 = ITEM_TYPE.ORE_IRON,
-            IngredientAmount1 = 1,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.INGOT_GOLD,
-            ProductAmount = 1,
-
-            IngredientItemId1 = ITEM_TYPE.ORE_GOLD,
-            IngredientAmount1 = 1,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.INGOT_MYTHRIL,
-            ProductAmount = 1,
-
-            IngredientItemId1 = ITEM_TYPE.ORE_MYTHRIL,
-            IngredientAmount1 = 1,
-        },
-        new Recipe()
-        {
-            ProductItemId = ITEM_TYPE.INGOT_ADAMANTITE,
-            ProductAmount = 1,
-
-            IngredientItemId1 = ITEM_TYPE.ORE_ADAMANTITE,
-            IngredientAmount1 = 1,
-        },
+        new Recipe(ITEM_TYPE.INGOT_IRON, 1, ITEM_TYPE.ORE_IRON, 1),
+        new Recipe(ITEM_TYPE.INGOT_GOLD, 1, ITEM_TYPE.ORE_GOLD, 1),
+        new Recipe(ITEM_TYPE.INGOT_MYTHRIL, 1, ITEM_TYPE.ORE_MYTHRIL, 1),
+        new Recipe(ITEM_TYPE.INGOT_ADAMANTITE, 1, ITEM_TYPE.ORE_ADAMANTITE, 1),
     };
 
     public const int SmeltTime = 10; // 10 seconds to smelt any ore
@@ -135,7 +107,7 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
                     return;
                 }
                 
-                var recipe = Recipes.First(t => t.IngredientItemId1 == ingredientItem.ItemId);
+                var recipe = Recipes.First(t => t.IngredientIds[0] == ingredientItem.ItemId);
 
                 if (recipe.ProductItemId != ITEM_TYPE.NULL)
                 {
@@ -174,7 +146,7 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
     {
         if(!IsSmelting) return;
         
-        var recipe = Recipes.First(t => t.IngredientItemId1 == ingredientItem.ItemId);
+        var recipe = Recipes.First(t => t.IngredientIds[0] == ingredientItem.ItemId);
         
         if (productItem.ItemId == ITEM_TYPE.NULL)
         {
@@ -193,7 +165,7 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
                 $"Crafting {recipe.ProductItemId} x {productItem.Amount}/{ItemPool.ItemMaxStacks[recipe.ProductItemId]}");
         }
 
-        ingredientItem.Amount -= recipe.IngredientAmount1;
+        ingredientItem.Amount -= recipe.IngredientAmounts[0];
         if (ingredientItem.Amount <= 0) ingredientItem.ItemId = ITEM_TYPE.NULL;
         
         CancelSmelt();
