@@ -76,13 +76,20 @@ public static class PrefabPool
       { "Prefabs/Models/model_pot_pie", Resources.Load<GameObject>("Prefabs/Models/model_pot_pie") },
       { "Prefabs/Models/model_beef_stew", Resources.Load<GameObject>("Prefabs/Models/model_beef_stew") },
 
-      { "Prefabs/Deployables/deployable_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/deployable_farm_planter") },
-      { "Prefabs/Deployables/blueprint_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_crafting_station") },
       { "Prefabs/Deployables/deployable_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/deployable_crafting_station") },
       { "Prefabs/Deployables/deployable_fletching_table", Resources.Load<GameObject>("Prefabs/Deployables/deployable_fletching_table") },
+      { "Prefabs/Deployables/deployable_anvil", Resources.Load<GameObject>("Prefabs/Deployables/deployable_anvil") },
       { "Prefabs/Deployables/deployable_furnace", Resources.Load<GameObject>("Prefabs/Deployables/deployable_furnace") },
       { "Prefabs/Deployables/deployable_cauldron", Resources.Load<GameObject>("Prefabs/Deployables/deployable_cauldron") },
-      
+      { "Prefabs/Deployables/deployable_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/deployable_farm_planter") },
+
+      { "Prefabs/Deployables/blueprint_crafting_station", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_crafting_station") },
+      { "Prefabs/Deployables/blueprint_fletching_table", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_fletching_table") },
+      { "Prefabs/Deployables/blueprint_anvil", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_anvil") },
+      { "Prefabs/Deployables/blueprint_furnace", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_furnace") },
+      { "Prefabs/Deployables/blueprint_cauldron", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_cauldron") },
+      { "Prefabs/Deployables/blueprint_farm_planter", Resources.Load<GameObject>("Prefabs/Deployables/blueprint_farm_planter") },
+
       { "Prefabs/Buildings/blueprint_building_foundation", Resources.Load<GameObject>("Prefabs/Buildings/blueprint_building_foundation") },
       { "Prefabs/Buildings/building_foundation", Resources.Load<GameObject>("Prefabs/Buildings/building_foundation") },
       { "Prefabs/Buildings/blueprint_building_wall", Resources.Load<GameObject>("Prefabs/Buildings/blueprint_building_wall") },
@@ -101,23 +108,43 @@ public static class PrefabPool
     {
       {
         "Prefabs/Models/model_seed_wheat",
-        GameObject.Instantiate(Prefabs["Prefabs/Models/model_seed_wheat"], Vector3.zero, Quaternion.identity)
+        Object.Instantiate(Prefabs["Prefabs/Models/model_seed_wheat"], Vector3.zero, Quaternion.identity)
       },
       {
         "Prefabs/Models/model_seed_flax",
-        GameObject.Instantiate(Prefabs["Prefabs/Models/model_seed_flax"], Vector3.zero, Quaternion.identity)
+        Object.Instantiate(Prefabs["Prefabs/Models/model_seed_flax"], Vector3.zero, Quaternion.identity)
       },
       {
         "Prefabs/Buildings/building_foundation",
-        GameObject.Instantiate(Prefabs["Prefabs/Buildings/blueprint_building_foundation"], Vector3.zero, Quaternion.identity)
+        Object.Instantiate(Prefabs["Prefabs/Buildings/blueprint_building_foundation"], Vector3.zero, Quaternion.identity)
       },
       {
         "Prefabs/Buildings/building_wall",
-        GameObject.Instantiate(Prefabs["Prefabs/Buildings/blueprint_building_wall"], Vector3.zero, Quaternion.identity)
+        Object.Instantiate(Prefabs["Prefabs/Buildings/blueprint_building_wall"], Vector3.zero, Quaternion.identity)
       },
       {
         "Prefabs/Deployables/deployable_crafting_station",
-        GameObject.Instantiate(Prefabs["Prefabs/Deployables/blueprint_crafting_station"], Vector3.zero, Quaternion.identity)
+        Object.Instantiate(Prefabs["Prefabs/Deployables/blueprint_crafting_station"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Deployables/deployable_fletching_table",
+        Object.Instantiate(Prefabs["Prefabs/Deployables/blueprint_fletching_table"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Deployables/deployable_anvil",
+        Object.Instantiate(Prefabs["Prefabs/Deployables/blueprint_anvil"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Deployables/deployable_furnace",
+        Object.Instantiate(Prefabs["Prefabs/Deployables/blueprint_furnace"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Deployables/deployable_cauldron",
+        Object.Instantiate(Prefabs["Prefabs/Deployables/blueprint_cauldron"], Vector3.zero, Quaternion.identity)
+      },
+      {
+        "Prefabs/Deployables/deployable_farm_planter",
+        Object.Instantiate(Prefabs["Prefabs/Deployables/blueprint_farm_planter"], Vector3.zero, Quaternion.identity)
       }
     };
   }

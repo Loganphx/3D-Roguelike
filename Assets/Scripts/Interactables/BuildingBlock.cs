@@ -11,8 +11,6 @@ namespace Interactables
 
         private Animator _animator;
 
-        private int health = 100;
-    
         public void Awake()
         {
             ResourceManager.Builds.Add(GetHashCode(), this);

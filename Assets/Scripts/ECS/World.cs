@@ -66,7 +66,26 @@ public class World : MonoBehaviour
       // Seeds
       { ITEM_TYPE.DEPLOYABLE_CRAFTING_STATION, "Prefabs/Deployables/deployable_crafting_station" },
     });
-   
+    IDeployable.ItemToDeployable.Add(typeof(FletchingTable), new Dictionary<ITEM_TYPE, string>()
+    {
+      { ITEM_TYPE.DEPLOYABLE_FLETCHING_TABLE, "Prefabs/Deployables/deployable_fletching_table" },
+    });
+    IDeployable.ItemToDeployable.Add(typeof(Anvil), new Dictionary<ITEM_TYPE, string>()
+    {
+      { ITEM_TYPE.DEPLOYABLE_ANVIL, "Prefabs/Deployables/deployable_anvil" },
+    });
+    IDeployable.ItemToDeployable.Add(typeof(Furnace), new Dictionary<ITEM_TYPE, string>()
+    {
+      { ITEM_TYPE.DEPLOYABLE_FURNACE, "Prefabs/Deployables/deployable_furnace" },
+    });
+    IDeployable.ItemToDeployable.Add(typeof(Cauldron), new Dictionary<ITEM_TYPE, string>()
+    {
+      { ITEM_TYPE.DEPLOYABLE_CAULDRON, "Prefabs/Deployables/deployable_cauldron" },
+    });
+    IDeployable.ItemToDeployable.Add(typeof(FarmPlot), new Dictionary<ITEM_TYPE, string>()
+    {
+      { ITEM_TYPE.DEPLOYABLE_FARM_PLANTER, "Prefabs/Deployables/deployable_farm_planter" },
+    });
     var dayManager = new GameObject("DayManager", typeof(DayManager)).GetComponent<DayManager>();
     dayManager.transform.SetParent(transform);
 
