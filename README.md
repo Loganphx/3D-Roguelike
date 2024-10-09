@@ -1,3 +1,5 @@
+![Crafting Station Model](screenshot_model_crafting_station.png)
+![Fletching Table Model](screenshot_model_fletching_table.png)
 ![Anvil Model](screenshot_model_anvil.png)
 ![Furnace Model](screenshot_furnace.png)
 ![Cauldron Model](screenshot_cauldron.png)
