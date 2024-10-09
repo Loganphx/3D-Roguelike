@@ -1,3 +1,4 @@
+using System;
 using ECS.Movement.Services;
 using Interactables;
 using UnityEngine;
@@ -41,7 +42,7 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
     private readonly int _groundLayer = 1 << LayerMask.NameToLayer("Ground");
 
     private Transform _hoverPrefab;
-    
+
     public PlayerInteractState _state = new PlayerInteractState()
     {
         HasChanged = true,
@@ -65,11 +66,12 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
         ref var state = ref _state;
         state.HasChanged = false;
 
-        if (weaponState.EquippedWeapon != ITEM_TYPE.BUILDING_FOUNDATION && _hoverPrefab != null && _hoverPrefab.position != new Vector3(0, -100, 0))
+        if (weaponState.EquippedWeapon != ITEM_TYPE.BUILDING_FOUNDATION && _hoverPrefab != null &&
+            _hoverPrefab.position != new Vector3(0, -100, 0))
         {
             _hoverPrefab.position = new Vector3(0, -100, 0);
         }
-        
+
         if (hitCount > 0)
         {
             for (int i = 0; i < hitCount; i++)
@@ -122,7 +124,8 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
         }
         else
         {
-            if (weaponState.EquippedWeapon != ITEM_TYPE.NULL && ItemPool.ItemDeployables.Contains(weaponState.EquippedWeapon))
+            if (weaponState.EquippedWeapon != ITEM_TYPE.NULL &&
+                ItemPool.ItemDeployables.Contains(weaponState.EquippedWeapon))
             {
                 if (IDeployable.ItemToDeployable[typeof(BuildingBlock)].ContainsKey(weaponState.EquippedWeapon))
                 {
@@ -184,82 +187,107 @@ internal class PlayerInteractComponent : IComponent<PlayerInteractState>
                 }
                 else if (IDeployable.ItemToDeployable[typeof(CraftingStation)].ContainsKey(weaponState.EquippedWeapon))
                 {
-                    hitCount = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
-                        ~(1 << LayerMask.NameToLayer("Interactable") | 1 << LayerMask.NameToLayer("Player")), QueryTriggerInteraction.Ignore);
-
-                    if (hitCount > 0)
-                    {
-                        var hoverPrefab = PrefabPool
-                            .SpawnedPrefabs[
-                                IDeployable.ItemToDeployable[typeof(CraftingStation)][weaponState.EquippedWeapon]]
-                            .transform;
-                        var box = hoverPrefab.GetChild(0);
-
-                        var meshRenderer = box.GetComponent<MeshRenderer>();
-                    
-                        var localScale = box.localScale;
-                        var startPos = _hits[0].point;
-
-                        hoverPrefab.position = startPos;
-                        hoverPrefab.forward = _player.Transform.forward;
-                        
-                        var hits = Physics.OverlapBoxNonAlloc(meshRenderer.bounds.center, meshRenderer.bounds.extents / 2, _overlapHits, box.rotation,
-                            ~_groundLayer, QueryTriggerInteraction.Ignore);
-                        if (hits > 0)
-                        {
-                            Debug.Log($"Invalid placement ({hitCount}): {_overlapHits[0].transform.root}");
-                            meshRenderer.material = MaterialPool.Materials["Materials/InvalidBuildHover"];
-                        }
-                        else
-                        {
-                            var isGrounded = Physics.OverlapBoxNonAlloc(meshRenderer.bounds.center, meshRenderer.bounds.extents / 2, _overlapHits,
-                                box.rotation);
-                            if (isGrounded == 0)
-                            {
-                                meshRenderer.material = MaterialPool.Materials["Materials/InvalidBuildHover"];
-                            }
-                            else meshRenderer.material = MaterialPool.Materials["Materials/BuildHover"];
-                            if (input.PrimaryAttackClicked)
-                            {
-                                _player.RemoveItem(weaponState.EquippedWeapon, 1);
-
-                                var buildingBlock = GameObject
-                                    .Instantiate(PrefabPool.Prefabs[
-                                        IDeployable.ItemToDeployable[typeof(CraftingStation)][
-                                            weaponState.EquippedWeapon]]).transform;
-                                buildingBlock.position = hoverPrefab.position;
-                                buildingBlock.forward = hoverPrefab.forward;
-
-                                hoverPrefab.position = new Vector3(0, -100, 0);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var hoverPrefab = PrefabPool
-                            .SpawnedPrefabs[
-                                IDeployable.ItemToDeployable[typeof(CraftingStation)][weaponState.EquippedWeapon]]
-                            .transform;
-                        hoverPrefab.position = Vector3.down;
-                    }
+                    HoverDeployable(typeof(CraftingStation), ref input, ref weaponState);
                 }
-            }
-
-            if (lastHover != null)
-            {
-                lastHover.OnHoverExit(_player);
-                lastHover = null;
-            }
-
-            if (state.InteractableType != INTERACTABLE_TYPE.NULL)
-            {
-                state.ColliderId = -1;
-                state.InteractableType = INTERACTABLE_TYPE.NULL;
-                state.HasChanged = true;
+                else if (IDeployable.ItemToDeployable[typeof(FletchingTable)].ContainsKey(weaponState.EquippedWeapon))
+                {
+                    HoverDeployable(typeof(FletchingTable), ref input, ref weaponState);
+                }
+                else if (IDeployable.ItemToDeployable[typeof(Anvil)].ContainsKey(weaponState.EquippedWeapon))
+                {
+                    HoverDeployable(typeof(Anvil), ref input, ref weaponState);
+                }
+                else if (IDeployable.ItemToDeployable[typeof(Furnace)].ContainsKey(weaponState.EquippedWeapon))
+                {
+                    HoverDeployable(typeof(Furnace), ref input, ref weaponState);
+                }
+                else if (IDeployable.ItemToDeployable[typeof(Cauldron)].ContainsKey(weaponState.EquippedWeapon))
+                {
+                    HoverDeployable(typeof(Cauldron), ref input, ref weaponState);
+                }
             }
         }
 
+        if (lastHover != null)
+        {
+            lastHover.OnHoverExit(_player);
+            lastHover = null;
+        }
+
+        if (state.InteractableType != INTERACTABLE_TYPE.NULL)
+        {
+            state.ColliderId = -1;
+            state.InteractableType = INTERACTABLE_TYPE.NULL;
+            state.HasChanged = true;
+        }
+
         return false;
+    }
+
+    private void HoverDeployable(Type deployableType, ref GameplayInput inputState, ref PlayerWeaponState weaponState)
+    {
+        var hitCount = _physicsScene.Raycast(_cameraTransform.position, _cameraTransform.forward, _hits, 5f,
+            ~(1 << LayerMask.NameToLayer("Interactable") | 1 << LayerMask.NameToLayer("Player")),
+            QueryTriggerInteraction.Ignore);
+
+        if (hitCount > 0)
+        {
+            var hoverPrefab = PrefabPool
+                .SpawnedPrefabs[
+                    IDeployable.ItemToDeployable[deployableType][weaponState.EquippedWeapon]]
+                .transform;
+            var box = hoverPrefab.GetChild(0);
+
+            var meshRenderer = box.GetChild(0).GetComponent<MeshRenderer>();
+
+            var localScale = box.localScale;
+            var startPos = _hits[0].point;
+
+            hoverPrefab.position = startPos;
+            hoverPrefab.forward = _player.Transform.forward;
+
+            var hits = Physics.OverlapBoxNonAlloc(meshRenderer.bounds.center, meshRenderer.bounds.extents / 2,
+                _overlapHits, box.rotation,
+                ~_groundLayer, QueryTriggerInteraction.Ignore);
+            if (hits > 0)
+            {
+                Debug.Log($"Invalid placement ({hitCount}): {_overlapHits[0].transform.root}");
+                meshRenderer.material = MaterialPool.Materials["Materials/InvalidBuildHover"];
+            }
+            else
+            {
+                var isGrounded = Physics.OverlapBoxNonAlloc(meshRenderer.bounds.center, meshRenderer.bounds.extents / 2,
+                    _overlapHits,
+                    box.rotation);
+                if (isGrounded == 0)
+                {
+                    meshRenderer.material = MaterialPool.Materials["Materials/InvalidBuildHover"];
+                }
+                else meshRenderer.material = MaterialPool.Materials["Materials/BuildHover"];
+
+                if (inputState.PrimaryAttackClicked)
+                {
+                    _player.RemoveItem(weaponState.EquippedWeapon, 1);
+
+                    var buildingBlock = GameObject
+                        .Instantiate(PrefabPool.Prefabs[
+                            IDeployable.ItemToDeployable[deployableType][
+                                weaponState.EquippedWeapon]]).transform;
+                    buildingBlock.position = hoverPrefab.position;
+                    buildingBlock.forward = hoverPrefab.forward;
+
+                    hoverPrefab.position = new Vector3(0, -100, 0);
+                }
+            }
+        }
+        else
+        {
+            var hoverPrefab = PrefabPool
+                .SpawnedPrefabs[
+                    IDeployable.ItemToDeployable[deployableType][weaponState.EquippedWeapon]]
+                .transform;
+            hoverPrefab.position = Vector3.down;
+        }
     }
 
     public PlayerInteractState State => _state;
