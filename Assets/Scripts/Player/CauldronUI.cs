@@ -6,11 +6,11 @@ using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
 
-internal class FurnaceUI : MonoBehaviour
+internal class CauldronUI : MonoBehaviour
 {
-    internal static FurnaceUI Instance { get; private set; }
+    internal static CauldronUI Instance { get; private set; }
 
-    private ItemSlotUI ingredientSlotUI;
+    private ItemSlotUI[] ingredientSlotUIs;
     private ItemSlotUI fuelSlotUI;
     private ItemSlotUI productSlotUI;
     private Image fuelProgressImage;
@@ -23,17 +23,24 @@ internal class FurnaceUI : MonoBehaviour
         var panel = transform.Find("Panel");
         fuelProgressImage = panel.Find("FuelTime_Background").Find("FuelTime_Fill").GetComponent<Image>();
         smeltProgressImage = panel.Find("SmeltTime_Background").Find("SmeltTime_Fill").GetComponent<Image>();
-        
-        GameObject itemSlot = panel.Find("ItemSlot_Ingredient").gameObject;
-        var image = itemSlot.transform.GetChild(0).GetComponent<Image>();
-            
-        ingredientSlotUI = new ItemSlotUI()
+
+        ingredientSlotUIs = new ItemSlotUI[4];
+        GameObject itemSlot;
+        Image image;
+        for (int i = 0; i < ingredientSlotUIs.Length; i++)
         {
-            GameObject = itemSlot,
-            Image = image,
-            AmountText = itemSlot.transform.GetChild(1).GetComponent<TMP_Text>(),
-            type = ITEM_TYPE.NULL,
-        };
+            itemSlot = panel.Find($"ItemSlot_Ingredient_{i}").gameObject;
+            image = itemSlot.transform.GetChild(0).GetComponent<Image>();
+
+            ingredientSlotUIs[i] = new ItemSlotUI()
+            {
+                GameObject = itemSlot,
+                Image = image,
+                AmountText = itemSlot.transform.GetChild(1).GetComponent<TMP_Text>(),
+                type = ITEM_TYPE.NULL,
+            };
+        }
+       
         
         itemSlot = panel.Find("ItemSlot_Fuel").gameObject;
         image = itemSlot.transform.GetChild(0).GetComponent<Image>();
@@ -57,12 +64,12 @@ internal class FurnaceUI : MonoBehaviour
             AmountText = itemSlot.transform.GetChild(1).GetComponent<TMP_Text>(),
             type = ITEM_TYPE.NULL,
         };
-        
+
         gameObject.SetActive(false);
     }
 
     public void Init(BehaviorSubject<(float startTime, float endTime)> onFuelEndTimeChanged, BehaviorSubject<(float startTime, float endTime)> onSmeltEndTimeChanged, 
-        BehaviorSubject<InventoryItem> onFuelItemChanged, BehaviorSubject<InventoryItem> onIngredientItemChanged, BehaviorSubject<InventoryItem> onProductItemChanged)
+        BehaviorSubject<InventoryItem> onFuelItemChanged, BehaviorSubject<(byte slotIndex, InventoryItem item)> onIngredientItemChanged, BehaviorSubject<InventoryItem> onProductItemChanged)
     {
         onFuelEndTimeChanged.TakeUntilDisable(this).Subscribe(OnFuelEndTimeChanged);
         onSmeltEndTimeChanged.TakeUntilDisable(this).Subscribe(OnSmeltEndTimeChanged);
@@ -94,11 +101,11 @@ internal class FurnaceUI : MonoBehaviour
     private void OnFuelItemChanged(InventoryItem fuelItem)
     {
         // Debug.Log("OnFuelItemChanged");
+        fuelSlotUI.AmountText.SetText(fuelItem.Amount.ToString());
         if (fuelItem.ItemId != ITEM_TYPE.NULL)
         {
             fuelSlotUI.Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[fuelItem.ItemId]];
             fuelSlotUI.Image.enabled = true;
-            fuelSlotUI.AmountText.SetText(fuelItem.Amount.ToString());
         }
         else
         {
@@ -108,31 +115,32 @@ internal class FurnaceUI : MonoBehaviour
         }    
     }
 
-    private void OnIngredientItemChanged(InventoryItem ingredientItem)
+    private void OnIngredientItemChanged((byte slotIndex, InventoryItem item) ingredient)
     {
         // Debug.Log("OnIngredientItemChanged");
-        if (ingredientItem.ItemId != ITEM_TYPE.NULL)
+        
+        ingredientSlotUIs[ingredient.slotIndex].AmountText.SetText(ingredient.item.Amount.ToString());
+        if (ingredient.item.ItemId != ITEM_TYPE.NULL)
         {
-            ingredientSlotUI.Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[ingredientItem.ItemId]];
-            ingredientSlotUI.Image.enabled = true;
-            ingredientSlotUI.AmountText.SetText(ingredientItem.Amount.ToString());
+            ingredientSlotUIs[ingredient.slotIndex].Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[ingredient.item.ItemId]];
+            ingredientSlotUIs[ingredient.slotIndex].Image.enabled = true;
         }
         else
         {
-            ingredientSlotUI.Image.sprite = null;
-            ingredientSlotUI.Image.enabled = false;
-            ingredientSlotUI.AmountText.SetText(string.Empty);
+            ingredientSlotUIs[ingredient.slotIndex].Image.sprite = null;
+            ingredientSlotUIs[ingredient.slotIndex].Image.enabled = false;
+            ingredientSlotUIs[ingredient.slotIndex].AmountText.SetText(string.Empty);
         }
     }
 
     private void OnProductItemChanged(InventoryItem productItem)
     {
         // Debug.Log("OnProductItemChanged");
+        productSlotUI.AmountText.SetText(productItem.Amount.ToString());
         if (productItem.ItemId != ITEM_TYPE.NULL)
         {
             productSlotUI.Image.sprite = SpritePool.Sprites[ItemPool.ItemSprites[productItem.ItemId]];
             productSlotUI.Image.enabled = true;
-            productSlotUI.AmountText.SetText(productItem.Amount.ToString());
         }
         else
         {

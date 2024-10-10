@@ -62,8 +62,6 @@ internal class PlayerUIInventoryComponent
   {
     if (!inventoryState.HasChanged) return;
     
-    bool hasChanged = false;
-
     for (int i = 0; i < inventoryState.Items.Length; i++)
     {
       ref var item = ref inventoryState.Items[i];

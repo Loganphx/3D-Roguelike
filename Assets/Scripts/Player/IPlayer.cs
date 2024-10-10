@@ -2,8 +2,6 @@ using UnityEngine;
 
 public interface IPlayer : IDamager, IDamagable
 {
-  public Transform Transform { get; }
-
   public bool IsDead { get; }
 
   public int GetGoldInInventory();

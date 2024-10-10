@@ -33,7 +33,7 @@ internal class PlayerUIHotbarComponent
 
     // _goldText.text = inventoryState.GoldCount.ToString();
     
-    bool hasChanged = false;
+    // bool hasChanged = false;
     
     Debug.Log(inventoryState.Items.Length);
     for (int i = 0; i < 7; i++)

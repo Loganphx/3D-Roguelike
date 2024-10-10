@@ -139,6 +139,14 @@ internal class PlayerUIInteractComponent
           interactUIState.InteractableType = INTERACTABLE_TYPE.ANVIL;
           AnvilUI.Instance.Init(Recipe_Select);
         }
+        else if (interactState.InteractableType == INTERACTABLE_TYPE.FURNACE)
+        {
+          interactUIState.InteractableType = INTERACTABLE_TYPE.FURNACE;
+        }
+        else if (interactState.InteractableType == INTERACTABLE_TYPE.CAULDRON)
+        {
+          interactUIState.InteractableType = INTERACTABLE_TYPE.CAULDRON;
+        }
       }
     }
 
