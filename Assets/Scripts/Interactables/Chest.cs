@@ -213,8 +213,6 @@ public class Chest : MonoBehaviour, IInteractable, IHoverable
                 }
             }
         }
-
-        return null;
     }
 
     private GameObject SpawnPowerup(POWERUP_TYPE powerupId, Vector3 position)

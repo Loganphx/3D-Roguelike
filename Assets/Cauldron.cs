@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Interactables;
+using UniRx;
 using UnityEngine;
 
 [Serializable]
@@ -30,10 +31,10 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
     public const int SmeltTime = 10; // 10 seconds to smelt any ore
 
     private bool IsSmelting;
-    private float StartSmeltTime;
-    private float EndSmeltTime;
-    [SerializeField, Min(0)] private float SmeltProgress;
+    private float SmeltStartTime;
+    private float SmeltEndTime;
 
+    private float FuelStartTime;
     private float FuelEndTime;
     
     [SerializeField] private InventoryItem fuelItem;
@@ -43,7 +44,14 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
     [SerializeField] private InventoryItem ingredientItem4;
     [SerializeField] private InventoryItem productItem;
 
+    private BehaviorSubject<(float startTime, float endTime)> OnSmeltEndTimeChanged;
+    private BehaviorSubject<(float startTime, float endTime)> OnFuelEndTimeChanged;
+    private BehaviorSubject<InventoryItem> OnFuelItemChanged;
+    private BehaviorSubject<(byte slotIndex, InventoryItem item)> OnIngredientItemChanged;
+    private BehaviorSubject<InventoryItem> OnProductItemChanged;
+    
     private Outline _outline;
+
     private void Awake()
     {
         ResourceManager.Builds.Add(GetHashCode(), this);
@@ -86,6 +94,12 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
             ItemId = ITEM_TYPE.WHEAT,
             Amount = 64,
         };
+        
+        OnSmeltEndTimeChanged = new BehaviorSubject<(float startTime, float endTime)>((0,0)); 
+        OnFuelEndTimeChanged = new BehaviorSubject<(float startTime, float endtime)>((0,0));
+        OnFuelItemChanged = new BehaviorSubject<InventoryItem>(fuelItem);
+        OnIngredientItemChanged = new BehaviorSubject<(byte slotIndex, InventoryItem item)>((0, ingredientItem1));
+        OnProductItemChanged = new BehaviorSubject<InventoryItem>(productItem);
     }
     public void OnEnable()
     {
@@ -110,13 +124,18 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
             {
                 if (fuelItem.ItemId != ITEM_TYPE.NULL)
                 {
-                    FuelEndTime = Time.time + ItemPool.ItemBurnTimes[fuelItem.ItemId];
+                    FuelStartTime = Time.time;
+                    FuelEndTime = FuelStartTime + ItemPool.ItemBurnTimes[fuelItem.ItemId];
+                    OnFuelEndTimeChanged.OnNext((FuelStartTime, FuelEndTime));
+                    
                     if (fuelItem.Amount == 1)
                     {
                         fuelItem.ItemId = ITEM_TYPE.NULL;
                         fuelItem.Amount = 0;
                     }
                     else fuelItem.Amount--;
+                    
+                    OnFuelItemChanged.OnNext(fuelItem);
                 }
                 else CancelSmelt();
             }
@@ -127,7 +146,6 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
             {
                 if (IsSmelting)
                 {
-                    SmeltProgress = Time.time - StartSmeltTime / SmeltTime;
                     return;
                 }
 
@@ -156,17 +174,17 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
     private void StartSmelt()
     {
         IsSmelting = true;
-        SmeltProgress = 0;
-        StartSmeltTime = Time.time;
-        EndSmeltTime = Time.time + SmeltTime;
+        SmeltStartTime = Time.time;
+        SmeltEndTime = SmeltStartTime + SmeltTime;
+        OnSmeltEndTimeChanged.OnNext((SmeltStartTime, SmeltEndTime));
     }
 
     private void CancelSmelt()
     {
         IsSmelting = false;
-        SmeltProgress = 0;
-        StartSmeltTime = 0;
-        EndSmeltTime = Time.time;
+        SmeltStartTime = 0;
+        SmeltEndTime = 0;
+        OnSmeltEndTimeChanged.OnNext((SmeltStartTime, SmeltEndTime));
     }
 
     private void FinishSmelt()
@@ -194,19 +212,24 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
             Debug.Log(
                 $"Cooking {recipe.ProductItemId} x {productItem.Amount}/{ItemPool.ItemMaxStacks[recipe.ProductItemId]}");
         }
+        OnProductItemChanged.OnNext(productItem);
 
         ingredientItem1.Amount -= recipe.IngredientAmounts[0];
         if (ingredientItem1.Amount <= 0) ingredientItem1.ItemId = ITEM_TYPE.NULL;
-      
+        OnIngredientItemChanged.OnNext((0,ingredientItem1));
+        
         ingredientItem2.Amount -= recipe.IngredientAmounts[1];
         if (ingredientItem2.Amount <= 0) ingredientItem2.ItemId = ITEM_TYPE.NULL;
-        
+        OnIngredientItemChanged.OnNext((1,ingredientItem2));
+
         ingredientItem3.Amount -= recipe.IngredientAmounts[2];
         if (ingredientItem3.Amount <= 0) ingredientItem3.ItemId = ITEM_TYPE.NULL;
-        
+        OnIngredientItemChanged.OnNext((2,ingredientItem3));
+
         ingredientItem4.Amount -= recipe.IngredientAmounts[3];
         if (ingredientItem4.Amount <= 0) ingredientItem4.ItemId = ITEM_TYPE.NULL;
-        
+        OnIngredientItemChanged.OnNext((3,ingredientItem4));
+
         CancelSmelt();
     }
 
@@ -331,6 +354,17 @@ public class Cauldron : MonoBehaviour, IInteractable, IHoverable, IDamagable
 
     public void Interact(IPlayer player)
     {
+        CauldronUI.Instance.Init(OnFuelEndTimeChanged, OnSmeltEndTimeChanged, OnFuelItemChanged, OnIngredientItemChanged, OnProductItemChanged);
+        
+        OnFuelEndTimeChanged.OnNext((FuelStartTime, FuelEndTime));
+        OnSmeltEndTimeChanged.OnNext((SmeltStartTime, SmeltEndTime));
+       
+        OnFuelItemChanged.OnNext(fuelItem);
+        OnIngredientItemChanged.OnNext((0,ingredientItem1));
+        OnIngredientItemChanged.OnNext((1,ingredientItem2));
+        OnIngredientItemChanged.OnNext((2, ingredientItem3));
+        OnIngredientItemChanged.OnNext((3, ingredientItem4));
+        OnProductItemChanged.OnNext(productItem);
     }
 
     public Transform Transform => transform;

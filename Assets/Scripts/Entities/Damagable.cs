@@ -66,7 +66,7 @@ public class Damagable : MonoBehaviour, IDamagable
         if(currentHealth <= 0) return;
     
         currentHealth -= damage;
-        Debug.Log($"Hit {gameObject} for {damage} => {currentHealth} / {maxHealth}");
+        // Debug.Log($"Hit {gameObject} for {damage} => {currentHealth} / {maxHealth}");
         if (currentHealth <= 0)
         {
             OnKill(damager, hitDirection);

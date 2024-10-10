@@ -20,5 +20,5 @@ public class UpdateableData : ScriptableObject
 {
   public bool autoUpdate;
 
-  public event Action OnValuesUpdate;
+  // public event Action OnValuesUpdate;
 }

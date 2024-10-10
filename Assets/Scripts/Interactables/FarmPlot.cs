@@ -1,14 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-public interface IDeployable
-{
-  public void Deploy(IPlayer player, ITEM_TYPE itemType);
-
-  public static readonly Dictionary<Type, Dictionary<ITEM_TYPE, string>> ItemToDeployable =
-    new Dictionary<Type, Dictionary<ITEM_TYPE, string>>();
-}
 
 public class FarmPlot : MonoBehaviour, IHoverable, IDeployable
 {

@@ -171,7 +171,7 @@ public class Mob : MonoBehaviour, IDamager, IDamagable
             _hits, 5, (1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Damagable")), QueryTriggerInteraction.Collide);
         if (hits != 0)
         {
-            Debug.Log(_hits[0].transform.root);
+            // Debug.Log(_hits[0].transform.root);
             var hit = _hits[0];
             HitboxSystem.ColliderHashToDamagable[_hits[0].collider.GetHashCode()]
                 .OnHit(this, attackOrigin.forward, hit.point, TOOL_TYPE.NULL, 10);

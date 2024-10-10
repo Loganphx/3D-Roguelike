@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Interactables;
+using UniRx;
 using UnityEngine;
 
 [Serializable]
@@ -19,10 +20,12 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
     public const int SmeltTime = 10; // 10 seconds to smelt any ore
 
     private bool IsSmelting;
-    private float StartSmeltTime;
-    private float EndSmeltTime;
+    private float SmeltStartTime;
+    private float SmeltEndTime;
+    
     [SerializeField, Min(0)] private float SmeltProgress;
 
+    private float FuelStartTime;
     private float FuelEndTime;
     
     [SerializeField] private InventoryItem fuelItem;
@@ -30,6 +33,13 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
     [SerializeField] private InventoryItem productItem;
 
     private Outline _outline;
+    
+    private BehaviorSubject<(float startTime, float endTime)> OnSmeltEndTimeChanged;
+    private BehaviorSubject<(float startTime, float endTime)> OnFuelEndTimeChanged;
+    private BehaviorSubject<InventoryItem> OnFuelItemChanged;
+    private BehaviorSubject<InventoryItem> OnIngredientItemChanged;
+    private BehaviorSubject<InventoryItem> OnProductItemChanged;
+    
     private void Awake()
     {
         ResourceManager.Builds.Add(GetHashCode(), this);
@@ -63,7 +73,11 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
             Amount = 64,
         };
 
-        
+        OnSmeltEndTimeChanged = new BehaviorSubject<(float startTime, float endTime)>((0,0)); 
+        OnFuelEndTimeChanged = new BehaviorSubject<(float startTime, float endtime)>((0,0));
+        OnFuelItemChanged = new BehaviorSubject<InventoryItem>(fuelItem);
+        OnIngredientItemChanged = new BehaviorSubject<InventoryItem>(ingredientItem);
+        OnProductItemChanged = new BehaviorSubject<InventoryItem>(productItem);
     }
 
     private void OnDeath(Vector3 hitDirection)
@@ -149,13 +163,17 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
             {
                 if (fuelItem.ItemId != ITEM_TYPE.NULL)
                 {
-                    FuelEndTime = Time.time + ItemPool.ItemBurnTimes[fuelItem.ItemId];
+                    FuelStartTime = Time.time;
+                    FuelEndTime = FuelStartTime + ItemPool.ItemBurnTimes[fuelItem.ItemId];
+                    OnFuelEndTimeChanged.OnNext((FuelStartTime, FuelEndTime));
+                    
                     if (fuelItem.Amount == 1)
                     {
                         fuelItem.ItemId = ITEM_TYPE.NULL;
                         fuelItem.Amount = 0;
                     }
                     else fuelItem.Amount--;
+                    OnFuelItemChanged.OnNext(fuelItem);
                 }
                 else CancelSmelt();
             }
@@ -166,7 +184,7 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
             {
                 if (IsSmelting)
                 {
-                    SmeltProgress = Time.time - StartSmeltTime / SmeltTime;
+                    SmeltProgress = Time.time - SmeltStartTime / SmeltTime;
                     return;
                 }
                 
@@ -193,16 +211,18 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
     {
         IsSmelting = true;
         SmeltProgress = 0;
-        StartSmeltTime = Time.time;
-        EndSmeltTime = Time.time + SmeltTime;
+        SmeltStartTime = Time.time;
+        SmeltEndTime = SmeltStartTime + SmeltTime;
+        OnSmeltEndTimeChanged.OnNext((SmeltStartTime, SmeltEndTime));
     }
 
     private void CancelSmelt()
     {
         IsSmelting = false;
         SmeltProgress = 0;
-        StartSmeltTime = 0;
-        EndSmeltTime = Time.time;
+        SmeltStartTime = 0;
+        SmeltEndTime = 0;
+        OnSmeltEndTimeChanged.OnNext((SmeltStartTime, SmeltEndTime));
     }
 
     private void FinishSmelt()
@@ -219,6 +239,7 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
                 ItemId = recipe.ProductItemId,
                 Amount = recipe.ProductAmount
             };
+            OnProductItemChanged.OnNext(productItem);
         }
         else if (productItem.ItemId == recipe.ProductItemId)
         {
@@ -226,11 +247,13 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
             productItem.Amount++;
             Debug.Log(
                 $"Crafting {recipe.ProductItemId} x {productItem.Amount}/{ItemPool.ItemMaxStacks[recipe.ProductItemId]}");
+            OnProductItemChanged.OnNext(productItem);
         }
 
         ingredientItem.Amount -= recipe.IngredientAmounts[0];
         if (ingredientItem.Amount <= 0) ingredientItem.ItemId = ITEM_TYPE.NULL;
-        
+        OnIngredientItemChanged.OnNext(ingredientItem);
+
         CancelSmelt();
     }
 
@@ -241,6 +264,14 @@ public class Furnace : MonoBehaviour, IInteractable, IHoverable, IDamagable
 
     public void Interact(IPlayer player)
     {
+        FurnaceUI.Instance.Init(OnFuelEndTimeChanged, OnSmeltEndTimeChanged, OnFuelItemChanged, OnIngredientItemChanged, OnProductItemChanged);
+        
+        OnFuelEndTimeChanged.OnNext((FuelStartTime, FuelEndTime));
+        OnSmeltEndTimeChanged.OnNext((SmeltStartTime, SmeltEndTime));
+       
+        OnFuelItemChanged.OnNext(fuelItem);
+        OnIngredientItemChanged.OnNext(ingredientItem);
+        OnProductItemChanged.OnNext(productItem);
     }
 
     public Transform Transform => transform;
