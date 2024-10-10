@@ -14,6 +14,11 @@ public static class ItemPool
     { ITEM_TYPE.ORE_MYTHRIL, "Sprites/Items/ore_mythril" },
     { ITEM_TYPE.ORE_ADAMANTITE, "Sprites/Items/ore_adamantite" },
 
+    { ITEM_TYPE.INGOT_IRON, "Sprites/Items/ingot_iron" },
+    { ITEM_TYPE.INGOT_GOLD, "Sprites/Items/ingot_gold" },
+    { ITEM_TYPE.INGOT_MYTHRIL, "Sprites/Items/ingot_mythril" },
+    { ITEM_TYPE.INGOT_ADAMANTITE, "Sprites/Items/ingot_adamantite" },
+    
     { ITEM_TYPE.WOOD, "Sprites/Items/wood_tree" },
     { ITEM_TYPE.WOOD_BIRCH, "Sprites/Items/wood_birch" },
     { ITEM_TYPE.WOOD_FIR, "Sprites/Items/wood_fir" },
@@ -86,6 +91,8 @@ public static class ItemPool
     { ITEM_TYPE.WEAPON_BOW_IRON, "Sprites/Items/bow_iron" },
     { ITEM_TYPE.WEAPON_BOW_MYTHRIL, "Sprites/Items/bow_mythril" },
     { ITEM_TYPE.WEAPON_BOW_ADAMANTITE, "Sprites/Items/bow_adamantite" },
+    
+    { ITEM_TYPE.FOOD_BREAD, "Sprites/Items/bread" },
   };
 
   public static readonly Dictionary<ITEM_TYPE, string> ItemPrefabs = new Dictionary<ITEM_TYPE, string>()

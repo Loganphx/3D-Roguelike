@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{26046744-9339-b29a-7ada-60a57d7a7e8a}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx", "UniRx.csproj", "{bab93e37-5a6a-3200-46d7-05b8de333fcc}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorTests", "EditorTests.csproj", "{d9cf389e-90ed-24ff-20b9-6101c98dc603}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Editor", "FastScriptReload.Editor.csproj", "{09d2139c-ebfa-f8fb-6319-25882b73eb66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Examples", "UniRx.Examples.csproj", "{884c1720-fa8c-9d4c-4128-d4b63be43ac4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastScriptReload.Runtime", "FastScriptReload.Runtime.csproj", "{0adacf49-32db-0353-1a8d-d38d758ed316}"
 EndProject
@@ -22,10 +26,14 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{26046744-9339-b29a-7ada-60a57d7a7e8a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26046744-9339-b29a-7ada-60a57d7a7e8a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{bab93e37-5a6a-3200-46d7-05b8de333fcc}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{bab93e37-5a6a-3200-46d7-05b8de333fcc}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{d9cf389e-90ed-24ff-20b9-6101c98dc603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09d2139c-ebfa-f8fb-6319-25882b73eb66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{09d2139c-ebfa-f8fb-6319-25882b73eb66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884c1720-fa8c-9d4c-4128-d4b63be43ac4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884c1720-fa8c-9d4c-4128-d4b63be43ac4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0adacf49-32db-0353-1a8d-d38d758ed316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0adacf49-32db-0353-1a8d-d38d758ed316}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29980a56-c454-2033-88aa-5ec73334602b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
